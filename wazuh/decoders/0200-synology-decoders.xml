@@ -1,0 +1,6 @@
+<!-- Synology DSM authentication (syslog) -->
+<decoder name="synology-dsm-auth">
+  <program_name>Connection</program_name>
+  <regex type="pcre2">User \[([^\]]+)\] from \[([0-9]{1,3}(?:\.[0-9]{1,3}){3})\]</regex>
+  <order>dstuser,srcip</order>
+</decoder>
