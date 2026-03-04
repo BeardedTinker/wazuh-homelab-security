@@ -1,0 +1,5 @@
+<!-- UniFi syslog file (written by your syslog daemon, e.g. rsyslog) -->
+<localfile>
+  <log_format>syslog</log_format>
+  <location>/var/log/unifi.log</location>
+</localfile>
