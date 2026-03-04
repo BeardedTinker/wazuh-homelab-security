@@ -1,0 +1,40 @@
+<group name="local,synology,">
+
+  <rule id="100200" level="3">
+    <decoded_as>synology-dsm-auth</decoded_as>
+    <match>signed in to \[DSM\]</match>
+    <description>Synology DSM login success</description>
+    <group>synology,auth,success,</group>
+  </rule>
+
+  <rule id="100201" level="12">
+    <decoded_as>synology-dsm-auth</decoded_as>
+    <match>failed to sign in to \[DSM\]</match>
+    <description>Synology DSM login failure</description>
+    <group>synology,auth,failed,critical,</group>
+  </rule>
+
+  <rule id="100210" level="15" frequency="5" timeframe="300">
+    <if_matched_sid>100201</if_matched_sid>
+    <same_srcip/>
+    <description>Synology brute force suspected (same IP)</description>
+    <group>synology,auth,bruteforce,critical,</group>
+  </rule>
+
+  <rule id="100211" level="15" frequency="5" timeframe="300">
+    <if_matched_sid>100201</if_matched_sid>
+    <same_field>dstuser</same_field>
+    <description>Synology account targeted from multiple events (same user)</description>
+    <group>synology,auth,targeted,critical,</group>
+  </rule>
+
+  <rule id="100220" level="16" frequency="2" timeframe="300">
+    <if_matched_sid>100201</if_matched_sid>
+    <if_sid>100200</if_sid>
+    <same_srcip/>
+    <same_field>dstuser</same_field>
+    <description>Synology DSM success after 2+ fails (same user+IP within 5m) - possible compromise</description>
+    <group>synology,auth,compromise,critical,</group>
+  </rule>
+
+</group>
