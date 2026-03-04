@@ -1,0 +1,20 @@
+[
+  {
+    "contains": "failed to sign in",
+    "decoder": "synology-dsm-auth",
+    "fields": {
+      "dstuser": "user_admin",
+      "srcip": "203.0.113.37"
+    },
+    "rules": [100201]
+  },
+  {
+    "contains": "signed in",
+    "decoder": "synology-dsm-auth",
+    "fields": {
+      "dstuser": "user_admin",
+      "srcip": "203.0.113.37"
+    },
+    "rules": [100200]
+  }
+]
