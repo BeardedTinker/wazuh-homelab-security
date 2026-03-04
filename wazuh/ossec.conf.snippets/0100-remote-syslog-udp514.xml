@@ -1,0 +1,6 @@
+<!-- Wazuh remote syslog listener (UDP 514) -->
+<remote>
+  <connection>syslog</connection>
+  <port>514</port>
+  <protocol>udp</protocol>
+</remote>
