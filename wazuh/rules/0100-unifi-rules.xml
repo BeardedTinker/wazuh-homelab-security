@@ -7,6 +7,12 @@
     <group>unifi,syslog,</group>
   </rule>
 
+  <rule id="100105" level="3">
+    <decoded_as>unifi-ucg-firewall</decoded_as>
+    <description>UniFi firewall WAN_LOCAL drop</description>
+    <group>unifi,firewall,drop,</group>
+  </rule>
+  
   <!-- WAN_LOCAL drops -->
   <rule id="100110" level="3">
     <if_sid>100100</if_sid>
