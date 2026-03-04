@@ -1,0 +1,21 @@
+<!-- UniFi UCG firewall logs -->
+<decoder name="unifi-ucg-firewall">
+  <prematch>\[WAN_LOCAL-</prematch>
+  <regex>SRC=(\S+) DST=(\S+).+PROTO=(\S+) SPT=(\d+) DPT=(\d+)</regex>
+  <order>srcip,dstip,protocol,srcport,dstport</order>
+</decoder>
+
+<!-- Fallback if ports are missing (optional) -->
+<decoder name="unifi-ucg-firewall-nports">
+  <prematch>\[WAN_LOCAL-</prematch>
+  <regex>SRC=(\S+) DST=(\S+).*PROTO=(\S+)</regex>
+  <order>srcip,dstip,protocol</order>
+</decoder>
+
+<!-- Minimal UniFi IDS/IPS CEF decoder (keep if you have CEF logs) -->
+<decoder name="unifi-ucg-cef">
+  <program_name>CEF</program_name>
+  <prematch>UCG-Ultra CEF:</prematch>
+  <regex>src=(\S+).+dpt=(\d+).+act=(\S+)</regex>
+  <order>srcip,dstport,action</order>
+</decoder>
