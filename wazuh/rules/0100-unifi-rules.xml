@@ -1,0 +1,79 @@
+<group name="local,unifi,">
+
+  <!-- Base: file location marker (optional but useful for grouping) -->
+  <rule id="100100" level="0">
+    <location>/var/log/unifi.log</location>
+    <description>UniFi syslog base</description>
+    <group>unifi,syslog,</group>
+  </rule>
+
+  <!-- WAN_LOCAL drops -->
+  <rule id="100110" level="3">
+    <if_sid>100100</if_sid>
+    <match>\[WAN_LOCAL-</match>
+    <description>UniFi firewall: WAN_LOCAL drop</description>
+    <group>unifi,firewall,wan_local,drop,</group>
+  </rule>
+
+  <!-- TCP SYN (scan-ish) -->
+  <rule id="100120" level="7">
+    <if_sid>100110</if_sid>
+    <match>PROTO=TCP</match>
+    <match> SYN </match>
+    <description>UniFi WAN_LOCAL DROP: TCP SYN</description>
+    <group>unifi,scan,tcp,syn,</group>
+  </rule>
+
+  <!-- Common probes -->
+  <rule id="100116" level="12">
+    <if_sid>100110</if_sid>
+    <match>DPT=22</match>
+    <description>UniFi WAN_LOCAL DROP: SSH probe (DPT=22)</description>
+    <group>unifi,ssh,probe,</group>
+  </rule>
+
+  <rule id="100117" level="12">
+    <if_sid>100110</if_sid>
+    <match>DPT=443</match>
+    <description>UniFi WAN_LOCAL DROP: HTTPS probe (DPT=443)</description>
+    <group>unifi,https,probe,</group>
+  </rule>
+
+  <rule id="100119" level="12">
+    <if_sid>100110</if_sid>
+    <match>DPT=80</match>
+    <description>UniFi WAN_LOCAL DROP: HTTP probe (DPT=80)</description>
+    <group>unifi,http,probe,</group>
+  </rule>
+
+  <rule id="100123" level="12">
+    <if_sid>100110</if_sid>
+    <match>DPT=8443</match>
+    <description>UniFi WAN_LOCAL DROP: HTTPS-alt probe (DPT=8443)</description>
+    <group>unifi,https,probe,</group>
+  </rule>
+
+  <rule id="100124" level="13">
+    <if_sid>100110</if_sid>
+    <match>DPT=445</match>
+    <description>UniFi WAN_LOCAL DROP: SMB probe (DPT=445)</description>
+    <group>unifi,smb,probe,</group>
+  </rule>
+
+  <!-- Any traffic targeting Home Assistant -->
+  <rule id="100132" level="10">
+    <if_group>unifi</if_group>
+    <match>DPT=8123</match>
+    <description>UniFi traffic targeting Home Assistant (8123)</description>
+    <group>unifi,homeassistant,exposure,</group>
+  </rule>
+
+  <!-- Any traffic targeting Synology DSM (HTTPS) -->
+  <rule id="100133" level="10">
+    <if_group>unifi</if_group>
+    <match>DPT=5002</match>
+    <description>UniFi traffic targeting Synology DSM (5002)</description>
+    <group>unifi,synology,exposure,</group>
+  </rule>
+
+</group>
