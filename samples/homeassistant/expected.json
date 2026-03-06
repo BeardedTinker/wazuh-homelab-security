@@ -1,0 +1,38 @@
+[
+  {
+    "contains": "homeassistant.components.http.ban",
+    "decoder": "homeassistant-http-ban",
+    "fields": {
+      "srcip": "95.168.105.53"
+    },
+    "rules": [100300]
+  },
+  {
+    "contains": "05:58:17",
+    "decoder": "homeassistant-http-ban",
+    "fields": {
+      "srcip": "95.168.105.53"
+    },
+    "rules": [100310]
+  },
+  {
+    "contains": "homeassistant.components.websocket_api.http.connection",
+    "decoder": "homeassistant-ws-suspicious",
+    "fields": {
+      "srcip": "198.51.100.44"
+    },
+    "rules": [100340]
+  },
+  {
+    "contains": "06:10:09",
+    "decoder": "homeassistant-ws-suspicious",
+    "fields": {
+      "srcip": "198.51.100.44"
+    },
+    "rules": [100341]
+  },
+  {
+    "contains": "moonraker_api.websockets.websocketclient",
+    "rules": [100319]
+  }
+]
