@@ -1,0 +1,51 @@
+<group name="local,homeassistant,">
+
+  <rule id="100319" level="0">
+    <match>moonraker_api.websockets.websocketclient</match>
+    <description>Ignore Moonraker websocket reconnect when printer offline</description>
+    <options>no_log</options>
+  </rule>
+
+  <rule id="100300" level="10">
+    <location>journald</location>
+    <decoded_as>homeassistant-http-ban</decoded_as>
+    <description>Home Assistant invalid authentication (ban component)</description>
+    <group>auth,failed,scan,</group>
+    <options>no_email_alert</options>
+  </rule>
+
+  <rule id="100310" level="14" frequency="5" timeframe="300">
+    <if_matched_sid>100300</if_matched_sid>
+    <same_srcip/>
+    <description>Home Assistant brute force suspected (same IP)</description>
+    <group>auth,bruteforce,critical,</group>
+  </rule>
+
+  <rule id="100320" level="8">
+    <decoded_as>homeassistant-auth-failed</decoded_as>
+    <description>Home Assistant invalid authentication (http/auth)</description>
+    <group>auth,failed,</group>
+    <options>no_email_alert</options>
+  </rule>
+
+  <rule id="100321" level="13" frequency="8" timeframe="300">
+    <if_matched_sid>100320</if_matched_sid>
+    <same_srcip/>
+    <description>Home Assistant repeated invalid authentication (same IP)</description>
+    <group>auth,bruteforce,</group>
+  </rule>
+
+  <rule id="100340" level="9">
+    <decoded_as>homeassistant-ws-suspicious</decoded_as>
+    <description>Home Assistant websocket suspicious activity</description>
+    <group>websocket,suspicious,</group>
+  </rule>
+
+  <rule id="100341" level="12" frequency="6" timeframe="300">
+    <if_matched_sid>100340</if_matched_sid>
+    <same_srcip/>
+    <description>Home Assistant websocket suspicious activity repeated (same IP)</description>
+    <group>websocket,suspicious,scan,</group>
+  </rule>
+
+</group>
