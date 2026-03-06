@@ -6,9 +6,9 @@ The goal is to provide a **simple but effective SIEM-style overview for a homela
 
 The examples assume the following index pattern:
 
-???
+```
 wazuh-alerts-*
-???
+```
 
 ---
 
@@ -21,23 +21,23 @@ Shows the most active attacking source IP addresses.
 Configuration:
 
 Metric:
-???
+```
 Count
-???
+```
 
 Bucket:
 
-???
+```
 Terms
 Field: data.srcip
 Size: 10
-???
+```
 
 Recommended filter:
 
-???
+```
 rule.id:(100132 OR 100300 OR 100310)
-???
+```
 
 This panel helps identify:
 
@@ -55,23 +55,23 @@ Configuration:
 
 Metric:
 
-???
+```
 Count
-???
+```
 
 Bucket:
 
-???
+```
 Date Histogram
 Field: timestamp
 Interval: Auto
-???
+```
 
 Recommended filter:
 
-???
+```
 rule.id:(100132 OR 100300 OR 100310)
-???
+```
 
 Useful for:
 
@@ -89,17 +89,17 @@ Configuration:
 
 Metric:
 
-???
+```
 Count
-???
+```
 
 Bucket:
 
-???
+```
 Terms
 Field: dstport
 Size: 10
-???
+```
 
 Example detections include:
 
@@ -118,17 +118,17 @@ Configuration:
 
 Metric:
 
-???
+```
 Count
-???
+```
 
 Bucket:
 
-???
+```
 Geohash
 Field: GeoLocation.location
 Precision: 3 or 4
-???
+```
 
 This uses the GeoIP enrichment already present in Wazuh.
 
@@ -148,16 +148,16 @@ Configuration:
 
 Metric:
 
-???
+```
 Count
-???
+```
 
 Bucket:
 
-???
+```
 Terms
 Field: rule.level
-???
+```
 
 Example severity levels used in this repository:
 
@@ -177,9 +177,9 @@ Shows most active attackers within the last 24 hours.
 
 Configuration is identical to **Top attacking IPs**, but the dashboard time filter is set to:
 
-???
+```
 Last 24 hours
-???
+```
 
 This highlights **current active threats**.
 
@@ -191,9 +191,9 @@ Shows historical attack sources.
 
 Typical dashboard time filter:
 
-???
+```
 Last 30 days
-???
+```
 
 This helps detect:
 
@@ -221,9 +221,9 @@ Home Assistant brute force → `100310`
 
 Correlation key:
 
-???
+```
 data.srcip
-???
+```
 
 ---
 
