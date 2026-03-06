@@ -1,0 +1,23 @@
+<!-- Home Assistant ban (components.http.ban) -->
+<decoder name="homeassistant-http-ban">
+  <program_name>homeassistant</program_name>
+  <prematch>homeassistant.components.http.ban</prematch>
+  <regex type="pcre2">\(([0-9]{1,3}(?:\.[0-9]{1,3}){3})\)</regex>
+  <order>srcip</order>
+</decoder>
+
+<!-- Home Assistant auth failures (same message, but may appear under http too) -->
+<decoder name="homeassistant-auth-failed">
+  <program_name>homeassistant</program_name>
+  <prematch>homeassistant.components.http</prematch>
+  <regex type="pcre2">\(([0-9]{1,3}(?:\.[0-9]{1,3}){3})\)</regex>
+  <order>srcip</order>
+</decoder>
+
+<!-- Home Assistant websocket suspicious messages -->
+<decoder name="homeassistant-ws-suspicious">
+  <program_name>homeassistant</program_name>
+  <prematch>homeassistant.components.websocket_api</prematch>
+  <regex type="pcre2">(?:(?:from|\[)\s*)([0-9]{1,3}(?:\.[0-9]{1,3}){3})</regex>
+  <order>srcip</order>
+</decoder>
