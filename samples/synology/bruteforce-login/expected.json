@@ -1,0 +1,11 @@
+{
+  "decoder": "synology-dsm-auth",
+  "fields": {
+    "data.srcip": "203.0.113.45",
+    "data.username": "admin"
+  },
+  "rules_expected": [
+    100210
+  ],
+  "description": "Repeated failed login attempts on Synology DSM from the same IP"
+}
