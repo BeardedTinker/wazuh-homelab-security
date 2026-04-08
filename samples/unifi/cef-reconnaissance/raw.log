@@ -1,0 +1,5 @@
+Apr  6 10:05:00 wazuh CEF: CEF:0|Ubiquiti|UCG-Ultra|1.0|ET SCAN NMAP|Potential Nmap Scan|5|src=45.146.164.12 dst=192.168.1.33 spt=45623 dpt=22 proto=tcp act=blocked
+Apr  6 10:05:00 wazuh CEF: CEF:0|Ubiquiti|UCG-Ultra|1.0|ET SCAN NMAP|Potential Nmap Scan|5|src=45.146.164.12 dst=192.168.1.33 spt=45623 dpt=80 proto=tcp act=blocked
+Apr  6 10:05:00 wazuh CEF: CEF:0|Ubiquiti|UCG-Ultra|1.0|ET SCAN NMAP|Potential Nmap Scan|5|src=45.146.164.12 dst=192.168.1.33 spt=45623 dpt=443 proto=tcp act=blocked
+Apr  6 10:05:00 wazuh CEF: CEF:0|Ubiquiti|UCG-Ultra|1.0|ET SCAN NMAP|Potential Nmap Scan|5|src=45.146.164.12 dst=192.168.1.33 spt=45623 dpt=8123 proto=tcp act=blocked
+Apr  6 10:05:00 wazuh CEF: CEF:0|Ubiquiti|UCG-Ultra|1.0|ET SCAN NMAP|Potential Nmap Scan|5|src=45.146.164.12 dst=192.168.1.33 spt=45623 dpt=5002 proto=tcp act=blocked
