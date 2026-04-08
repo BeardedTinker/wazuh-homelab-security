@@ -1,5 +1,6 @@
 # Wazuh Homelab Security
 
+Detection rules and decoders used in the BeardedTinker homelab SIEM setup.
 Practical Wazuh rules, decoders, sample logs, and dashboard building blocks for a real homelab setup.
 
 This repository focuses on three common homelab telemetry sources:
@@ -346,6 +347,21 @@ Before publishing logs always sanitize:
 Choose any license appropriate for sharing detection logic.
 
 Permissive licenses are typically easiest for reuse.
+
+---
+
+## Rule ID ranges
+
+Custom rules in this repository use a dedicated rule ID range to avoid conflicts with built-in Wazuh rules or other custom rule sets.
+
+```
+100100–100199   UniFi firewall detections
+100200–100299   Synology DSM authentication detections
+100300–100399   UniFi IDS / IPS detections
+100400–100499   Home Assistant detections
+```
+
+If you extend this repository, it is recommended to keep new rules within the same logical ranges.
 
 ---
 
