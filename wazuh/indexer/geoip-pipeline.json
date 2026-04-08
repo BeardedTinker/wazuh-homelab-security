@@ -1,0 +1,12 @@
+{
+  "description": "GeoIP enrichment for Wazuh alerts",
+  "processors": [
+    {
+      "geoip": {
+        "field": "data.srcip",
+        "target_field": "GeoLocation",
+        "database_file": "GeoLite2-Country.mmdb"
+      }
+    }
+  ]
+}
