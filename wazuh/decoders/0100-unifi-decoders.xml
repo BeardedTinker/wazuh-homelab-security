@@ -1,21 +1,34 @@
-<!-- UniFi UCG firewall logs -->
+<!-- UniFi firewall -->
 <decoder name="unifi-ucg-firewall">
-  <prematch>\[WAN_LOCAL-</prematch>
+  <prematch>SRC=</prematch>
   <regex>SRC=(\S+) DST=(\S+).+PROTO=(\S+) SPT=(\d+) DPT=(\d+)</regex>
   <order>srcip,dstip,protocol,srcport,dstport</order>
 </decoder>
 
-<!-- Fallback if ports are missing (optional) -->
 <decoder name="unifi-ucg-firewall-nports">
-  <prematch>\[WAN_LOCAL-</prematch>
-  <regex>SRC=(\S+) DST=(\S+).*PROTO=(\S+)</regex>
+  <prematch>SRC=</prematch>
+  <regex>SRC=(\S+) DST=(\S+) .* PROTO=(\S+)</regex>
   <order>srcip,dstip,protocol</order>
 </decoder>
 
-<!-- Minimal UniFi IDS/IPS CEF decoder (keep if you have CEF logs) -->
+<decoder name="unifi-ucg-firewall-ha">
+  <parent>unifi-ucg-firewall</parent>
+  <regex>DPT=(8123)</regex>
+  <order>dstport</order>
+</decoder>
+
+<!-- UniFi CEF -->
 <decoder name="unifi-ucg-cef">
   <program_name>CEF</program_name>
-  <prematch>UCG-Ultra CEF:</prematch>
-  <regex>src=(\S+).+dpt=(\d+).+act=(\S+)</regex>
-  <order>srcip,dstport,action</order>
+  <prematch type="pcre2">^\s*CEF:0\|Ubiquiti\|UCG-Ultra\|</prematch>
+  <regex type="pcre2">CEF:0\|Ubiquiti\|UCG-Ultra\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|src=([0-9]{1,3}(?:\.[0-9]{1,3}){3}) dst=([0-9]{1,3}(?:\.[0-9]{1,3}){3}) spt=([0-9]{1,5}) dpt=([0-9]{1,5}) proto=([A-Za-z0-9_]+) act=([A-Za-z0-9_-]+)</regex>
+  <order>srcip,dstip,srcport,dstport,protocol,action</order>
+</decoder>
+
+<!-- UniFi / gateway kernel firewall line (WAN_LOCAL- ...) -->
+<decoder name="unifi-wan-kernel">
+  <parent>kernel</parent>
+  <prematch type="pcre2">^WAN_LOCAL-</prematch>
+  <regex type="pcre2">SRC=([0-9]{1,3}(?:\.[0-9]{1,3}){3})\s+DST=([0-9]{1,3}(?:\.[0-9]{1,3}){3}).*?\s+DPT=([0-9]{1,5})</regex>
+  <order>srcip,dstip,dstport</order>
 </decoder>
