@@ -1,0 +1,7 @@
+{
+  "decoder": "unifi-ucg-cef",
+  "rules_expected": [
+    100310
+  ],
+  "description": "Possible reconnaissance: multiple services probed from same source"
+}
