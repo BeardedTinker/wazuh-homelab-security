@@ -1,0 +1,11 @@
+{
+  "decoder": "homeassistant-http-ban",
+  "fields": {
+    "data.srcip": "198.51.100.24"
+  },
+  "rules_expected": [
+    100400,
+    100410
+  ],
+  "description": "Repeated invalid Home Assistant authentication attempts from the same IP"
+}
