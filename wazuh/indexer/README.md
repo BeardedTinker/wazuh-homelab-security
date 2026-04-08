@@ -12,7 +12,7 @@ The file:
 
 `geoip-pipeline.json`
 
-adds geographic context to alert events by resolving the **source IP address** of an attack.
+adds geographic context to alert events by resolving the source IP address of an attack.
 
 The pipeline enriches the document with a new object:
 
@@ -43,7 +43,7 @@ Example:
 
 `GeoLite2-Country.mmdb`
 
-Place the file in the Wazuh Indexer GeoIP database directory.
+Place the file in a location accessible to Wazuh Indexer.
 
 Typical locations:
 
@@ -59,6 +59,8 @@ or
 
 depending on your deployment.
 
+In the tested homelab setup, the database file was available on the same host as Wazuh Indexer and used by the ingest pipeline.
+
 ---
 
 # Create the pipeline
@@ -72,42 +74,98 @@ curl -k -u admin:admin -X PUT \
 -d @geoip-pipeline.json
 ```
 
+This creates an ingest pipeline named:
+
+```
+wazuh-geoip
+```
+
 ---
 
-# Attach pipeline to Wazuh alerts index
+# Attach the pipeline to Wazuh alerts
 
-Attach the pipeline to the alerts index template so that every alert document is enriched automatically.
+Attach the pipeline to the Wazuh alerts index template so that alert documents are enriched automatically when they are indexed.
 
 Example:
 
 ```
-PUT _index_template/wazuh-alerts
+curl -k -u admin:admin -X PUT "https://localhost:9200/_index_template/wazuh-alerts" \
+-H "Content-Type: application/json" -d '
+{
+  "index_patterns": ["wazuh-alerts-*"],
+  "template": {
+    "settings": {
+      "index.default_pipeline": "wazuh-geoip"
+    }
+  }
+}'
 ```
 
-with the pipeline defined in the index settings.
+If your existing deployment uses a different index template name, adjust the template accordingly.
 
 ---
 
-# Result
+# Verify the pipeline
 
-After the pipeline is active, alert documents will contain:
+Generate a test alert that contains:
+
+```
+data.srcip
+```
+
+Then query the indexed alert document and verify that it contains:
 
 ```
 GeoLocation.country_name
 GeoLocation.location
 ```
 
-Example:
+Example search:
+
+```
+curl -k -u admin:admin -X POST "https://localhost:9200/wazuh-alerts-*/_search" \
+-H "Content-Type: application/json" -d '
+{
+  "size": 1,
+  "sort": [
+    {
+      "@timestamp": {
+        "order": "desc"
+      }
+    }
+  ],
+  "query": {
+    "term": {
+      "data.srcip": "45.146.164.12"
+    }
+  }
+}'
+```
+
+Expected result fragment:
 
 ```
 "GeoLocation": {
   "country_name": "Russia",
   "location": {
-    "lat": 55.7386,
-    "lon": 37.6068
+    "lon": 37.6068,
+    "lat": 55.7386
   }
 }
 ```
+
+---
+
+# Result
+
+Once the pipeline is active, indexed alert documents can include fields like:
+
+```
+GeoLocation.country_name
+GeoLocation.location
+```
+
+These fields can then be used in dashboards, visualizations, filters, and maps.
 
 ---
 
@@ -122,9 +180,9 @@ data.srcip.keyword
 manager.name.keyword
 ```
 
-Avoid using scripted fields to extract IP addresses from logs.
+Avoid using scripted fields to extract source IP addresses from raw logs.
 
-The UniFi decoder already extracts structured fields such as:
+In this repository the UniFi decoder already extracts structured fields such as:
 
 ```
 data.srcip
@@ -132,4 +190,12 @@ data.dstip
 data.dstport
 ```
 
-These should be used directly in visualizations and aggregations.
+These fields should be used directly in visualizations and aggregations.
+
+---
+
+# Notes
+
+- GeoIP enrichment in this homelab setup is performed in the **Wazuh Indexer**, not in the Wazuh manager alert JSON.
+- This means `alerts.json` may not contain `GeoLocation`, while indexed documents in `wazuh-alerts-*` do.
+- Manager-side GeoIP configuration may still be useful in some environments, but support depends on the Wazuh manager build.
