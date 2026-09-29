@@ -1,0 +1,63 @@
+<group name="local,safeline,">
+
+  <!-- Wazuh 4.14.8 rule 86600 claims JSON containing timestamp + event_type.
+       Continue from that rule and identify only collector-normalized SafeLine events. -->
+  <rule id="100500" level="3">
+    <if_sid>86600</if_sid>
+    <field name="schema_version">^1$</field>
+    <field name="integration">^safeline$</field>
+    <field name="event_type">^waf_attack$</field>
+    <description>SafeLine WAF attack event</description>
+    <group>safeline,waf,attack,safeline_waf_event,</group>
+  </rule>
+
+  <!-- risk_level=3 is production-observed; its textual risk label is not assumed. -->
+  <rule id="100503" level="10">
+    <if_sid>100500</if_sid>
+    <field name="risk_level">^3$</field>
+    <description>SafeLine WAF risk tier 3 attack</description>
+    <group>safeline,waf,attack,risk_tier_3,safeline_waf_event,safeline_waf_tier3_event,</group>
+  </rule>
+
+  <!-- SafeLine 9.4.2 source confirms action=1 is deny/block. -->
+  <rule id="100504" level="11">
+    <if_sid>100503</if_sid>
+    <action>1</action>
+    <description>SafeLine blocked a risk tier 3 WAF attack</description>
+    <group>safeline,waf,attack,blocked,risk_tier_3,safeline_waf_event,safeline_waf_tier3_event,</group>
+  </rule>
+
+  <rule id="100510" level="12">
+    <if_sid>100504</if_sid>
+    <field name="attack_type">^0$</field>
+    <description>SafeLine blocked a risk tier 3 SQL injection attack</description>
+    <group>safeline,waf,attack,blocked,sqli,risk_tier_3,safeline_waf_event,safeline_waf_tier3_event,</group>
+  </rule>
+
+  <rule id="100520" level="12">
+    <if_sid>100504</if_sid>
+    <field name="attack_type">^1$</field>
+    <description>SafeLine blocked a risk tier 3 XSS attack</description>
+    <group>safeline,waf,attack,blocked,xss,risk_tier_3,safeline_waf_event,safeline_waf_tier3_event,</group>
+  </rule>
+
+  <!-- Every possible final tier-3 child carries safeline_waf_tier3_event, so
+       correlation follows group history instead of one fragile final SID. -->
+  <rule id="100550" level="13" frequency="5" timeframe="300">
+    <if_sid>100503</if_sid>
+    <if_matched_group>safeline_waf_tier3_event</if_matched_group>
+    <same_srcip/>
+    <description>Repeated SafeLine risk tier 3 WAF attacks from the same source</description>
+    <group>safeline,waf,attack,correlation,repeated_attack,safeline_waf_event,safeline_waf_tier3_event,</group>
+  </rule>
+
+  <rule id="100551" level="14" frequency="2" timeframe="300">
+    <if_sid>100503</if_sid>
+    <if_matched_group>safeline_waf_tier3_event</if_matched_group>
+    <same_srcip/>
+    <different_field>attack_type</different_field>
+    <description>SafeLine multi-vector WAF attacks from the same source</description>
+    <group>safeline,waf,attack,correlation,multi_vector,safeline_waf_event,safeline_waf_tier3_event,</group>
+  </rule>
+
+</group>

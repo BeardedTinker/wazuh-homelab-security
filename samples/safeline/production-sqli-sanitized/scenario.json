@@ -1,0 +1,4 @@
+{
+  "classification": "pass",
+  "summary": "Sanitized standalone production SafeLine SQLi event using collector schema version 1."
+}

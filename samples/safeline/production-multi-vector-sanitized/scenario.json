@@ -1,0 +1,4 @@
+{
+  "classification": "pass",
+  "summary": "Sanitized production-derived same-source XSS followed by SQLi triggers rule 100551."
+}

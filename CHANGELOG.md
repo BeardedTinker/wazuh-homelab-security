@@ -17,6 +17,12 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 - production-aligned secure-agent and password-protected enrollment snippets
 - regression coverage for rules 100150, 100301, 100310, and 100433
 - manager baseline documentation and an empty `local_internal_options.conf`
+- SafeLine schema-v1 WAF rules for blocked SQLi, blocked XSS, repeated attacks,
+  and same-source multi-vector correlation
+- sanitized production-derived SafeLine samples for rules 100510, 100520,
+  100550, and 100551
+- production-confirmed SafeLine schema-v1 collector and installation/pipeline
+  documentation
 
 ### Changed
 - repository structure aligned with source-based rulesets
@@ -25,6 +31,8 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 - synchronized rules, decoders, and regression expectations with the production-confirmed Wazuh 4.14.8 configuration
 - replaced final-SID-only UniFi correlations with shared group-history correlations
 - sanitized all publishable samples to RFC 5737 TEST-NET addressing
+- marked the SafeLine leaf and correlation rules production-confirmed after
+  end-to-end manager validation
 
 ### Removed
 - broad Home Assistant websocket detection that classified normal traffic as suspicious

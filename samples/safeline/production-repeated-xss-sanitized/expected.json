@@ -1,0 +1,14 @@
+{
+  "decoder": "json",
+  "fields": {
+    "data.srcip": "198.51.100.40",
+    "data.srcport": "0",
+    "data.dstport": "443",
+    "data.action": "1"
+  },
+  "rules_expected": [
+    100520,
+    100550
+  ],
+  "description": "Repeated SafeLine risk tier 3 WAF attacks from the same source"
+}

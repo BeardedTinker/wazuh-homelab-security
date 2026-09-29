@@ -1,0 +1,14 @@
+{
+  "decoder": "json",
+  "fields": {
+    "data.srcip": "198.51.100.40",
+    "data.srcport": "0",
+    "data.dstport": "443",
+    "data.action": "1"
+  },
+  "rules_expected": [
+    100520,
+    100551
+  ],
+  "description": "SafeLine multi-vector WAF attacks from the same source"
+}

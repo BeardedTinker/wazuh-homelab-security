@@ -3,11 +3,12 @@
 Detection rules and decoders used in the BeardedTinker homelab SIEM setup.
 Practical Wazuh rules, decoders, sample logs, and dashboard building blocks for a real homelab setup.
 
-This repository focuses on three common homelab telemetry sources:
+This repository focuses on four common homelab telemetry sources:
 
 - UniFi firewall / IDS / IPS events
 - Synology DSM authentication events
 - Home Assistant security-relevant logs via Wazuh Agent + journald
+- SafeLine WAF attack events via a schema-versioned JSON collector
 
 The goal is simple: detect real security signals in a homelab without introducing enterprise-only complexity.
 
@@ -23,7 +24,7 @@ The current baseline was exported from and validated on **Wazuh 4.14.8**.
 | Known limitation | The behavior is understood and intentionally retained. |
 | PENDING | No claim is made until an authentic production event is available. |
 
-Current regression status: **10 PASS, 0 FAIL, 2 PENDING, 0 XPASS**.
+Current regression status: **14 PASS, 0 FAIL, 2 PENDING, 0 XPASS**.
 The two PENDING scenarios are `homeassistant/auth-failed` and
 `synology/bruteforce-login`; synthetic events must not be used to close them.
 
@@ -32,6 +33,7 @@ The two PENDING scenarios are `homeassistant/auth-failed` and
 ```text
 UniFi / Synology ──UDP/514──> rsyslogd ──> /var/log/*.log ──> Wazuh localfile
 Home Assistant ──agent secure TCP/1514──────────────────────> Wazuh remoted
+SafeLine Open API ──schema-v1 collector──> attacks.json ──> Wazuh Agent 023
 New agents ──password-protected TCP/1515────────────────────> Wazuh authd
 Wazuh alerts ──Filebeat──> Wazuh Indexer ingest pipeline ──> GeoLocation.*
 ```
@@ -86,6 +88,31 @@ Detection ideas currently implemented:
 
 ---
 
+## SafeLine WAF
+
+Production-confirmed detections on Wazuh 4.14.8:
+
+- blocked risk-level-3 SQL injection (`100510`)
+- blocked risk-level-3 XSS (`100520`)
+- five same-source risk-level-3 attacks in 300 seconds (`100550`)
+- same-source XSS and SQLi within 300 seconds (`100551`)
+
+SafeLine events use the built-in JSON decoder. Rule `100500` is a constrained
+child of built-in rule `86600`, which otherwise claims JSON containing both
+`timestamp` and `event_type`. Correlation uses the collector's static `srcip`
+field and shared `safeline_waf_tier3_event` history.
+
+`reason` remains enrichment only. A production SQLi event reported a numeric
+attack value in localized reason text, so classification is based on
+`attack_type`, not `reason`.
+
+The production-confirmed collector source is tracked at
+`safeline/collector/safeline-wazuh-collector.py` and installs as
+`/usr/local/bin/safeline-wazuh-collector.py`. See `safeline/README.md` for its
+runtime paths, privacy behavior, and pipeline.
+
+---
+
 ## GeoIP enrichment
 
 This repository also includes an optional Wazuh Indexer GeoIP pipeline for enriching alerts with geographic context.
@@ -105,8 +132,12 @@ In the tested setup, GeoIP enrichment is performed in the Wazuh Indexer, not in 
 
 ```
 .
+├── safeline/
+│   ├── collector/
+│   └── README.md
 ├── samples/
 │   ├── homeassistant/
+│   ├── safeline/
 │   ├── synology/
 │   └── unifi/
 ├── tools/
@@ -123,6 +154,14 @@ In the tested setup, GeoIP enrichment is performed in the Wazuh Indexer, not in 
 ---
 
 # Folder purpose
+
+### safeline/
+
+Contains the production-confirmed schema-v1 SafeLine collector and its setup,
+runtime-path, pipeline, and privacy documentation. Tokens and state files are
+runtime-only and are not stored in this repository.
+
+---
 
 ### samples/
 
@@ -200,6 +239,7 @@ Examples:
 - 0100-unifi-rules.xml
 - 0200-synology-rules.xml
 - 0300-homeassistant-rules.xml
+- 0400-safeline-rules.xml
 
 Rules are intentionally organized by source domain to keep the repository readable.
 
@@ -327,6 +367,7 @@ as `100302` therefore does not also populate `if_matched_sid` history for parent
 | `unifi_cef_homeassistant_event` | `100306` repeated Home Assistant targeting |
 | `unifi_cef_synology_event` | `100307` repeated Synology targeting |
 | `unifi_ha_probe_event` | `100433` UniFi→Home Assistant attack chain |
+| `safeline_waf_tier3_event` | `100550` repeated attacks and `100551` multi-vector attacks |
 
 One `100310` rule searches the shared CEF group; separate helpers for every
 possible previous final SID are neither present nor required.
@@ -335,6 +376,11 @@ Rule `100433` uses `<global_frequency/>` because its UniFi and Home Assistant
 events can originate from different agents. Its correlation logic is confirmed
 with production `wazuh-logtest-legacy`; a real cross-agent runtime sequence was
 not executed because it could trigger Home Assistant IP banning.
+
+SafeLine correlations do not use `<global_frequency/>`: all validated SafeLine
+events originate from agent 023. Every possible final tier-3 SafeLine child,
+including correlation rules, retains `safeline_waf_tier3_event` so group history
+does not depend on one final SID.
 
 ---
 
@@ -358,6 +404,11 @@ not executed because it could trigger Home Assistant IP banning.
 | 100400 / 100410 | 10 / 14 | HA ban-component failure and brute force | Production-confirmed |
 | 100433 | 15 | UniFi probe followed by HA brute force | Production logtest-confirmed; runtime cross-agent sequence not executed |
 | 100420 / 100421 | 8 / 13 | HA auth failure outside ban component and repetition | PENDING authentic production event |
+| 100500 | 3 | SafeLine schema-v1 WAF base child of built-in `86600` | Production-confirmed |
+| 100503 / 100504 | 10 / 11 | Risk-level-3 event and blocked risk-level-3 event | Production-confirmed for risk 3/action 1 |
+| 100510 / 100520 | 12 | Blocked SQLi / XSS | Production-confirmed |
+| 100550 | 13 | Five same-source risk-level-3 attacks in 300 seconds | Production-confirmed |
+| 100551 | 14 | Same-source attacks with different `attack_type` in 300 seconds | Production-confirmed |
 
 ---
 

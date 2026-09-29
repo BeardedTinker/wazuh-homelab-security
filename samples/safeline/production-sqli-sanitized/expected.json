@@ -1,0 +1,13 @@
+{
+  "decoder": "json",
+  "fields": {
+    "data.srcip": "198.51.100.40",
+    "data.srcport": "0",
+    "data.dstport": "443",
+    "data.action": "1"
+  },
+  "rules_expected": [
+    100510
+  ],
+  "description": "SafeLine blocked a risk tier 3 SQL injection attack"
+}

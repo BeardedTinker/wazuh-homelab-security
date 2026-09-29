@@ -1,0 +1,4 @@
+{
+  "classification": "pass",
+  "summary": "Sanitized end-to-end production SafeLine XSS event using collector schema version 1."
+}

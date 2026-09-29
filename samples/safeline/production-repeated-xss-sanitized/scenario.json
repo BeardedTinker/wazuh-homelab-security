@@ -1,0 +1,4 @@
+{
+  "classification": "pass",
+  "summary": "Five sanitized production-derived tier-3 XSS events from one source trigger rule 100550."
+}
