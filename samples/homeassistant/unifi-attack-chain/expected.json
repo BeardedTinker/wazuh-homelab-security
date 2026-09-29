@@ -1,0 +1,7 @@
+{
+  "rules_expected": [
+    100132,
+    100433
+  ],
+  "description": "A WAN probe of port 8123 followed by Home Assistant brute-force activity from the same source IP must trigger attack-chain rule 100433."
+}

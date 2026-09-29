@@ -1,0 +1,5 @@
+{
+  "classification": "pending",
+  "summary": "Alternative or legacy Synology DSM Login format.",
+  "reason": "This is not the current production Connection: ... failed to sign in to [DSM] format. Do not expand the production decoder solely for this sample; replace raw.log with sanitized production-format repeated failures before enabling it."
+}

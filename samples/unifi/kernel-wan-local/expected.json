@@ -1,0 +1,12 @@
+{
+  "decoder": "unifi-wan-local",
+  "fields": {
+    "data.srcip": "203.0.113.10",
+    "data.dstip": "198.51.100.20",
+    "data.dstport": "143"
+  },
+  "rules_expected": [
+    100110
+  ],
+  "description": "A real production-framed WAN_LOCAL archive event must decode network fields and reach the WAN_LOCAL base rule."
+}

@@ -1,0 +1,7 @@
+{
+  "decoder": "homeassistant-auth-failed",
+  "rules_expected": [
+    100420
+  ],
+  "description": "Invalid authentication outside the http.ban logger must trigger rule 100420."
+}

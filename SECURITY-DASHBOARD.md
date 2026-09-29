@@ -36,7 +36,7 @@ Size: 10
 Recommended filter:
 
 ```
-rule.id:(100132 OR 100300 OR 100310)
+rule.id:(100132 OR 100300 OR 100310 OR 100410 OR 100433)
 ```
 
 This panel helps identify:
@@ -70,7 +70,7 @@ Interval: Auto
 Recommended filter:
 
 ```
-rule.id:(100132 OR 100300 OR 100310)
+rule.id:(100132 OR 100300 OR 100310 OR 100410 OR 100433)
 ```
 
 Useful for:
@@ -97,7 +97,7 @@ Bucket:
 
 ```
 Terms
-Field: dstport
+Field: data.dstport
 Size: 10
 ```
 
@@ -130,7 +130,9 @@ Field: GeoLocation.location
 Precision: 3 or 4
 ```
 
-This uses the GeoIP enrichment already present in Wazuh.
+This requires the optional **Wazuh Indexer** GeoIP pipeline from
+`wazuh/indexer/`. It is not manager-side enrichment, and `alerts.json` may not
+contain `GeoLocation.*` even when indexed documents do.
 
 The map helps visualize:
 
@@ -210,20 +212,27 @@ Example attack chain detected by the system:
 1. UniFi detects probe on port 8123
 2. Home Assistant logs repeated authentication failures
 3. Wazuh rule detects brute-force pattern
+4. Wazuh rule 100433 correlates the same source across both event streams
 
 Example rules:
 
 UniFi probe → `100132`
 
-Home Assistant auth failure → `100300`
+Home Assistant auth failure → `100400`
 
-Home Assistant brute force → `100310`
+Home Assistant brute force → `100410`
+
+Cross-source attack chain → `100433`
 
 Correlation key:
 
 ```
 data.srcip
 ```
+
+Production `wazuh-logtest-legacy` confirms this correlation logic. A real
+cross-agent runtime sequence has not been executed because the test could cause
+Home Assistant to ban the source IP.
 
 ---
 

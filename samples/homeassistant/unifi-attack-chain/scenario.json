@@ -1,0 +1,4 @@
+{
+  "classification": "pass",
+  "summary": "UniFi port 8123 probe plus Home Assistant brute force from the same source triggers rule 100433."
+}

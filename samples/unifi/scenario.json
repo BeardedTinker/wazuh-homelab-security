@@ -1,0 +1,4 @@
+{
+  "classification": "pass",
+  "summary": "WAN_LOCAL firewall events decode with unifi-wan-local and extract all network fields."
+}

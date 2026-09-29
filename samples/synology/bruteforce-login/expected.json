@@ -2,7 +2,7 @@
   "decoder": "synology-dsm-auth",
   "fields": {
     "data.srcip": "203.0.113.45",
-    "data.username": "admin"
+    "data.dstuser": "admin"
   },
   "rules_expected": [
     100210

@@ -1,0 +1,8 @@
+{
+  "decoder": "unifi-ucg-cef",
+  "rules_expected": [
+    100302,
+    100301
+  ],
+  "description": "Five SSH CEF events from one source trigger repeated IDS rule 100301."
+}

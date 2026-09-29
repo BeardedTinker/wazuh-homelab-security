@@ -1,3 +1,0 @@
-<global>
-  <geoipdb>/var/ossec/etc/GeoLite2-Country.mmdb</geoipdb>
-</global>

@@ -37,6 +37,16 @@ Recommended scenarios for this repository:
 - repeated targeting of Synology DSM
 - multi-service reconnaissance / probing
 
+Current regression status:
+
+- root `raw.log`: PASS with decoder `unifi-wan-local` and all expected network fields.
+- `kernel-wan-local/`: PASS for a real production-framed archive event.
+- `cef-homeassistant-target/`: PASS.
+- `cef-repeated-ssh/`: PASS; five SSH CEF events from one source trigger 100301.
+- `cef-reconnaissance/`: PASS; rule 100310 correlates one source IP across
+  different destination ports.
+- `wan-local-high-rate/`: PASS; twelve SSH WAN_LOCAL drops from one source trigger 100150.
+
 ---
 
 # Notes
@@ -59,7 +69,7 @@ The important part is that the log format remains realistic enough for decoder a
 Typical workflow when changing UniFi rules:
 
 1. validate decoders
-2. run sample log lines through `wazuh-logtest`
+2. run sample log lines through `wazuh-logtest-legacy`
 3. verify extracted fields such as:
    - `data.srcip`
    - `data.dstip`

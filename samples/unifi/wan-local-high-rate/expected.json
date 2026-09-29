@@ -1,0 +1,8 @@
+{
+  "decoder": "unifi-wan-local",
+  "rules_expected": [
+    100116,
+    100150
+  ],
+  "description": "Twelve WAN_LOCAL SSH drops from one source trigger high-rate rule 100150."
+}

@@ -1,0 +1,4 @@
+{
+  "classification": "pass",
+  "summary": "Two Synology failures followed by success for the same user and source IP trigger rule 100220."
+}

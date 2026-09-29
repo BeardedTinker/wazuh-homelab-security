@@ -1,0 +1,4 @@
+{
+  "classification": "pass",
+  "summary": "Rule 100310 detects one source IP probing multiple destination services within the time window."
+}

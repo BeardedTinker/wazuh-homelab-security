@@ -10,11 +10,18 @@ These samples focus on authentication behaviour such as:
 
 ---
 
-# Example scenario
+# Scenarios
 
-The `bruteforce-login` sample simulates repeated failed authentication attempts from the same IP address.
+The root `raw.log` is the current production `Connection:` format and validates
+base success/failure rules 100200 and 100201.
 
-This should trigger the Synology brute-force detection rule.
+`failure-success/` reuses sanitized production-format events and validates rule
+100220: at least two failures followed by success for the same user and IP.
+
+`bruteforce-login/` contains an alternative or legacy `DSM Login:` / `failed to
+log in via [DSM]` format. It is PENDING and must not be treated as current
+production coverage or used to justify widening the production decoder. Replace
+it with repeated sanitized `Connection:` production events before enabling it.
 
 ---
 

@@ -6,8 +6,8 @@ These samples focus on events such as:
 
 - invalid authentication
 - repeated invalid authentication
-- websocket-related suspicious activity
 - brute-force style behaviour
+- UniFi probe followed by Home Assistant brute force
 
 ---
 
@@ -19,6 +19,20 @@ This should trigger:
 
 - the base invalid authentication rule
 - the repeated brute-force detection rule
+
+The following scenarios are production-confirmed PASS cases:
+
+- `auth-bruteforce/` for rules 100400 and 100410;
+- `unifi-attack-chain/` for cross-source correlation rule 100433.
+
+Rule 100433 is confirmed with production `wazuh-logtest-legacy`. A real
+cross-agent runtime sequence was not executed because it could trigger Home
+Assistant IP banning.
+
+`auth-failed/` intentionally remains PENDING until a genuine production event
+for decoder `homeassistant-auth-failed` and rule 100420 is available. Do not
+manufacture it from the existing HTTP-ban sample; its TODO file specifies the
+transport and message details that must be preserved.
 
 ---
 

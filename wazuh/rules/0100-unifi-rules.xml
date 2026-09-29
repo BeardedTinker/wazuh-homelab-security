@@ -2,56 +2,55 @@
 
   <!-- UniFi WAN_LOCAL drops: root marker -->
   <rule id="100110" level="3">
-    <program_name>kernel</program_name>
-    <match>WAN_LOCAL-</match>
+    <decoded_as>unifi-wan-local</decoded_as>
     <description>UniFi firewall: WAN_LOCAL drop</description>
-    <group>unifi,firewall,wan_local,drop,</group>
+    <group>unifi,firewall,wan_local,drop,unifi_wan_local_event,</group>
     <options>no_email_alert</options>
   </rule>
 
   <!-- High-signal probes -->
   <rule id="100116" level="12">
     <if_sid>100110</if_sid>
-    <match>DPT=22</match>
+    <dstport type="pcre2">^22$</dstport>
     <description>UniFi WAN_LOCAL DROP: SSH probe (DPT=22)</description>
-    <group>unifi,ssh,probe,</group>
+    <group>unifi,ssh,probe,unifi_wan_local_event,</group>
   </rule>
 
   <rule id="100133" level="12">
     <if_sid>100110</if_sid>
-    <match>DPT=5002</match>
+    <dstport type="pcre2">^5002$</dstport>
     <description>UniFi WAN_LOCAL DROP: Synology DSM (5002) exposure/probe</description>
-    <group>unifi,synology,exposure,probe,</group>
+    <group>unifi,synology,exposure,probe,unifi_wan_local_event,</group>
   </rule>
 
   <rule id="100132" level="10">
     <if_sid>100110</if_sid>
-    <match>DPT=8123</match>
+    <dstport type="pcre2">^8123$</dstport>
     <description>UniFi WAN_LOCAL DROP: Home Assistant probe (DPT=8123)</description>
-    <group>unifi,probe,scan,homeassistant,</group>
+    <group>unifi,probe,scan,homeassistant,unifi_wan_local_event,unifi_ha_probe_event,</group>
     <options>no_email_alert</options>
   </rule>
 
   <!-- Background noise (still tracked, but quiet) -->
   <rule id="100119" level="5">
     <if_sid>100110</if_sid>
-    <match>DPT=80</match>
+    <dstport type="pcre2">^80$</dstport>
     <description>UniFi WAN_LOCAL HTTP probe (background noise)</description>
-    <group>unifi,http,probe,noise,</group>
+    <group>unifi,http,probe,noise,unifi_wan_local_event,</group>
     <options>no_email_alert</options>
   </rule>
 
   <rule id="100117" level="5">
     <if_sid>100110</if_sid>
-    <match>DPT=443</match>
+    <dstport type="pcre2">^443$</dstport>
     <description>UniFi WAN_LOCAL HTTPS probe (background noise)</description>
-    <group>unifi,https,probe,noise,</group>
+    <group>unifi,https,probe,noise,unifi_wan_local_event,</group>
     <options>no_email_alert</options>
   </rule>
 
   <!-- Correlation: many WAN_LOCAL drops from same source -->
   <rule id="100150" level="13" frequency="12" timeframe="120">
-    <if_matched_sid>100110</if_matched_sid>
+    <if_matched_group>unifi_wan_local_event</if_matched_group>
     <same_srcip/>
     <description>UniFi WAN_LOCAL: high-rate drops from same SRC (possible scan)</description>
     <group>unifi,scan,rate,possible,</group>
@@ -65,51 +64,41 @@
   <rule id="100300" level="5">
     <decoded_as>unifi-ucg-cef</decoded_as>
     <description>UniFi IDS/IPS event detected</description>
-    <group>unifi,ids,ips,</group>
-  </rule>
-
-  <!-- Repeated IDS events from same source over a longer window -->
-  <rule id="100301" level="13" frequency="5" timeframe="600">
-    <if_matched_sid>100300</if_matched_sid>
-    <same_srcip/>
-    <description>Repeated UniFi IDS/IPS events from same source within 10 minutes (possible scan or sustained probing)</description>
-    <group>unifi,ids,scan_detection,repeated_events,critical,</group>
+    <group>unifi,ids,ips,unifi_cef_ids_event,</group>
   </rule>
 
   <!-- IDS targeting SSH -->
   <rule id="100302" level="13">
     <if_sid>100300</if_sid>
-    <match>dpt=22</match>
+    <dstport type="pcre2">^22$</dstport>
     <description>UniFi IDS event targeting SSH management service</description>
-    <group>unifi,ids,critical_service,ssh,targeted_attack,</group>
+    <group>unifi,ids,critical_service,ssh,targeted_attack,unifi_cef_ids_event,</group>
   </rule>
 
   <!-- IDS targeting Home Assistant -->
   <rule id="100303" level="14">
     <if_sid>100300</if_sid>
-    <match>dpt=8123</match>
+    <dstport type="pcre2">^8123$</dstport>
     <description>UniFi IDS event targeting Home Assistant</description>
-    <group>unifi,ids,homeassistant,targeted_attack,critical,</group>
+    <group>unifi,ids,homeassistant,targeted_attack,critical,unifi_cef_ids_event,unifi_cef_homeassistant_event,</group>
   </rule>
 
   <!-- Repeated IDS targeting of Home Assistant -->
   <rule id="100306" level="15" frequency="4" timeframe="600">
-    <if_matched_sid>100303</if_matched_sid>
+    <if_matched_group>unifi_cef_homeassistant_event</if_matched_group>
     <description>Repeated UniFi IDS attacks targeting Home Assistant within 10 minutes</description>
     <group>unifi,ids,homeassistant,targeted_attack,repeated,critical,</group>
   </rule>
 
-  <!-- IDS targeting Synology DSM -->
   <rule id="100304" level="14">
     <if_sid>100300</if_sid>
-    <match>dpt=5002</match>
+    <dstport type="pcre2">^5002$</dstport>
     <description>UniFi IDS event targeting Synology DSM</description>
-    <group>unifi,ids,synology,targeted_attack,critical,</group>
+    <group>unifi,ids,synology,targeted_attack,critical,unifi_cef_ids_event,unifi_cef_synology_event,</group>
   </rule>
 
-  <!-- Repeated IDS targeting of Synology DSM -->
   <rule id="100307" level="15" frequency="4" timeframe="600">
-    <if_matched_sid>100304</if_matched_sid>
+    <if_matched_group>unifi_cef_synology_event</if_matched_group>
     <description>Repeated UniFi IDS attacks targeting Synology DSM within 10 minutes</description>
     <group>unifi,ids,synology,targeted_attack,repeated,critical,</group>
   </rule>
@@ -117,15 +106,26 @@
   <!-- IDS targeting HTTPS -->
   <rule id="100305" level="13">
     <if_sid>100300</if_sid>
-    <match>dpt=443</match>
+    <dstport type="pcre2">^443$</dstport>
     <description>UniFi IDS event targeting HTTPS management service</description>
-    <group>unifi,ids,critical_service,https,targeted_attack,</group>
+    <group>unifi,ids,critical_service,https,targeted_attack,unifi_cef_ids_event,</group>
   </rule>
 
-  <!-- Multi-service probing / reconnaissance detection -->
-  <rule id="100310" level="15" frequency="5" timeframe="600">
-    <if_matched_sid>100300</if_matched_sid>
-    <description>Possible reconnaissance: multiple services probed from same source within 10 minutes</description>
+  <!-- Repeated IDS events from same source over a longer window -->
+  <rule id="100301" level="13" frequency="5" timeframe="600">
+    <if_matched_group>unifi_cef_ids_event</if_matched_group>
+    <same_srcip/>
+    <description>Repeated UniFi IDS/IPS events from same source within 10 minutes (possible scan or sustained probing)</description>
+    <group>unifi,ids,scan_detection,repeated_events,critical,</group>
+  </rule>
+
+  <!-- Same-source IDS events across at least two destination ports. -->
+  <rule id="100310" level="15" frequency="2" timeframe="600">
+    <if_sid>100300</if_sid>
+    <if_matched_group>unifi_cef_ids_event</if_matched_group>
+    <same_srcip/>
+    <different_dstport/>
+    <description>Possible reconnaissance: same source targeted multiple destination ports within 10 minutes</description>
     <group>unifi,ids,reconnaissance,port_scan,critical,</group>
   </rule>
 

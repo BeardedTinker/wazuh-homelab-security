@@ -1,51 +1,52 @@
 <group name="local,homeassistant,">
 
-  <rule id="100319" level="0">
-    <match>moonraker_api.websockets.websocketclient</match>
+  <!-- Noise ignore -->
+  <rule id="100419" level="0">
+    <program_name type="pcre2">^homeassistant$</program_name>
+    <regex type="pcre2">^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}(?:\.\d+)?\s+ERROR\s+\([^)]+\)\s+\[moonraker_api\.websockets\.websocketclient\]\s+Websocket connection (?:error:|timed out(?:\s|$))</regex>
     <description>Ignore Moonraker websocket reconnect when printer offline</description>
     <options>no_log</options>
   </rule>
 
-  <rule id="100300" level="10">
-    <location>journald</location>
+  <!-- BAN (decoder gives srcip) -->
+  <rule id="100400" level="10">
     <decoded_as>homeassistant-http-ban</decoded_as>
     <description>Home Assistant invalid authentication (ban component)</description>
-    <group>auth,failed,scan,</group>
+    <group>homeassistant,auth,failed,scan,</group>
     <options>no_email_alert</options>
   </rule>
 
-  <rule id="100310" level="14" frequency="5" timeframe="300">
-    <if_matched_sid>100300</if_matched_sid>
+  <!-- Brute force on ban -->
+  <rule id="100410" level="14" frequency="5" timeframe="300">
+    <if_matched_sid>100400</if_matched_sid>
     <same_srcip/>
     <description>Home Assistant brute force suspected (same IP)</description>
-    <group>auth,bruteforce,critical,</group>
+    <group>homeassistant,auth,bruteforce,critical,</group>
   </rule>
 
-  <rule id="100320" level="8">
+  <!-- Real correlation: UniFi probe 8123 + HA brute force -->
+  <rule id="100433" level="15" timeframe="900">
+    <if_sid>100410</if_sid>
+    <if_matched_group>unifi_ha_probe_event</if_matched_group>
+    <same_srcip/>
+    <global_frequency/>
+    <description>HA attack chain: WAN probe on 8123 followed by HA brute force (same source IP)</description>
+    <group>homeassistant,probe,correlation,bruteforce,critical,</group>
+  </rule>
+
+  <!-- Auth failures outside ban component -->
+  <rule id="100420" level="8">
     <decoded_as>homeassistant-auth-failed</decoded_as>
     <description>Home Assistant invalid authentication (http/auth)</description>
-    <group>auth,failed,</group>
+    <group>homeassistant,auth,failed,</group>
     <options>no_email_alert</options>
   </rule>
 
-  <rule id="100321" level="13" frequency="8" timeframe="300">
-    <if_matched_sid>100320</if_matched_sid>
+  <rule id="100421" level="13" frequency="8" timeframe="300">
+    <if_matched_sid>100420</if_matched_sid>
     <same_srcip/>
     <description>Home Assistant repeated invalid authentication (same IP)</description>
-    <group>auth,bruteforce,</group>
-  </rule>
-
-  <rule id="100340" level="9">
-    <decoded_as>homeassistant-ws-suspicious</decoded_as>
-    <description>Home Assistant websocket suspicious activity</description>
-    <group>websocket,suspicious,</group>
-  </rule>
-
-  <rule id="100341" level="12" frequency="6" timeframe="300">
-    <if_matched_sid>100340</if_matched_sid>
-    <same_srcip/>
-    <description>Home Assistant websocket suspicious activity repeated (same IP)</description>
-    <group>websocket,suspicious,scan,</group>
+    <group>homeassistant,auth,bruteforce,</group>
   </rule>
 
 </group>

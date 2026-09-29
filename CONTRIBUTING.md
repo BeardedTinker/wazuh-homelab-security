@@ -32,8 +32,10 @@ Please keep contributions aligned with these goals:
 
 ```
 samples/
+tools/regression/
 tools/sanitize/
 wazuh/decoders/
+wazuh/manager/
 wazuh/rules/
 wazuh/ossec.conf.snippets/
 ```
@@ -53,17 +55,21 @@ Examples:
 Please do the following:
 
 1. validate XML syntax
-2. test with `wazuh-logtest`
+2. test with `wazuh-logtest-legacy` on Wazuh 4.14.8
 3. verify expected field extraction
 4. verify rule behavior on repeated events if relevant
 5. sanitize logs before publishing
 6. update documentation when needed
+7. run `python3 tools/regression/run_samples.py`
 
 Recommended commands:
 
 ```
 sudo /var/ossec/bin/wazuh-analysisd -t
-sudo /var/ossec/bin/wazuh-logtest
+sudo /var/ossec/bin/wazuh-authd -t
+sudo /var/ossec/bin/wazuh-modulesd -t
+sudo /var/ossec/bin/wazuh-logtest-legacy
+sudo python3 tools/regression/run_samples.py
 ```
 
 ---
@@ -77,6 +83,8 @@ When adding sample logs:
 - remove serial numbers, IDs, tokens, and internal URLs
 - keep samples short but representative
 - add matching `expected.json`
+- use `scenario.json` to distinguish `pass`, `known_fail`, and `pending`
+- never replace a missing authentic event with a synthetic one just to pass CI
 
 A good sample set should make it obvious:
 
@@ -99,7 +107,8 @@ When adding or changing rules:
 
 Important:
 
-Cross-source correlation is often better implemented in dashboard or monitor logic than as a local Wazuh rule.
+Cross-source correlation must be validated against Wazuh history scope and
+final-SID behavior; use `<global_frequency/>` only when cross-agent matching is intentional.
 
 ---
 
@@ -108,7 +117,7 @@ Cross-source correlation is often better implemented in dashboard or monitor log
 Recommended commit style:
 
 ```
-feat: add Home Assistant websocket suspicious samples
+feat: add Home Assistant authentication samples
 fix: improve Home Assistant srcip extraction
 docs: expand README with dashboard setup
 chore: sanitize sample logs

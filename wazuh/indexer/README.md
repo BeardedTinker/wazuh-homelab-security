@@ -43,21 +43,11 @@ Example:
 
 `GeoLite2-Country.mmdb`
 
-Place the file in a location accessible to Wazuh Indexer.
+Place the file in the Indexer ingest-geoip directory:
 
-Typical locations:
-
-```
+```text
 /usr/share/wazuh-indexer/modules/ingest-geoip/
 ```
-
-or
-
-```
-/var/ossec/etc/
-```
-
-depending on your deployment.
 
 In the tested homelab setup, the database file was available on the same host as Wazuh Indexer and used by the ingest pipeline.
 
@@ -65,10 +55,11 @@ In the tested homelab setup, the database file was available on the same host as
 
 # Create the pipeline
 
-Example command:
+Use authenticated Indexer credentials from environment variables; never put
+them in this repository or shell history:
 
 ```
-curl -k -u admin:admin -X PUT \
+curl --user "$INDEXER_USER:$INDEXER_PASSWORD" -X PUT \
 "https://localhost:9200/_ingest/pipeline/wazuh-geoip" \
 -H "Content-Type: application/json" \
 -d @geoip-pipeline.json
@@ -89,7 +80,7 @@ Attach the pipeline to the Wazuh alerts index template so that alert documents a
 Example:
 
 ```
-curl -k -u admin:admin -X PUT "https://localhost:9200/_index_template/wazuh-alerts" \
+curl --user "$INDEXER_USER:$INDEXER_PASSWORD" -X PUT "https://localhost:9200/_index_template/wazuh-alerts" \
 -H "Content-Type: application/json" -d '
 {
   "index_patterns": ["wazuh-alerts-*"],
@@ -123,7 +114,7 @@ GeoLocation.location
 Example search:
 
 ```
-curl -k -u admin:admin -X POST "https://localhost:9200/wazuh-alerts-*/_search" \
+curl --user "$INDEXER_USER:$INDEXER_PASSWORD" -X POST "https://localhost:9200/wazuh-alerts-*/_search" \
 -H "Content-Type: application/json" -d '
 {
   "size": 1,
@@ -136,20 +127,20 @@ curl -k -u admin:admin -X POST "https://localhost:9200/wazuh-alerts-*/_search" \
   ],
   "query": {
     "term": {
-      "data.srcip": "45.146.164.12"
+      "data.srcip": "198.51.100.12"
     }
   }
 }'
 ```
 
-Expected result fragment:
+Expected result shape (values depend on the test address and database):
 
 ```
 "GeoLocation": {
-  "country_name": "Russia",
+  "country_name": "Example country",
   "location": {
-    "lon": 37.6068,
-    "lat": 55.7386
+    "lon": 0.0,
+    "lat": 0.0
   }
 }
 ```
@@ -198,4 +189,7 @@ These fields should be used directly in visualizations and aggregations.
 
 - GeoIP enrichment in this homelab setup is performed in the **Wazuh Indexer**, not in the Wazuh manager alert JSON.
 - This means `alerts.json` may not contain `GeoLocation`, while indexed documents in `wazuh-alerts-*` do.
-- Manager-side GeoIP configuration may still be useful in some environments, but support depends on the Wazuh manager build.
+- Stock Wazuh 4.14.8 manager GeoIP uses legacy libGeoIP data and does not consume the GeoLite2 `.mmdb` pipeline database.
+- The production deployment shows Indexer-side `GeoLocation.*` enrichment, but
+  the exact live template and credential configuration are intentionally not
+  exported into this repository.

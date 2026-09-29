@@ -1,10 +1,10 @@
 [
   {
     "contains": "[WAN_LOCAL-D-",
-    "decoder": "unifi-ucg-firewall",
+    "decoder": "unifi-wan-local",
     "fields": {
       "srcip": "203.0.113.10",
-      "dstip": "233.89.188.1",
+      "dstip": "192.0.2.1",
       "protocol": "UDP",
       "srcport": "57180",
       "dstport": "10001"
@@ -12,14 +12,14 @@
   },
   {
     "contains": "PROTO=TCP",
-    "decoder": "unifi-ucg-firewall",
+    "decoder": "unifi-wan-local",
     "fields": {
       "protocol": "TCP"
     }
   },
   {
     "contains": "SYN",
-    "decoder": "unifi-ucg-firewall",
+    "decoder": "unifi-wan-local",
     "fields": {
       "protocol": "TCP"
     }

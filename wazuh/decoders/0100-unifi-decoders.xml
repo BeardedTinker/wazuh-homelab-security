@@ -1,22 +1,3 @@
-<!-- UniFi firewall -->
-<decoder name="unifi-ucg-firewall">
-  <prematch>SRC=</prematch>
-  <regex>SRC=(\S+) DST=(\S+).+PROTO=(\S+) SPT=(\d+) DPT=(\d+)</regex>
-  <order>srcip,dstip,protocol,srcport,dstport</order>
-</decoder>
-
-<decoder name="unifi-ucg-firewall-nports">
-  <prematch>SRC=</prematch>
-  <regex>SRC=(\S+) DST=(\S+) .* PROTO=(\S+)</regex>
-  <order>srcip,dstip,protocol</order>
-</decoder>
-
-<decoder name="unifi-ucg-firewall-ha">
-  <parent>unifi-ucg-firewall</parent>
-  <regex>DPT=(8123)</regex>
-  <order>dstport</order>
-</decoder>
-
 <!-- UniFi CEF -->
 <decoder name="unifi-ucg-cef">
   <program_name>CEF</program_name>
@@ -25,5 +6,9 @@
   <order>srcip,dstip,srcport,dstport,protocol,action</order>
 </decoder>
 
-<!-- UniFi / gateway kernel firewall line (WAN_LOCAL- ...) -->
-
+<!-- UniFi raw WAN_LOCAL firewall events from /var/log/unifi.log archives -->
+<decoder name="unifi-wan-local">
+  <prematch type="pcre2">\[WAN_LOCAL-D-[0-9]+\]\s+DESCR="\[WAN_LOCAL\]</prematch>
+  <regex type="pcre2">SRC=([0-9]{1,3}(?:\.[0-9]{1,3}){3})\s+DST=([0-9]{1,3}(?:\.[0-9]{1,3}){3}).*?\s+PROTO=([A-Za-z0-9_]+)\s+SPT=([0-9]{1,5})\s+DPT=([0-9]{1,5})(?:\s|$)</regex>
+  <order>srcip,dstip,protocol,srcport,dstport</order>
+</decoder>

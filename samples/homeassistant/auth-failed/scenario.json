@@ -1,0 +1,5 @@
+{
+  "classification": "pending",
+  "summary": "Home Assistant invalid authentication outside homeassistant.components.http.ban.",
+  "reason": "A genuine production event handled by homeassistant-auth-failed is required."
+}

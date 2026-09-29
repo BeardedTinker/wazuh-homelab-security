@@ -1,0 +1,4 @@
+{
+  "classification": "pass",
+  "summary": "Repeated Home Assistant HTTP ban authentication failures from one IP."
+}

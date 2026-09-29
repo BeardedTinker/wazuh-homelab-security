@@ -1,0 +1,12 @@
+{
+  "decoder": "synology-dsm-auth",
+  "fields": {
+    "data.srcip": "203.0.113.37",
+    "data.dstuser": "user_admin"
+  },
+  "rules_expected": [
+    100201,
+    100220
+  ],
+  "description": "A successful DSM login after at least two failures from the same user and IP must trigger the compromise-correlation rule."
+}
