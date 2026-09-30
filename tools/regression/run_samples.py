@@ -22,6 +22,7 @@ FIELD_NAMES = (
     "action",
     "dstuser",
     "srcuser",
+    "storage_device",
 )
 
 
@@ -148,7 +149,10 @@ def compare_object(events: list[EventResult], expected: dict[str, Any]) -> list[
     fields = normalized_fields(expected.get("fields", {}))
     for key, value in fields.items():
         if not events or any(event.fields.get(key) != value for event in events):
-            actual = sorted({event.fields.get(key) for event in events})
+            actual = sorted(
+                {event.fields.get(key) for event in events},
+                key=lambda item: "" if item is None else str(item),
+            )
             failures.append(f"field {key} expected {value!r}, got {actual!r}")
 
     actual_rules = {event.rule for event in events if event.rule is not None}

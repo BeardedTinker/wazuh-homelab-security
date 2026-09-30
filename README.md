@@ -3,12 +3,13 @@
 Detection rules and decoders used in the BeardedTinker homelab SIEM setup.
 Practical Wazuh rules, decoders, sample logs, and dashboard building blocks for a real homelab setup.
 
-This repository focuses on four common homelab telemetry sources:
+This repository focuses on five common homelab telemetry sources:
 
 - UniFi firewall / IDS / IPS events
 - Synology DSM authentication events
 - Home Assistant security-relevant logs via Wazuh Agent + journald
 - SafeLine WAF attack events via a schema-versioned JSON collector
+- UGREEN UGOS Pro authentication and storage events via a narrow Fluent Bit pipeline
 
 The goal is simple: detect real security signals in a homelab without introducing enterprise-only complexity.
 
@@ -24,7 +25,7 @@ The current baseline was exported from and validated on **Wazuh 4.14.8**.
 | Known limitation | The behavior is understood and intentionally retained. |
 | PENDING | No claim is made until an authentic production event is available. |
 
-Current regression status: **14 PASS, 0 FAIL, 2 PENDING, 0 XPASS**.
+Current regression status: **18 PASS, 0 FAIL, 2 PENDING, 0 XPASS**.
 The two PENDING scenarios are `homeassistant/auth-failed` and
 `synology/bruteforce-login`; synthetic events must not be used to close them.
 
@@ -32,6 +33,7 @@ The two PENDING scenarios are `homeassistant/auth-failed` and
 
 ```text
 UniFi / Synology ──UDP/514──> rsyslogd ──> /var/log/*.log ──> Wazuh localfile
+UGREEN ──Fluent Bit RFC3164 UDP/514──> rsyslogd ──> /var/log/ugreen.log
 Home Assistant ──agent secure TCP/1514──────────────────────> Wazuh remoted
 SafeLine Open API ──schema-v1 collector──> attacks.json ──> Wazuh Agent 023
 New agents ──password-protected TCP/1515────────────────────> Wazuh authd
@@ -113,6 +115,23 @@ runtime paths, privacy behavior, and pipeline.
 
 ---
 
+## UGREEN UGOS Pro
+
+Production deployment and regression coverage on Wazuh 4.14.8 includes:
+
+- UGOS web login success and failure (`100600`, `100601`)
+- repeated same-source web failures (`100610`)
+- same-source web success after a failure (`100611`)
+- root password changes at a deliberately low severity (`100620`)
+- storage I/O errors and repeated same-device correlation (`100630`, `100631`)
+- built-in Wazuh SSH and account rules `5715`, `5901`, and `5902`
+
+The collector forwards only allowlisted `auth.log`, `kern.log`, and
+`_COMM=log_serv` events. See `ugreen/README.md` for the pinned Fluent Bit
+example, rsyslog routing, retention, and deployment constraints.
+
+---
+
 ## GeoIP enrichment
 
 This repository also includes an optional Wazuh Indexer GeoIP pipeline for enriching alerts with geographic context.
@@ -135,10 +154,15 @@ In the tested setup, GeoIP enrichment is performed in the Wazuh Indexer, not in 
 ├── safeline/
 │   ├── collector/
 │   └── README.md
+├── ugreen/
+│   ├── fluent-bit/
+│   ├── rsyslog/
+│   └── README.md
 ├── samples/
 │   ├── homeassistant/
 │   ├── safeline/
 │   ├── synology/
+│   ├── ugreen/
 │   └── unifi/
 ├── tools/
 │   ├── regression/
@@ -173,6 +197,12 @@ Each source folder typically contains:
 - expected.json
 
 This allows regression testing of decoders and rules.
+
+### ugreen/
+
+Contains the sanitized UGOS Pro transport example: pinned Fluent Bit Compose,
+strict source allowlists, RFC3164 output, rsyslog source routing, log rotation,
+and end-to-end installation notes.
 
 ---
 
@@ -240,6 +270,7 @@ Examples:
 - 0200-synology-rules.xml
 - 0300-homeassistant-rules.xml
 - 0400-safeline-rules.xml
+- 0500-ugreen-rules.xml
 
 Rules are intentionally organized by source domain to keep the repository readable.
 
@@ -270,10 +301,12 @@ Examples include:
 - UniFi file-based log ingestion
 - Synology log ingestion
 - journald ingestion for Home Assistant
+- UGREEN file-based log ingestion
 
-In the tested deployment, `rsyslogd` owns UDP/514 and writes UniFi events to
-`/var/log/unifi.log`; Wazuh reads that file through `<localfile>`. Stock Wazuh
-4.14.8 manager-side GeoIP expects legacy libGeoIP data and is not configured.
+In the tested deployment, `rsyslogd` owns UDP/514 and writes UniFi, Synology,
+and UGREEN events to source-specific files; Wazuh reads them through
+`<localfile>`. Stock Wazuh 4.14.8 manager-side GeoIP expects legacy libGeoIP
+data and is not configured.
 
 ---
 
@@ -300,8 +333,8 @@ Recommended workflow when applying these rules:
 4. Merge the required `ossec.conf.snippets/` sections exactly once.
 5. Store the enrollment password in `/var/ossec/etc/authd.pass`; never put it
    in Git or inline XML.
-6. Configure rsyslog to write UniFi and Synology events to the paths consumed
-   by the `<localfile>` blocks.
+6. Configure rsyslog to write UniFi, Synology, and UGREEN events to the paths
+   consumed by the `<localfile>` blocks.
 7. Optionally configure the Indexer GeoIP pipeline.
 8. Validate XML and all Wazuh daemons before restarting.
 9. Run the complete regression suite and verify indexed documents.
@@ -409,6 +442,11 @@ does not depend on one final SID.
 | 100510 / 100520 | 12 | Blocked SQLi / XSS | Production-confirmed |
 | 100550 | 13 | Five same-source risk-level-3 attacks in 300 seconds | Production-confirmed |
 | 100551 | 14 | Same-source attacks with different `attack_type` in 300 seconds | Production-confirmed |
+| 100600 / 100601 | 3 / 5 | UGOS web login success/failure | Production-confirmed |
+| 100610 | 12 | Five same-source UGOS web failures in five minutes | Production logtest-confirmed |
+| 100611 | 10 | UGOS web success after same-source failure | Production logtest-confirmed |
+| 100620 | 5 | UGREEN root password change | Production-confirmed; low severity is intentional |
+| 100630 / 100631 | 10 / 13 | UGREEN storage I/O error and repeated same-device correlation | Production logtest-confirmed |
 
 ---
 
@@ -558,6 +596,8 @@ Custom rules in this repository use a dedicated rule ID range to avoid conflicts
 100200–100299   Synology DSM authentication detections
 100300–100399   UniFi IDS / IPS detections
 100400–100499   Home Assistant detections
+100500–100599   SafeLine WAF detections
+100600–100699   UGREEN UGOS Pro detections
 ```
 
 If you extend this repository, it is recommended to keep new rules within the same logical ranges.

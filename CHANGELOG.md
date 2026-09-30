@@ -23,6 +23,8 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
   100550, and 100551
 - production-confirmed SafeLine schema-v1 collector and installation/pipeline
   documentation
+- production-aligned UGREEN UGOS Pro transport, decoders, rules, and
+  sanitized regression scenarios for web authentication and storage I/O errors
 
 ### Changed
 - repository structure aligned with source-based rulesets
@@ -33,6 +35,7 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 - sanitized all publishable samples to RFC 5737 TEST-NET addressing
 - marked the SafeLine leaf and correlation rules production-confirmed after
   end-to-end manager validation
+- extended the regression parser with the UGREEN `storage_device` dynamic field
 
 ### Removed
 - broad Home Assistant websocket detection that classified normal traffic as suspicious

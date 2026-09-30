@@ -1,0 +1,5 @@
+<!-- UGREEN syslog file written by rsyslogd. Wazuh must not bind UDP/514. -->
+<localfile>
+  <log_format>syslog</log_format>
+  <location>/var/log/ugreen.log</location>
+</localfile>

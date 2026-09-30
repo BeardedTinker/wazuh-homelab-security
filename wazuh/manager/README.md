@@ -18,9 +18,10 @@ custom runtime override.
 
 ## Syslog ingress
 
-`rsyslogd`, not Wazuh `remoted`, owns UDP/514. It writes UniFi and Synology
-events to `/var/log/unifi.log` and `/var/log/synology.log`; Wazuh reads those
-files with `<localfile>` blocks. Do not add a second Wazuh UDP/514 listener.
+`rsyslogd`, not Wazuh `remoted`, owns UDP/514. It writes UniFi, Synology, and
+UGREEN events to `/var/log/unifi.log`, `/var/log/synology.log`, and
+`/var/log/ugreen.log`; Wazuh reads those files with `<localfile>` blocks. Do not
+add a second Wazuh UDP/514 listener.
 
 ## Validation
 

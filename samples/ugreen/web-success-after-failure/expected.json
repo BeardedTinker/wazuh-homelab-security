@@ -1,0 +1,10 @@
+{
+  "fields": {
+    "data.srcip": "203.0.113.31"
+  },
+  "rules_expected": [
+    100601,
+    100611
+  ],
+  "description": "A same-source UGOS success after a failure triggers rule 100611."
+}

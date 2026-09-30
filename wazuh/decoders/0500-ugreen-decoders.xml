@@ -1,0 +1,30 @@
+<!-- UGREEN UGOS Pro web authentication forwarded from log_serv journald. -->
+<decoder name="ugreen-web-login-success">
+  <program_name>log_serv</program_name>
+  <prematch type="pcre2">insertLog login User \[[^\]]+\] from \[[0-9.]+\] logged in successfully</prematch>
+  <regex type="pcre2">insertLog login User \[([^\]]+)\] from \[([0-9]{1,3}(?:\.[0-9]{1,3}){3})\] logged in successfully</regex>
+  <order>dstuser,srcip</order>
+</decoder>
+
+<!-- Failed UGOS login records may omit the username. Correlate by source IP. -->
+<decoder name="ugreen-web-login-failure">
+  <program_name>log_serv</program_name>
+  <prematch type="pcre2">insertLog login User \[[^\]]*\] from \[[0-9.]+\] failed to log in due to</prematch>
+  <regex type="pcre2">insertLog login User \[[^\]]*\] from \[([0-9]{1,3}(?:\.[0-9]{1,3}){3})\] failed to log in due to</regex>
+  <order>srcip</order>
+</decoder>
+
+<!-- Retain a constrained fallback for new UGOS login wording without alerting. -->
+<decoder name="ugreen-web-login">
+  <program_name>log_serv</program_name>
+  <prematch type="pcre2">insertLog login User \[</prematch>
+</decoder>
+
+<!-- Kernel storage errors forwarded from kern.log. -->
+<decoder name="ugreen-storage-io">
+  <use_own_name>true</use_own_name>
+  <parent>kernel</parent>
+  <prematch>I/O error, dev </prematch>
+  <regex type="pcre2">I/O error, dev ([A-Za-z0-9._/-]+),</regex>
+  <order>storage_device</order>
+</decoder>

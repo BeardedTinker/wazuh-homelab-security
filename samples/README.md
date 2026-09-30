@@ -22,6 +22,7 @@ samples/
 ├── homeassistant/
 ├── safeline/
 ├── synology/
+├── ugreen/
 └── unifi/
 ```
 
@@ -76,7 +77,7 @@ Known failures must not be made green by weakening `expected.json`. See
 Current audited result on Wazuh 4.14.8:
 
 ```text
-PASS=14, FAIL=0, PENDING=2, XPASS=0
+PASS=18, FAIL=0, PENDING=2, XPASS=0
 ```
 
 The PENDING scenarios are intentionally limited to:
