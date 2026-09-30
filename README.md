@@ -581,9 +581,7 @@ Before publishing logs always sanitize:
 
 # License
 
-Choose any license appropriate for sharing detection logic.
-
-Permissive licenses are typically easiest for reuse.
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
