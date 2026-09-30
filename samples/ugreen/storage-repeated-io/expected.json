@@ -1,0 +1,11 @@
+{
+  "decoder": "kernel",
+  "fields": {
+    "data.storage_device": "sdz"
+  },
+  "rules_expected": [
+    100630,
+    100631
+  ],
+  "description": "Three same-device storage I/O errors trigger rule 100631."
+}

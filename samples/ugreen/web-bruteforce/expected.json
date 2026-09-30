@@ -1,0 +1,11 @@
+{
+  "decoder": "ugreen-web-login-failure",
+  "fields": {
+    "data.srcip": "198.51.100.27"
+  },
+  "rules_expected": [
+    100601,
+    100610
+  ],
+  "description": "Five same-source UGOS web login failures trigger rule 100610."
+}

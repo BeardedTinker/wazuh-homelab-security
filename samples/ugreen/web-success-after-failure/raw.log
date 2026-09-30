@@ -1,0 +1,2 @@
+Sep 30 16:42:01 ugreen-nas log_serv[1234]: 2026-09-30 16:42:01 insertLog login User [] from [203.0.113.31] failed to log in due to incorrect username or password.
+Sep 30 16:42:15 ugreen-nas log_serv[1234]: 2026-09-30 16:42:15 insertLog login User [user_operator] from [203.0.113.31] logged in successfully via password.

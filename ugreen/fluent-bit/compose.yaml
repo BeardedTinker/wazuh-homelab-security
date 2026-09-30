@@ -1,0 +1,24 @@
+services:
+  fluent-bit-siem:
+    image: fluent/fluent-bit:5.1.2@sha256:d792375ca8e53be72fc25716c28f291f32c6fc6f4f31d12d0d14bc78cefe9226
+    container_name: fluent-bit-siem
+    restart: unless-stopped
+    user: "65534:65534"
+    group_add:
+      - "10"
+      - "999"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - ./parsers.conf:/fluent-bit/etc/parsers.conf:ro
+      - ./state:/fluent-bit/state
+      - /var/log:/host/var/log:ro
+      - /var/log/journal:/var/log/journal:ro
+      - /run/log/journal:/run/log/journal:ro
+      - /etc/machine-id:/etc/machine-id:ro
+    tmpfs:
+      - /tmp:size=16m,mode=1777

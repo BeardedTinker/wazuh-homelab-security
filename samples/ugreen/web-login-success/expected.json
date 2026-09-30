@@ -1,0 +1,11 @@
+{
+  "decoder": "ugreen-web-login-success",
+  "fields": {
+    "data.srcip": "192.0.2.44",
+    "data.dstuser": "user_admin"
+  },
+  "rules_expected": [
+    100600
+  ],
+  "description": "A sanitized UGOS web login success triggers rule 100600."
+}

@@ -1,0 +1,3 @@
+Sep 30 16:43:01 ugreen-nas kernel: I/O error, dev sdz, sector 1000000 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+Sep 30 16:43:11 ugreen-nas kernel: I/O error, dev sdz, sector 1000008 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+Sep 30 16:43:21 ugreen-nas kernel: I/O error, dev sdz, sector 1000016 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
