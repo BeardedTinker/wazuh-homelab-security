@@ -15,6 +15,22 @@ The goal is simple: detect real security signals in a homelab without introducin
 
 This repository reflects a real working homelab deployment.
 
+## Project scope and maturity
+
+The primary product is the Wazuh detection core: decoders, rules, collectors,
+sanitized samples, and regression tooling. Indexer enrichment and presentation
+layers are optional. A supported Home Assistant polling or dashboard adapter is
+not currently published in this repository.
+
+This is an early project with an audited Wazuh 4.14.8 baseline. Pin a tagged
+release when one is available; until then, review changes before deploying from
+`main` and always run Wazuh daemon validation before restart.
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for project boundaries and compatibility
+promises, and [ROADMAP.md](ROADMAP.md) for the documentation, release, and
+optional Home Assistant adapter gates. Use [INSTALL.md](INSTALL.md) for the
+source-by-source backup, validation, restart, and rollback workflow.
+
 ## Audited production baseline
 
 The current baseline was exported from and validated on **Wazuh 4.14.8**.
