@@ -8,6 +8,11 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 
 ## [Unreleased]
 
+### Changed
+- made a constrained read-only HTTPS proxy the recommended Home Assistant
+  adapter boundary and marked direct Indexer access as a non-recommended,
+  already-segmented deployment exception
+
 ---
 
 ## [0.2.0-rc.2] - 2026-10-08
