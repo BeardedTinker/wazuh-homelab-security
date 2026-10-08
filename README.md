@@ -97,6 +97,10 @@ Detection ideas currently implemented:
 - repeated login failures from the same IP
 - success after multiple failures from the same IP and user
 
+See [`synology/README.md`](synology/README.md) for the supported DSM message
+contract, Log Center forwarding, installation, validation, and current PENDING
+coverage.
+
 ---
 
 ## Home Assistant
@@ -179,6 +183,8 @@ In the tested setup, GeoIP enrichment is performed in the Wazuh Indexer, not in 
 │   ├── rsyslog/
 │   └── README.md
 ├── unifi/
+│   └── README.md
+├── synology/
 │   └── README.md
 ├── samples/
 │   ├── homeassistant/
