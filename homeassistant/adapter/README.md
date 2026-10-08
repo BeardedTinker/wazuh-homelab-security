@@ -9,11 +9,22 @@ reads already indexed alerts and presents counts and recent security events.
 
 ## Deployment boundary
 
-The YAML example uses Home Assistant's shared REST sensor platform against
-either:
+The YAML example uses Home Assistant's shared REST sensor platform. The
+recommended deployment places a constrained read-only HTTPS proxy between Home
+Assistant and the Wazuh Indexer. The proxy should expose only the required
+search endpoint and methods.
 
-- a Wazuh Indexer endpoint with a least-privilege read-only account, or
-- a read-only HTTPS proxy that exposes the required search endpoint.
+Direct Home Assistant access to the Indexer is **not recommended** because it
+increases the attack surface of a system that stores security evidence. A
+least-privilege account reduces credential misuse, but it does not remove the
+risk of an Indexer or authorization-layer vulnerability. Never expose port
+`9200` to the internet or open it to a general-purpose LAN solely for this
+adapter.
+
+Direct access is an advanced exception only when the Indexer already serves an
+isolated service or management network with source-restricted firewall rules,
+trusted TLS, and a least-privilege read-only account. Do not weaken an existing
+loopback-only or proxy-only Indexer deployment to use this example.
 
 The complete search URL, including the configurable index pattern, will be held
 in a Home Assistant secret. Usernames and passwords will also remain in secrets.
@@ -28,7 +39,7 @@ the package, fixtures, dashboard export, or documentation.
 Requirements:
 
 - Home Assistant packages enabled under `homeassistant.packages`
-- HTTPS access to a Wazuh Indexer search endpoint or read-only proxy
+- HTTPS access to a constrained read-only proxy
 - a least-privilege account that can only read the selected alert indices
 - a certificate chain trusted by Home Assistant
 
@@ -37,16 +48,16 @@ Assistant `packages` directory. Merge the three keys from
 [`secrets.example.yaml`](secrets.example.yaml) into the existing `secrets.yaml`.
 Never replace an existing secrets file with the example.
 
-`wazuh_indexer_search_url` is the complete `_search` URL, so the index pattern is
-configured in one place. For example:
+`wazuh_indexer_search_url` is the complete proxy search URL, so the proxy route
+and index pattern are configured in one place. For example:
 
 ```yaml
-wazuh_indexer_search_url: "https://indexer.example.com:9200/wazuh-alerts-*/_search"
+wazuh_indexer_search_url: "https://security-proxy.example.com/wazuh-alerts-*/_search"
 ```
 
-The package deliberately sets `verify_ssl: true`. Use a trusted certificate or
-put a trusted read-only HTTPS proxy in front of the Indexer. Do not weaken the
-published package by disabling certificate validation.
+The package deliberately sets `verify_ssl: true`. Use a trusted certificate on
+the read-only HTTPS proxy. Do not weaken the published package by disabling
+certificate validation.
 
 Before restart, run Home Assistant's configuration check. A first installation
 requires a Core restart to load the new package and Recorder exclusions. After
@@ -194,7 +205,9 @@ configuration passed Home Assistant configuration validation on the audited
 deployment. The fixtures cover full, absent-source, empty, partial, and failed
 responses.
 
-This remains an example until Phase 5 validates both Indexer-direct and proxy
+This remains an example until Phase 5 validates multiple independent proxy
 deployments with different source subsets. Report results with the Home
-Assistant version, Wazuh version, endpoint type, index pattern, source subset,
-and sanitized validation output.
+Assistant version, Wazuh version, proxy design, index pattern, source subset,
+and sanitized validation output. An existing, intentionally segmented direct
+deployment may also report results, but direct access is not a validation
+requirement or the recommended architecture.

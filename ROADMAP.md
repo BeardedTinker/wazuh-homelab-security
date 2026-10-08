@@ -100,7 +100,10 @@ Goal: prove that the adapter is not tied to one homelab topology.
 
 Work:
 
-- test at least an Indexer-direct and a read-only-proxy deployment
+- test multiple independent read-only-proxy deployments
+- accept direct-Indexer results only from deployments where an isolated,
+  source-restricted management network already exists; do not make direct
+  access a validation requirement
 - test users with different subsets of telemetry sources
 - collect field-mapping and index-pattern differences
 - document migration from the YAML prototype

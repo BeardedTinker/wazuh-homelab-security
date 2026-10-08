@@ -118,7 +118,10 @@ after the query and entity contracts have been validated by multiple users.
 
 The adapter must:
 
-- use a configurable Indexer or read-only proxy endpoint
+- use a configurable, constrained read-only HTTPS proxy endpoint by default
+- treat direct Indexer access as a non-recommended exception for deployments
+  that already isolate the Indexer on a source-restricted management network;
+  never require port `9200` to be opened for the adapter
 - keep credentials in Home Assistant secrets or a config entry
 - verify TLS by default and document any proxy trust model
 - allow a configurable index pattern
