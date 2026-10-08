@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "SHA256SUMS"
 INCLUDE_PATTERNS = (
+    "homeassistant/adapter/*.yaml",
     "safeline/collector/*.py",
     "tools/**/*.py",
     "tools/**/*.sh",

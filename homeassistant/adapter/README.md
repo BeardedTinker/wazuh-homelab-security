@@ -1,16 +1,16 @@
-# Home Assistant presentation adapter design
+# Home Assistant presentation adapter
 
-This directory defines the proposed version 1 contract for an optional Home
-Assistant presentation adapter. It is a design artifact, not a supported custom
-integration and not yet an installable YAML package.
+This directory provides the version 1 contract and a transparent YAML example
+for an optional Home Assistant presentation adapter. It is not a custom
+integration and has not yet been validated by multiple independent deployments.
 
 The Wazuh manager remains responsible for decoding and detection. Home Assistant
 reads already indexed alerts and presents counts and recent security events.
 
 ## Deployment boundary
 
-The future YAML example will use Home Assistant's shared REST sensor platform
-against either:
+The YAML example uses Home Assistant's shared REST sensor platform against
+either:
 
 - a Wazuh Indexer endpoint with a least-privilege read-only account, or
 - a read-only HTTPS proxy that exposes the required search endpoint.
@@ -22,6 +22,55 @@ part of the published default.
 
 No credential, private address, certificate, or internal hostname belongs in
 the package, fixtures, dashboard export, or documentation.
+
+## Installation
+
+Requirements:
+
+- Home Assistant packages enabled under `homeassistant.packages`
+- HTTPS access to a Wazuh Indexer search endpoint or read-only proxy
+- a least-privilege account that can only read the selected alert indices
+- a certificate chain trusted by Home Assistant
+
+Install one copy of [`wazuh_adapter.yaml`](wazuh_adapter.yaml) in the Home
+Assistant `packages` directory. Merge the three keys from
+[`secrets.example.yaml`](secrets.example.yaml) into the existing `secrets.yaml`.
+Never replace an existing secrets file with the example.
+
+`wazuh_indexer_search_url` is the complete `_search` URL, so the index pattern is
+configured in one place. For example:
+
+```yaml
+wazuh_indexer_search_url: "https://indexer.example.com:9200/wazuh-alerts-*/_search"
+```
+
+The package deliberately sets `verify_ssl: true`. Use a trusted certificate or
+put a trusted read-only HTTPS proxy in front of the Indexer. Do not weaken the
+published package by disabling certificate validation.
+
+Before restart, run Home Assistant's configuration check. A first installation
+requires a Core restart to load the new package and Recorder exclusions. After
+startup, verify that the freshness sensor has a recent timestamp and that a
+source without data shows zero rather than `unavailable`.
+
+The package does not install detection rules, configure the Wazuh Indexer, or
+ship a dashboard. Follow the repository's source-specific setup guides first.
+
+## Migration from local query files
+
+Do not load the package alongside older Wazuh REST sensor definitions. That
+would duplicate unique IDs and continue unnecessary polling.
+
+1. Back up the existing Home Assistant configuration.
+2. Record any locally renamed entity IDs.
+3. Remove or disable the old Wazuh REST resources only after placing this
+   package and its secrets.
+4. Run the complete Home Assistant configuration check.
+5. Restart Home Assistant and verify all expected entities before deleting the
+   backup.
+
+The unique IDs and default entity names match [`CONTRACT.md`](CONTRACT.md), so
+an existing entity registry can retain published entity IDs across migration.
 
 ## Polling model
 
@@ -137,12 +186,15 @@ identifiers:
 The partial and authentication-failure fixtures are intentionally not valid
 successful `summary-v1` responses. They exist to verify availability behavior.
 
-## Next implementation gate
+## Validation and support boundary
 
-An implementation PR may begin only after this contract is reviewed. It must:
+The published package preserves every entity ID in [`CONTRACT.md`](CONTRACT.md)
+and uses the two documented REST resources. The equivalent two-resource
+configuration passed Home Assistant configuration validation on the audited
+deployment. The fixtures cover full, absent-source, empty, partial, and failed
+responses.
 
-1. preserve every entity ID in [`CONTRACT.md`](CONTRACT.md),
-2. use no more than the two documented REST resources,
-3. validate templates with full, absent-source, empty, partial, and failed data,
-4. measure response size and query duration on the audited deployment,
-5. pass Home Assistant configuration validation before any local reload.
+This remains an example until Phase 5 validates both Indexer-direct and proxy
+deployments with different source subsets. Report results with the Home
+Assistant version, Wazuh version, endpoint type, index pattern, source subset,
+and sanitized validation output.

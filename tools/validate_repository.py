@@ -19,6 +19,50 @@ ROOT = Path(__file__).resolve().parents[1]
 VALID_CLASSIFICATIONS = {"pass", "pending", "known_fail"}
 BUILTIN_DECODERS = {"json", "kernel"}
 MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+ADAPTER_UNIQUE_IDS = {
+    "siem_security_score",
+    "wazuh_critical_24h",
+    "wazuh_high_24h",
+    "wazuh_indexer_last_successful_poll",
+    "wazuh_low_24h",
+    "wazuh_medium_24h",
+    "wazuh_safeline_alerts_24h",
+    "wazuh_safeline_blocked_attacks_24h",
+    "wazuh_safeline_last_attack",
+    "wazuh_safeline_multi_vector_24h",
+    "wazuh_safeline_repeated_attacks_24h",
+    "wazuh_safeline_sqli_24h",
+    "wazuh_safeline_top_source_ip_24h",
+    "wazuh_safeline_xss_24h",
+    "wazuh_security_last_5",
+    "wazuh_source_home_assistant_24h",
+    "wazuh_source_safeline_24h",
+    "wazuh_source_synology_24h",
+    "wazuh_source_ugreen_24h",
+    "wazuh_source_unifi_24h",
+    "wazuh_top_rule_24h",
+    "wazuh_top_wan_local_dpt_24h",
+    "wazuh_top_wan_local_srcip_24h",
+    "wazuh_ugreen_account_changes_24h",
+    "wazuh_ugreen_events_24h",
+    "wazuh_ugreen_last_event",
+    "wazuh_ugreen_ssh_success_24h",
+    "wazuh_ugreen_storage_alerts_24h",
+    "wazuh_ugreen_top_source_ip_24h",
+    "wazuh_ugreen_web_failures_24h",
+    "wazuh_ugreen_web_success_24h",
+    "wazuh_wan_local_drops_24h",
+}
+ADAPTER_RECORDER_EXCLUSIONS = {
+    "sensor.wazuh_safeline_last_attack",
+    "sensor.wazuh_security_last_5",
+    "sensor.wazuh_source_home_assistant_24h",
+    "sensor.wazuh_source_safeline_24h",
+    "sensor.wazuh_source_synology_24h",
+    "sensor.wazuh_source_ugreen_24h",
+    "sensor.wazuh_source_unifi_24h",
+    "sensor.wazuh_ugreen_last_event",
+}
 
 
 class Validator:
@@ -228,12 +272,68 @@ class Validator:
         if digest not in readme.read_text(encoding="utf-8"):
             self.error(readme, f"does not contain collector SHA-256 {digest}")
 
+    def validate_home_assistant_adapter(self) -> None:
+        package = ROOT / "homeassistant" / "adapter" / "wazuh_adapter.yaml"
+        secrets = ROOT / "homeassistant" / "adapter" / "secrets.example.yaml"
+
+        try:
+            package_text = package.read_text(encoding="utf-8")
+            secrets_text = secrets.read_text(encoding="utf-8")
+        except OSError as exc:
+            self.error("homeassistant/adapter", f"cannot read adapter files: {exc}")
+            return
+
+        resources = re.findall(
+            r"^\s+- resource: !secret wazuh_indexer_search_url$",
+            package_text,
+            flags=re.MULTILINE,
+        )
+        if len(resources) != 2:
+            self.error(package, f"expected 2 shared REST resources, found {len(resources)}")
+
+        if package_text.count("verify_ssl: true") != 2:
+            self.error(package, "both REST resources must enable TLS verification")
+        if "verify_ssl: false" in package_text:
+            self.error(package, "must not disable TLS verification")
+        if package_text.count("timeout: 30") != 2:
+            self.error(package, "both REST resources must use the bounded timeout")
+        if package_text.count("scan_interval: 120") != 1:
+            self.error(package, "expected one 120-second fast resource")
+        if package_text.count("scan_interval: 300") != 1:
+            self.error(package, "expected one 300-second summary resource")
+
+        unique_ids = set(
+            re.findall(r"^\s+unique_id: ([a-z0-9_]+)$", package_text, flags=re.MULTILINE)
+        )
+        missing_ids = sorted(ADAPTER_UNIQUE_IDS - unique_ids)
+        unexpected_ids = sorted(unique_ids - ADAPTER_UNIQUE_IDS)
+        if missing_ids:
+            self.error(package, f"missing contracted unique IDs: {', '.join(missing_ids)}")
+        if unexpected_ids:
+            self.error(package, f"unexpected unique IDs: {', '.join(unexpected_ids)}")
+
+        for entity_id in sorted(ADAPTER_RECORDER_EXCLUSIONS):
+            if package_text.count(f"- {entity_id}") != 1:
+                self.error(package, f"Recorder exclusion must occur once: {entity_id}")
+
+        secret_keys = set(
+            re.findall(r"^([a-z0-9_]+):", secrets_text, flags=re.MULTILINE)
+        )
+        expected_secrets = {
+            "wazuh_indexer_password",
+            "wazuh_indexer_search_url",
+            "wazuh_indexer_username",
+        }
+        if secret_keys != expected_secrets:
+            self.error(secrets, "must define exactly the three documented secret keys")
+
     def run(self) -> int:
         self.validate_xml()
         self.validate_json_and_scenarios()
         self.validate_python_and_shell()
         self.validate_markdown_links()
         self.validate_collector_checksum()
+        self.validate_home_assistant_adapter()
 
         if self.errors:
             print("Repository validation failed:", file=sys.stderr)
