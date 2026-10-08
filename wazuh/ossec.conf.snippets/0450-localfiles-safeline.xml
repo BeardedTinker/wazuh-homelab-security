@@ -1,0 +1,5 @@
+<!-- Apply on the SafeLine host agent (or its shared agent configuration). -->
+<localfile>
+  <log_format>json</log_format>
+  <location>/var/log/safeline/attacks.json</location>
+</localfile>
