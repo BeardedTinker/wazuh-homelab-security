@@ -10,6 +10,28 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 
 ---
 
+## [0.2.0-rc.2] - 2026-10-08
+
+### Added
+- an optional transparent Home Assistant YAML presentation adapter using two
+  shared Wazuh Indexer responses
+- a versioned Home Assistant entity and response-schema contract
+- sanitized adapter fixtures for full, missing-source, empty, partial, and
+  authentication-failure responses
+- Home Assistant adapter installation, migration, TLS, polling-load, freshness,
+  and Recorder guidance
+
+### Changed
+- extended dependency-free repository validation with Home Assistant adapter
+  resource, TLS, polling, unique-ID, secret, and Recorder invariants
+- expanded release checksums to cover the Home Assistant package and secrets
+  example
+
+No Wazuh decoder, rule, collector, or regression expectation changed from
+`0.2.0-rc.1`.
+
+---
+
 ## [0.2.0-rc.1] - 2026-10-08
 
 ### Added

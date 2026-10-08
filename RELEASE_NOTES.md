@@ -1,12 +1,24 @@
-# Wazuh Homelab Security 0.2.0-rc.1
+# Wazuh Homelab Security 0.2.0-rc.2
 
-This is the first tagged release candidate for the repository. It provides an
-immutable review point for the expanded Wazuh 4.14.8 detection baseline while
-fresh-install feedback and reproducible runtime CI are still being completed.
+This second release candidate adds the optional Home Assistant YAML presentation
+adapter to the Wazuh 4.14.8 detection baseline published in `0.2.0-rc.1`.
+Decoder, rule, collector, and regression expectations are unchanged from RC1.
 
 Do not treat the `rc` suffix as a claim of broad production compatibility.
 Review the source-specific contracts and validate against your own Wazuh
 manager before restart.
+
+## Changes since 0.2.0-rc.1
+
+- added a transparent Home Assistant YAML package with 32 stable entities
+- reduced the adapter from five REST resources to two shared responses
+- retained the last five alerts at rule level 10 or higher
+- added versioned fast and summary response schemas
+- added sanitized full, missing-source, empty, partial, and failed fixtures
+- documented TLS, read-only credentials, migration, freshness, and Recorder
+  behavior
+- extended dependency-free validation with adapter-specific invariants
+- expanded `SHA256SUMS` to include the adapter package and secrets example
 
 ## Compatibility
 
@@ -20,6 +32,8 @@ The audited baseline is:
   in `homeassistant/README.md`
 - SafeLine 9.4.2 with collector schema version 1
 - UGREEN DXP4800 GT running UGOS Pro with the pinned Fluent Bit 5.1.2 pipeline
+- Home Assistant adapter locally validated on Home Assistant 2026.9.4 through a
+  read-only HTTPS proxy
 
 Compatibility with another product, firmware, message language, transport
 shape, or Wazuh version is not implied.
@@ -36,6 +50,7 @@ shape, or Wazuh version is not implied.
 - 2 explicitly pending scenarios
 - dependency-free static repository validation in GitHub Actions
 - architecture, installation, source setup, dashboard, and regression guides
+- optional Home Assistant YAML adapter, schema contract, and sanitized fixtures
 
 ## Integrity verification
 
@@ -63,6 +78,40 @@ tracked files after extraction.
    another source.
 
 Never copy the whole repository over `/var/ossec/etc`.
+
+## Optional Home Assistant adapter
+
+The adapter is an optional presentation layer. It does not install Wazuh rules,
+configure the Indexer, or make Home Assistant responsible for detection.
+
+1. Read `homeassistant/adapter/README.md` and `CONTRACT.md`.
+2. Copy `homeassistant/adapter/wazuh_adapter.yaml` into the Home Assistant
+   packages directory.
+3. Merge the three keys from `secrets.example.yaml` into the existing
+   `secrets.yaml`; never replace that file.
+4. Use the complete HTTPS `_search` URL with the desired index pattern and a
+   least-privilege read-only account.
+5. Keep TLS verification enabled and run the full Home Assistant configuration
+   check before restart.
+6. Verify the freshness sensor, a populated source, an absent source, and the
+   last-five list after startup.
+
+The default polling model performs approximately 42 Indexer requests per hour:
+30 fast requests at 120 seconds and 12 summary requests at 300 seconds. The
+package excludes eight entities carrying recent-event attributes from Recorder;
+Wazuh remains the source of truth for incident history.
+
+Existing local Wazuh REST definitions must be removed or disabled during
+migration. Loading both versions creates duplicate unique IDs and preserves the
+old polling load. The package does not include a Home Assistant dashboard.
+
+## Upgrade from 0.2.0-rc.1
+
+No Wazuh manager content changed. Users who do not want the optional Home
+Assistant presentation adapter can update without deploying it.
+
+Users adopting the adapter should follow the optional adapter steps above and
+must not copy example secrets over an existing Home Assistant secrets file.
 
 ## Upgrade from the initial public configuration
 
@@ -128,8 +177,9 @@ The PENDING scenarios are:
 
 Static GitHub Actions validation checks XML fragments, custom identifier
 uniqueness and range, JSON/scenario structure, Python and shell syntax, local
-Markdown links, and the SafeLine collector checksum. It does not execute Wazuh
-runtime regression and does not replace manager-side daemon tests.
+Markdown links, adapter resource and entity invariants, and release checksums.
+It does not execute Wazuh runtime regression or a live Home Assistant config
+check and does not replace manager-side daemon tests.
 
 ## Known limitations
 
@@ -143,8 +193,10 @@ runtime regression and does not replace manager-side daemon tests.
   implement an inter-process lock.
 - UGREEN UDP syslog is unencrypted and unauthenticated; deploy it only on a
   trusted, filtered network.
-- The optional Home Assistant dashboard/polling adapter is not part of this
-  release candidate.
+- The Home Assistant adapter has been validated on one deployment through a
+  read-only HTTPS proxy. Independent Indexer-direct and different-source-subset
+  validation is still required.
+- No supported Home Assistant dashboard export is included.
 
 Report compatibility results with the exact Wazuh version, source product and
 firmware, transport format, validation output, and a minimal sanitized sample.
