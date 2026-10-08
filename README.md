@@ -82,6 +82,10 @@ Detection ideas currently implemented:
 - repeated IDS targeting of Synology DSM
 - reconnaissance / multi-service probing detection
 
+See [`unifi/README.md`](unifi/README.md) for the two supported input contracts,
+current SIEM export path, installation, validation, and known compatibility
+limits.
+
 ---
 
 ## Synology DSM
@@ -173,6 +177,8 @@ In the tested setup, GeoIP enrichment is performed in the Wazuh Indexer, not in 
 ├── ugreen/
 │   ├── fluent-bit/
 │   ├── rsyslog/
+│   └── README.md
+├── unifi/
 │   └── README.md
 ├── samples/
 │   ├── homeassistant/
