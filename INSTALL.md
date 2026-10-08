@@ -18,7 +18,7 @@ the source you actually use.
 | UniFi | `wazuh/decoders/0100-unifi-decoders.xml` | `wazuh/rules/0100-unifi-rules.xml` | `wazuh/ossec.conf.snippets/0200-localfiles-unifi.xml` | Requires an external syslog route to `/var/log/unifi.log` |
 | Synology | `wazuh/decoders/0200-synology-decoders.xml` | `wazuh/rules/0200-synology-rules.xml` | `wazuh/ossec.conf.snippets/0300-localfiles-synology.xml` | Requires an external syslog route to `/var/log/synology.log` |
 | Home Assistant | `wazuh/decoders/0300-homeassistant-decoders.xml` | `wazuh/rules/0300-homeassistant-rules.xml` | `wazuh/ossec.conf.snippets/0400-localfiles-journald.xml` | Journald input belongs on the emitting agent or in its shared agent configuration |
-| SafeLine | Built-in Wazuh JSON decoder | `wazuh/rules/0400-safeline-rules.xml` | Collector output at `/var/log/safeline/attacks.json` | Follow `safeline/README.md`; scheduling and localfile setup remain host-specific |
+| SafeLine | Built-in Wazuh JSON decoder | `wazuh/rules/0400-safeline-rules.xml` | `wazuh/ossec.conf.snippets/0450-localfiles-safeline.xml` | Follow `safeline/README.md`; collector scheduling remains host-specific |
 | UGREEN | `wazuh/decoders/0500-ugreen-decoders.xml` | `wazuh/rules/0500-ugreen-rules.xml` | `wazuh/ossec.conf.snippets/0500-localfiles-ugreen.xml` | Follow the end-to-end transport guide in `ugreen/README.md` |
 
 The collection snippets are fragments, not complete `ossec.conf` files. Merge

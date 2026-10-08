@@ -82,6 +82,10 @@ Detection ideas currently implemented:
 - repeated IDS targeting of Synology DSM
 - reconnaissance / multi-service probing detection
 
+See [`unifi/README.md`](unifi/README.md) for the two supported input contracts,
+current SIEM export path, installation, validation, and known compatibility
+limits.
+
 ---
 
 ## Synology DSM
@@ -93,6 +97,10 @@ Detection ideas currently implemented:
 - repeated login failures from the same IP
 - success after multiple failures from the same IP and user
 
+See [`synology/README.md`](synology/README.md) for the supported DSM message
+contract, Log Center forwarding, installation, validation, and current PENDING
+coverage.
+
 ---
 
 ## Home Assistant
@@ -103,6 +111,10 @@ Detection ideas currently implemented:
 - repeated invalid authentication from the same IP
 - narrowly scoped Moonraker offline connection-error suppression
 - UniFi port 8123 probe followed by Home Assistant brute force from the same source
+
+See [`homeassistant/README.md`](homeassistant/README.md) for the supported
+journald message contract, Wazuh agent deployment paths, manager installation,
+validation, and current PENDING coverage.
 
 ---
 
@@ -173,6 +185,12 @@ In the tested setup, GeoIP enrichment is performed in the Wazuh Indexer, not in 
 ├── ugreen/
 │   ├── fluent-bit/
 │   ├── rsyslog/
+│   └── README.md
+├── unifi/
+│   └── README.md
+├── synology/
+│   └── README.md
+├── homeassistant/
 │   └── README.md
 ├── samples/
 │   ├── homeassistant/
