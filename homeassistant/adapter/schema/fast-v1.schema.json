@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/BeardedTinker/wazuh-homelab-security/main/homeassistant/adapter/schema/fast-v1.schema.json",
+  "title": "Home Assistant Wazuh adapter fast response v1",
+  "type": "object",
+  "required": ["timed_out", "aggregations"],
+  "properties": {
+    "took": {"type": "integer", "minimum": 0},
+    "timed_out": {"const": false},
+    "aggregations": {
+      "type": "object",
+      "required": ["adapter_v1"],
+      "properties": {
+        "adapter_v1": {
+          "type": "object",
+          "required": ["doc_count", "security", "safeline"],
+          "properties": {
+            "doc_count": {"type": "integer", "minimum": 0},
+            "security": {"$ref": "#/$defs/security"},
+            "safeline": {"$ref": "#/$defs/safeline"}
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "count": {
+      "type": "object",
+      "required": ["doc_count"],
+      "properties": {"doc_count": {"type": "integer", "minimum": 0}}
+    },
+    "hit": {
+      "type": "object",
+      "required": ["_source"],
+      "properties": {
+        "_source": {
+          "type": "object",
+          "required": ["@timestamp", "rule"],
+          "properties": {
+            "@timestamp": {"type": "string"},
+            "rule": {
+              "type": "object",
+              "required": ["id", "level", "description"],
+              "properties": {
+                "id": {"type": "string"},
+                "level": {"type": "integer"},
+                "description": {"type": "string"}
+              }
+            },
+            "agent": {"type": "object"},
+            "decoder": {"type": "object"},
+            "location": {"type": "string"},
+            "data": {"type": "object"}
+          }
+        }
+      }
+    },
+    "top_hits": {
+      "type": "object",
+      "required": ["hits"],
+      "properties": {
+        "hits": {
+          "type": "object",
+          "required": ["hits"],
+          "properties": {
+            "hits": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/hit"},
+              "maxItems": 5
+            }
+          }
+        }
+      }
+    },
+    "terms": {
+      "type": "object",
+      "required": ["buckets"],
+      "properties": {
+        "buckets": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["key", "doc_count"],
+            "properties": {
+              "key": {"type": ["string", "integer"]},
+              "doc_count": {"type": "integer", "minimum": 0}
+            }
+          }
+        }
+      }
+    },
+    "security": {
+      "type": "object",
+      "required": ["doc_count", "latest"],
+      "properties": {
+        "doc_count": {"type": "integer", "minimum": 0},
+        "latest": {"$ref": "#/$defs/top_hits"}
+      }
+    },
+    "safeline": {
+      "type": "object",
+      "required": [
+        "doc_count",
+        "blocked",
+        "sqli",
+        "xss",
+        "repeated",
+        "multi_vector",
+        "top_srcip",
+        "latest"
+      ],
+      "properties": {
+        "doc_count": {"type": "integer", "minimum": 0},
+        "blocked": {"$ref": "#/$defs/count"},
+        "sqli": {"$ref": "#/$defs/count"},
+        "xss": {"$ref": "#/$defs/count"},
+        "repeated": {"$ref": "#/$defs/count"},
+        "multi_vector": {"$ref": "#/$defs/count"},
+        "top_srcip": {"$ref": "#/$defs/terms"},
+        "latest": {"$ref": "#/$defs/top_hits"}
+      }
+    }
+  }
+}

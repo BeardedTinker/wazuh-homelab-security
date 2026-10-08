@@ -1,0 +1,79 @@
+{
+  "took": 8,
+  "timed_out": false,
+  "aggregations": {
+    "adapter_v1": {
+      "doc_count": 24,
+      "security": {
+        "doc_count": 2,
+        "latest": {
+          "hits": {
+            "hits": [
+              {
+                "_source": {
+                  "@timestamp": "2026-01-15T12:00:00.000Z",
+                  "rule": {
+                    "id": "100116",
+                    "level": 12,
+                    "description": "Example blocked network probe"
+                  },
+                  "agent": {"name": "example-agent"},
+                  "decoder": {"name": "unifi-wan-local"},
+                  "location": "/var/log/example.log"
+                }
+              },
+              {
+                "_source": {
+                  "@timestamp": "2026-01-15T11:59:00.000Z",
+                  "rule": {
+                    "id": "100510",
+                    "level": 12,
+                    "description": "Example blocked web request"
+                  },
+                  "agent": {"name": "example-agent"},
+                  "decoder": {"name": "json"},
+                  "location": "/var/log/example-waf.json"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "safeline": {
+        "doc_count": 3,
+        "blocked": {"doc_count": 3},
+        "sqli": {"doc_count": 1},
+        "xss": {"doc_count": 2},
+        "repeated": {"doc_count": 1},
+        "multi_vector": {"doc_count": 0},
+        "top_srcip": {
+          "buckets": [{"key": "203.0.113.10", "doc_count": 2}]
+        },
+        "latest": {
+          "hits": {
+            "hits": [
+              {
+                "_source": {
+                  "@timestamp": "2026-01-15T11:59:00.000Z",
+                  "rule": {
+                    "id": "100510",
+                    "level": 12,
+                    "description": "Example blocked web request"
+                  },
+                  "agent": {"name": "example-agent"},
+                  "decoder": {"name": "json"},
+                  "location": "/var/log/example-waf.json",
+                  "data": {
+                    "srcip": "203.0.113.10",
+                    "action": "1",
+                    "attack_type": "0"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "request": "summary-v1",
+  "http_status": 401,
+  "response": {
+    "error": {
+      "type": "security_exception",
+      "reason": "authentication failed for the configured read-only account"
+    },
+    "status": 401
+  },
+  "expected": {
+    "resource_available": false,
+    "numeric_fallback": null,
+    "text_fallback": null
+  }
+}

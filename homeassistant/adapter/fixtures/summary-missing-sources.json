@@ -1,0 +1,68 @@
+{
+  "took": 5,
+  "timed_out": false,
+  "aggregations": {
+    "adapter_v1": {
+      "doc_count": 7,
+      "critical": {"doc_count": 0},
+      "high": {"doc_count": 1},
+      "medium": {"doc_count": 2},
+      "low": {"doc_count": 4},
+      "top_elevated_rule": {
+        "doc_count": 3,
+        "rules": {"buckets": [{"key": "100116", "doc_count": 1}]}
+      },
+      "wan_local": {
+        "doc_count": 7,
+        "top_srcip": {
+          "buckets": [{"key": "198.51.100.20", "doc_count": 2}]
+        },
+        "top_dstport": {
+          "buckets": [{"key": "22", "doc_count": 2}]
+        }
+      },
+      "ugreen": {
+        "doc_count": 0,
+        "web_success": {"doc_count": 0},
+        "web_failures": {"doc_count": 0},
+        "ssh_success": {"doc_count": 0},
+        "account_changes": {"doc_count": 0},
+        "storage_alerts": {"doc_count": 0},
+        "top_srcip": {"buckets": []},
+        "latest": {"hits": {"hits": []}}
+      },
+      "sources": {
+        "unifi": {
+          "doc_count": 7,
+          "elevated": {"doc_count": 3},
+          "high": {"doc_count": 1},
+          "latest": {"hits": {"hits": []}}
+        },
+        "safeline": {
+          "doc_count": 0,
+          "elevated": {"doc_count": 0},
+          "high": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
+        },
+        "ugreen": {
+          "doc_count": 0,
+          "elevated": {"doc_count": 0},
+          "high": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
+        },
+        "home_assistant": {
+          "doc_count": 0,
+          "elevated": {"doc_count": 0},
+          "high": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
+        },
+        "synology": {
+          "doc_count": 0,
+          "elevated": {"doc_count": 0},
+          "high": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
+        }
+      }
+    }
+  }
+}

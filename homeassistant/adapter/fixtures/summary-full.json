@@ -1,0 +1,106 @@
+{
+  "took": 11,
+  "timed_out": false,
+  "aggregations": {
+    "adapter_v1": {
+      "doc_count": 42,
+      "critical": {"doc_count": 1},
+      "high": {"doc_count": 4},
+      "medium": {"doc_count": 9},
+      "low": {"doc_count": 28},
+      "top_elevated_rule": {
+        "doc_count": 14,
+        "rules": {
+          "buckets": [
+            {
+              "key": "100116",
+              "doc_count": 3,
+              "sample": {
+                "hits": {
+                  "hits": [
+                    {
+                      "_source": {
+                        "rule": {
+                          "id": "100116",
+                          "description": "Example blocked network probe"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "wan_local": {
+        "doc_count": 8,
+        "top_srcip": {
+          "buckets": [{"key": "198.51.100.20", "doc_count": 3}]
+        },
+        "top_dstport": {
+          "buckets": [{"key": "22", "doc_count": 4}]
+        }
+      },
+      "ugreen": {
+        "doc_count": 5,
+        "web_success": {"doc_count": 2},
+        "web_failures": {"doc_count": 1},
+        "ssh_success": {"doc_count": 1},
+        "account_changes": {"doc_count": 0},
+        "storage_alerts": {"doc_count": 1},
+        "top_srcip": {
+          "buckets": [{"key": "192.0.2.30", "doc_count": 2}]
+        },
+        "latest": {
+          "hits": {
+            "hits": [
+              {
+                "_source": {
+                  "@timestamp": "2026-01-15T11:58:00.000Z",
+                  "rule": {
+                    "id": "100600",
+                    "level": 3,
+                    "description": "Example successful NAS sign-in"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "sources": {
+        "unifi": {
+          "doc_count": 8,
+          "elevated": {"doc_count": 8},
+          "high": {"doc_count": 3},
+          "latest": {"hits": {"hits": []}}
+        },
+        "safeline": {
+          "doc_count": 3,
+          "elevated": {"doc_count": 3},
+          "high": {"doc_count": 2},
+          "latest": {"hits": {"hits": []}}
+        },
+        "ugreen": {
+          "doc_count": 5,
+          "elevated": {"doc_count": 1},
+          "high": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
+        },
+        "home_assistant": {
+          "doc_count": 2,
+          "elevated": {"doc_count": 1},
+          "high": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
+        },
+        "synology": {
+          "doc_count": 4,
+          "elevated": {"doc_count": 1},
+          "high": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
+        }
+      }
+    }
+  }
+}
