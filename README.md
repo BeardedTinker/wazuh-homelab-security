@@ -112,6 +112,10 @@ Detection ideas currently implemented:
 - narrowly scoped Moonraker offline connection-error suppression
 - UniFi port 8123 probe followed by Home Assistant brute force from the same source
 
+See [`homeassistant/README.md`](homeassistant/README.md) for the supported
+journald message contract, Wazuh agent deployment paths, manager installation,
+validation, and current PENDING coverage.
+
 ---
 
 ## SafeLine WAF
@@ -185,6 +189,8 @@ In the tested setup, GeoIP enrichment is performed in the Wazuh Indexer, not in 
 ├── unifi/
 │   └── README.md
 ├── synology/
+│   └── README.md
+├── homeassistant/
 │   └── README.md
 ├── samples/
 │   ├── homeassistant/
