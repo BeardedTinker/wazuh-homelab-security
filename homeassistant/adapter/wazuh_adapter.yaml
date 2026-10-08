@@ -1,0 +1,534 @@
+# Optional Wazuh Indexer presentation adapter for Home Assistant.
+# See README.md and CONTRACT.md before installation.
+
+rest:
+  - resource: !secret wazuh_indexer_search_url
+    method: POST
+    authentication: basic
+    verify_ssl: true
+    timeout: 30
+    username: !secret wazuh_indexer_username
+    password: !secret wazuh_indexer_password
+    headers:
+      Content-Type: application/json
+    scan_interval: 120
+    payload: >-
+      {
+        "size": 0,
+        "track_total_hits": false,
+        "aggs": {
+          "adapter_v1": {
+            "filter": {
+              "range": {
+                "@timestamp": {"gte": "now-24h", "lt": "now"}
+              }
+            },
+            "aggs": {
+              "security": {
+                "filter": {"range": {"rule.level": {"gte": 10}}},
+                "aggs": {
+                  "latest": {
+                    "top_hits": {
+                      "size": 5,
+                      "sort": [{"@timestamp": {"order": "desc"}}],
+                      "_source": [
+                        "@timestamp", "rule.id", "rule.level", "rule.description",
+                        "agent.name", "decoder.name", "location"
+                      ]
+                    }
+                  }
+                }
+              },
+              "safeline": {
+                "filter": {
+                  "term": {"rule.groups.keyword": "safeline_waf_event"}
+                },
+                "aggs": {
+                  "blocked": {"filter": {"term": {"data.action.keyword": "1"}}},
+                  "sqli": {"filter": {"term": {"data.attack_type.keyword": "0"}}},
+                  "xss": {"filter": {"term": {"data.attack_type.keyword": "1"}}},
+                  "repeated": {"filter": {"term": {"rule.id.keyword": "100550"}}},
+                  "multi_vector": {"filter": {"term": {"rule.id.keyword": "100551"}}},
+                  "top_srcip": {
+                    "terms": {"field": "data.srcip.keyword", "size": 1}
+                  },
+                  "latest": {
+                    "top_hits": {
+                      "size": 1,
+                      "sort": [{"@timestamp": {"order": "desc"}}],
+                      "_source": [
+                        "@timestamp", "rule.id", "rule.level", "rule.description",
+                        "data.event_id", "data.srcip", "data.action", "data.action_name",
+                        "data.attack_type", "data.attack_type_name", "data.module",
+                        "data.rule_id", "data.host", "data.path_only"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    sensor:
+      - name: "Wazuh Indexer Last Successful Poll"
+        unique_id: wazuh_indexer_last_successful_poll
+        device_class: timestamp
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1') is not none }}
+        value_template: "{{ now().isoformat() }}"
+      - name: "Wazuh Security Last 5"
+        unique_id: wazuh_security_last_5
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('security', {}).get('latest', {}).get('hits', {}).get('hits') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('security', {}).get('latest', {}).get('hits', {}).get('hits', []) | length }}
+        json_attributes_path: "$.aggregations.adapter_v1.security.latest.hits"
+        json_attributes:
+          - hits
+      - name: "Wazuh SafeLine Alerts 24h"
+        unique_id: wazuh_safeline_alerts_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh SafeLine Blocked Attacks 24h"
+        unique_id: wazuh_safeline_blocked_attacks_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('blocked', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('blocked', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh SafeLine SQLi 24h"
+        unique_id: wazuh_safeline_sqli_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('sqli', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('sqli', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh SafeLine XSS 24h"
+        unique_id: wazuh_safeline_xss_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('xss', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('xss', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh SafeLine Repeated Attacks 24h"
+        unique_id: wazuh_safeline_repeated_attacks_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('repeated', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('repeated', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh SafeLine Multi-vector 24h"
+        unique_id: wazuh_safeline_multi_vector_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('multi_vector', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('multi_vector', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh SafeLine Top Source IP 24h"
+        unique_id: wazuh_safeline_top_source_ip_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('top_srcip', {}).get('buckets') is not none }}
+        value_template: >-
+          {% set buckets = value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('top_srcip', {}).get('buckets', []) %}
+          {% if buckets | length > 0 %}
+            {{ buckets[0].key }} ({{ buckets[0].doc_count }}x)
+          {% else %}
+            n/a
+          {% endif %}
+      - name: "Wazuh SafeLine Last Attack"
+        unique_id: wazuh_safeline_last_attack
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('latest', {}).get('hits', {}).get('hits') is not none }}
+        value_template: >-
+          {% set hits = value_json.get('aggregations', {}).get('adapter_v1', {}).get('safeline', {}).get('latest', {}).get('hits', {}).get('hits', []) %}
+          {{ hits[0]._source['@timestamp'] if hits | length > 0 else 'n/a' }}
+        json_attributes_path: "$.aggregations.adapter_v1.safeline.latest.hits"
+        json_attributes:
+          - hits
+
+  - resource: !secret wazuh_indexer_search_url
+    method: POST
+    authentication: basic
+    verify_ssl: true
+    timeout: 30
+    username: !secret wazuh_indexer_username
+    password: !secret wazuh_indexer_password
+    headers:
+      Content-Type: application/json
+    scan_interval: 300
+    payload: >-
+      {
+        "size": 0,
+        "track_total_hits": false,
+        "aggs": {
+          "adapter_v1": {
+            "filter": {
+              "range": {
+                "@timestamp": {"gte": "now-24h", "lt": "now"}
+              }
+            },
+            "aggs": {
+              "critical": {"filter": {"range": {"rule.level": {"gte": 15}}}},
+              "high": {"filter": {"range": {"rule.level": {"gte": 12, "lte": 14}}}},
+              "medium": {"filter": {"range": {"rule.level": {"gte": 7, "lte": 11}}}},
+              "low": {"filter": {"range": {"rule.level": {"lte": 6}}}},
+              "top_elevated_rule": {
+                "filter": {"range": {"rule.level": {"gte": 7}}},
+                "aggs": {
+                  "rules": {
+                    "terms": {"field": "rule.id.keyword", "size": 1},
+                    "aggs": {
+                      "sample": {
+                        "top_hits": {
+                          "size": 1,
+                          "_source": ["rule.id", "rule.description"]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "wan_local": {
+                "filter": {
+                  "term": {"decoder.name.keyword": "unifi-wan-local"}
+                },
+                "aggs": {
+                  "top_srcip": {
+                    "terms": {"field": "data.srcip.keyword", "size": 1}
+                  },
+                  "top_dstport": {
+                    "terms": {"field": "data.dstport.keyword", "size": 1}
+                  }
+                }
+              },
+              "ugreen": {
+                "filter": {
+                  "term": {"location.keyword": "/var/log/ugreen.log"}
+                },
+                "aggs": {
+                  "web_success": {
+                    "filter": {"terms": {"rule.id.keyword": ["100600", "100611"]}}
+                  },
+                  "web_failures": {
+                    "filter": {"terms": {"rule.id.keyword": ["100601", "100610"]}}
+                  },
+                  "ssh_success": {
+                    "filter": {"term": {"rule.id.keyword": "5715"}}
+                  },
+                  "account_changes": {
+                    "filter": {"terms": {"rule.id.keyword": ["5901", "5902", "100620"]}}
+                  },
+                  "storage_alerts": {
+                    "filter": {"terms": {"rule.id.keyword": ["100630", "100631"]}}
+                  },
+                  "top_srcip": {
+                    "terms": {"field": "data.srcip.keyword", "size": 1}
+                  },
+                  "latest": {
+                    "top_hits": {
+                      "size": 1,
+                      "sort": [{"@timestamp": {"order": "desc"}}],
+                      "_source": [
+                        "@timestamp", "rule.id", "rule.level", "rule.description",
+                        "decoder.name", "location", "data.srcip", "data.dstuser",
+                        "data.storage_device"
+                      ]
+                    }
+                  }
+                }
+              },
+              "sources": {
+                "filter": {"match_all": {}},
+                "aggs": {
+                  "unifi": {
+                    "filter": {"term": {"rule.groups.keyword": "unifi"}},
+                    "aggs": {
+                      "elevated": {"filter": {"range": {"rule.level": {"gte": 7}}}},
+                      "high": {"filter": {"range": {"rule.level": {"gte": 12}}}},
+                      "latest": {
+                        "top_hits": {
+                          "size": 1,
+                          "sort": [{"@timestamp": {"order": "desc"}}],
+                          "_source": ["@timestamp", "rule.id", "rule.level", "rule.description"]
+                        }
+                      }
+                    }
+                  },
+                  "safeline": {
+                    "filter": {"term": {"rule.groups.keyword": "safeline_waf_event"}},
+                    "aggs": {
+                      "elevated": {"filter": {"range": {"rule.level": {"gte": 7}}}},
+                      "high": {"filter": {"range": {"rule.level": {"gte": 12}}}},
+                      "latest": {
+                        "top_hits": {
+                          "size": 1,
+                          "sort": [{"@timestamp": {"order": "desc"}}],
+                          "_source": ["@timestamp", "rule.id", "rule.level", "rule.description"]
+                        }
+                      }
+                    }
+                  },
+                  "ugreen": {
+                    "filter": {"term": {"location.keyword": "/var/log/ugreen.log"}},
+                    "aggs": {
+                      "elevated": {"filter": {"range": {"rule.level": {"gte": 7}}}},
+                      "high": {"filter": {"range": {"rule.level": {"gte": 12}}}},
+                      "latest": {
+                        "top_hits": {
+                          "size": 1,
+                          "sort": [{"@timestamp": {"order": "desc"}}],
+                          "_source": ["@timestamp", "rule.id", "rule.level", "rule.description"]
+                        }
+                      }
+                    }
+                  },
+                  "home_assistant": {
+                    "filter": {"term": {"rule.groups.keyword": "homeassistant"}},
+                    "aggs": {
+                      "elevated": {"filter": {"range": {"rule.level": {"gte": 7}}}},
+                      "high": {"filter": {"range": {"rule.level": {"gte": 12}}}},
+                      "latest": {
+                        "top_hits": {
+                          "size": 1,
+                          "sort": [{"@timestamp": {"order": "desc"}}],
+                          "_source": ["@timestamp", "rule.id", "rule.level", "rule.description"]
+                        }
+                      }
+                    }
+                  },
+                  "synology": {
+                    "filter": {"term": {"rule.groups.keyword": "synology"}},
+                    "aggs": {
+                      "elevated": {"filter": {"range": {"rule.level": {"gte": 7}}}},
+                      "high": {"filter": {"range": {"rule.level": {"gte": 12}}}},
+                      "latest": {
+                        "top_hits": {
+                          "size": 1,
+                          "sort": [{"@timestamp": {"order": "desc"}}],
+                          "_source": ["@timestamp", "rule.id", "rule.level", "rule.description"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    sensor:
+      - name: "Wazuh Critical 24h"
+        unique_id: wazuh_critical_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('critical', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('critical', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh High 24h"
+        unique_id: wazuh_high_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('high', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('high', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh Medium 24h"
+        unique_id: wazuh_medium_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('medium', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('medium', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh Low 24h"
+        unique_id: wazuh_low_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('low', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('low', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh Top Rule 24h"
+        unique_id: wazuh_top_rule_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('top_elevated_rule', {}).get('rules', {}).get('buckets') is not none }}
+        value_template: >-
+          {% set buckets = value_json.get('aggregations', {}).get('adapter_v1', {}).get('top_elevated_rule', {}).get('rules', {}).get('buckets', []) %}
+          {% if buckets | length > 0 %}
+            {% set bucket = buckets[0] %}
+            {% set hits = bucket.get('sample', {}).get('hits', {}).get('hits', []) %}
+            {% if hits | length > 0 %}
+              {% set source = hits[0].get('_source', {}) %}
+              {{ source.get('rule', {}).get('description', 'n/a') }} (ID {{ source.get('rule', {}).get('id', bucket.key) }}, {{ bucket.doc_count }}x)
+            {% else %}
+              n/a
+            {% endif %}
+          {% else %}
+            n/a
+          {% endif %}
+      - name: "Wazuh WAN_LOCAL Drops 24h"
+        unique_id: wazuh_wan_local_drops_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('wan_local', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('wan_local', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh Top WAN_LOCAL Source IP 24h"
+        unique_id: wazuh_top_wan_local_srcip_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('wan_local', {}).get('top_srcip', {}).get('buckets') is not none }}
+        value_template: >-
+          {% set buckets = value_json.get('aggregations', {}).get('adapter_v1', {}).get('wan_local', {}).get('top_srcip', {}).get('buckets', []) %}
+          {% if buckets | length > 0 %}
+            {{ buckets[0].key }} ({{ buckets[0].doc_count }}x)
+          {% else %}
+            n/a
+          {% endif %}
+      - name: "Wazuh Top WAN_LOCAL DPT 24h"
+        unique_id: wazuh_top_wan_local_dpt_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('wan_local', {}).get('top_dstport', {}).get('buckets') is not none }}
+        value_template: >-
+          {% set buckets = value_json.get('aggregations', {}).get('adapter_v1', {}).get('wan_local', {}).get('top_dstport', {}).get('buckets', []) %}
+          {% if buckets | length > 0 %}
+            Port {{ buckets[0].key }} ({{ buckets[0].doc_count }}x)
+          {% else %}
+            n/a
+          {% endif %}
+      - name: "Wazuh UGREEN Events 24h"
+        unique_id: wazuh_ugreen_events_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh UGREEN Web Success 24h"
+        unique_id: wazuh_ugreen_web_success_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('web_success', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('web_success', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh UGREEN Web Failures 24h"
+        unique_id: wazuh_ugreen_web_failures_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('web_failures', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('web_failures', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh UGREEN SSH Success 24h"
+        unique_id: wazuh_ugreen_ssh_success_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('ssh_success', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('ssh_success', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh UGREEN Account Changes 24h"
+        unique_id: wazuh_ugreen_account_changes_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('account_changes', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('account_changes', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh UGREEN Storage Alerts 24h"
+        unique_id: wazuh_ugreen_storage_alerts_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('storage_alerts', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('storage_alerts', {}).get('doc_count', 0) | int(0) }}
+      - name: "Wazuh UGREEN Top Source IP 24h"
+        unique_id: wazuh_ugreen_top_source_ip_24h
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('top_srcip', {}).get('buckets') is not none }}
+        value_template: >-
+          {% set buckets = value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('top_srcip', {}).get('buckets', []) %}
+          {% if buckets | length > 0 %}
+            {{ buckets[0].key }} ({{ buckets[0].doc_count }}x)
+          {% else %}
+            n/a
+          {% endif %}
+      - name: "Wazuh UGREEN Last Event"
+        unique_id: wazuh_ugreen_last_event
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('latest', {}).get('hits', {}).get('hits') is not none }}
+        value_template: >-
+          {% set hits = value_json.get('aggregations', {}).get('adapter_v1', {}).get('ugreen', {}).get('latest', {}).get('hits', {}).get('hits', []) %}
+          {{ hits[0]._source['@timestamp'] if hits | length > 0 else 'n/a' }}
+        json_attributes_path: "$.aggregations.adapter_v1.ugreen.latest.hits"
+        json_attributes:
+          - hits
+      - name: "Wazuh Source UniFi 24h"
+        unique_id: wazuh_source_unifi_24h
+        unit_of_measurement: "events"
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('sources', {}).get('unifi', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('sources', {}).get('unifi', {}).get('doc_count', 0) | int(0) }}
+        json_attributes_path: "$.aggregations.adapter_v1.sources.unifi"
+        json_attributes:
+          - elevated
+          - high
+          - latest
+      - name: "Wazuh Source SafeLine 24h"
+        unique_id: wazuh_source_safeline_24h
+        unit_of_measurement: "events"
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('sources', {}).get('safeline', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('sources', {}).get('safeline', {}).get('doc_count', 0) | int(0) }}
+        json_attributes_path: "$.aggregations.adapter_v1.sources.safeline"
+        json_attributes:
+          - elevated
+          - high
+          - latest
+      - name: "Wazuh Source UGREEN 24h"
+        unique_id: wazuh_source_ugreen_24h
+        unit_of_measurement: "events"
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('sources', {}).get('ugreen', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('sources', {}).get('ugreen', {}).get('doc_count', 0) | int(0) }}
+        json_attributes_path: "$.aggregations.adapter_v1.sources.ugreen"
+        json_attributes:
+          - elevated
+          - high
+          - latest
+      - name: "Wazuh Source Home Assistant 24h"
+        unique_id: wazuh_source_home_assistant_24h
+        unit_of_measurement: "events"
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('sources', {}).get('home_assistant', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('sources', {}).get('home_assistant', {}).get('doc_count', 0) | int(0) }}
+        json_attributes_path: "$.aggregations.adapter_v1.sources.home_assistant"
+        json_attributes:
+          - elevated
+          - high
+          - latest
+      - name: "Wazuh Source Synology 24h"
+        unique_id: wazuh_source_synology_24h
+        unit_of_measurement: "events"
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('sources', {}).get('synology', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('sources', {}).get('synology', {}).get('doc_count', 0) | int(0) }}
+        json_attributes_path: "$.aggregations.adapter_v1.sources.synology"
+        json_attributes:
+          - elevated
+          - high
+          - latest
+
+template:
+  - sensor:
+      - name: "SIEM Security Score"
+        unique_id: siem_security_score
+        unit_of_measurement: "%"
+        availability: >-
+          {{ has_value('sensor.wazuh_critical_24h')
+             and has_value('sensor.wazuh_high_24h')
+             and has_value('sensor.wazuh_medium_24h') }}
+        state: >-
+          {% set critical = states('sensor.wazuh_critical_24h') | int(0) %}
+          {% set high = states('sensor.wazuh_high_24h') | int(0) %}
+          {% set medium = states('sensor.wazuh_medium_24h') | int(0) %}
+          {% set penalty = 40 if critical > 0 else 0 %}
+          {% set penalty = penalty + (20 if high > 2500 else 10 if high > 1500 else 0) %}
+          {% set penalty = penalty + (10 if medium > 20 else 5 if medium > 10 else 0) %}
+          {{ 100 - penalty }}
+
+recorder:
+  exclude:
+    entities:
+      - sensor.wazuh_security_last_5
+      - sensor.wazuh_safeline_last_attack
+      - sensor.wazuh_ugreen_last_event
+      - sensor.wazuh_source_unifi_24h
+      - sensor.wazuh_source_safeline_24h
+      - sensor.wazuh_source_ugreen_24h
+      - sensor.wazuh_source_home_assistant_24h
+      - sensor.wazuh_source_synology_24h
