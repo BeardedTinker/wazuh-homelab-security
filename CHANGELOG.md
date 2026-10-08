@@ -8,6 +8,10 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 
 ## [Unreleased]
 
+---
+
+## [0.2.0-rc.1] - 2026-10-08
+
 ### Added
 - Home Assistant decoders
 - Home Assistant rules
@@ -25,6 +29,11 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
   documentation
 - production-aligned UGREEN UGOS Pro transport, decoders, rules, and
   sanitized regression scenarios for web authentication and storage I/O errors
+- architecture, compatibility-contract, roadmap, and safe-installation guides
+- source-specific setup guides for UniFi, Synology, Home Assistant, SafeLine,
+  and UGREEN
+- a SafeLine JSON localfile snippet for the agent collecting schema-v1 events
+- dependency-free repository validation and a SHA-pinned GitHub Actions workflow
 
 ### Changed
 - repository structure aligned with source-based rulesets
@@ -36,6 +45,8 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 - marked the SafeLine leaf and correlation rules production-confirmed after
   end-to-end manager validation
 - extended the regression parser with the UGREEN `storage_device` dynamic field
+- documented exact input contracts, unsupported formats, validation gates, and
+  rollback expectations for every telemetry source
 
 ### Removed
 - broad Home Assistant websocket detection that classified normal traffic as suspicious
