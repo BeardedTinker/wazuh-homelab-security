@@ -1,0 +1,54 @@
+{
+  "took": 4,
+  "timed_out": false,
+  "aggregations": {
+    "adapter_v1": {
+      "doc_count": 6,
+      "critical": {"doc_count": 0},
+      "high": {"doc_count": 1},
+      "medium": {"doc_count": 2},
+      "low": {"doc_count": 3},
+      "top_elevated_rule": {
+        "doc_count": 3,
+        "rules": {"buckets": []}
+      },
+      "wan_local": {
+        "doc_count": 0,
+        "top_srcip": {"buckets": []},
+        "top_dstport": {"buckets": []}
+      },
+      "sources": {
+        "unifi": {
+          "doc_count": 0,
+          "elevated": {"doc_count": 0},
+          "high": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
+        },
+        "safeline": {
+          "doc_count": 0,
+          "elevated": {"doc_count": 0},
+          "high": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
+        },
+        "ugreen": {
+          "doc_count": 0,
+          "elevated": {"doc_count": 0},
+          "high": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
+        },
+        "home_assistant": {
+          "doc_count": 0,
+          "elevated": {"doc_count": 0},
+          "high": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
+        },
+        "synology": {
+          "doc_count": 0,
+          "elevated": {"doc_count": 0},
+          "high": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
+        }
+      }
+    }
+  }
+}

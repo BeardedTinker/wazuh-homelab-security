@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/BeardedTinker/wazuh-homelab-security/main/homeassistant/adapter/schema/summary-v1.schema.json",
+  "title": "Home Assistant Wazuh adapter summary response v1",
+  "type": "object",
+  "required": ["timed_out", "aggregations"],
+  "properties": {
+    "took": {"type": "integer", "minimum": 0},
+    "timed_out": {"const": false},
+    "aggregations": {
+      "type": "object",
+      "required": ["adapter_v1"],
+      "properties": {
+        "adapter_v1": {
+          "type": "object",
+          "required": [
+            "doc_count",
+            "critical",
+            "high",
+            "medium",
+            "low",
+            "top_elevated_rule",
+            "wan_local",
+            "ugreen",
+            "sources"
+          ],
+          "properties": {
+            "doc_count": {"type": "integer", "minimum": 0},
+            "critical": {"$ref": "#/$defs/count"},
+            "high": {"$ref": "#/$defs/count"},
+            "medium": {"$ref": "#/$defs/count"},
+            "low": {"$ref": "#/$defs/count"},
+            "top_elevated_rule": {"$ref": "#/$defs/top_rule"},
+            "wan_local": {"$ref": "#/$defs/wan_local"},
+            "ugreen": {"$ref": "#/$defs/ugreen"},
+            "sources": {"$ref": "#/$defs/sources"}
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "count": {
+      "type": "object",
+      "required": ["doc_count"],
+      "properties": {"doc_count": {"type": "integer", "minimum": 0}}
+    },
+    "terms": {
+      "type": "object",
+      "required": ["buckets"],
+      "properties": {
+        "buckets": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["key", "doc_count"],
+            "properties": {
+              "key": {"type": ["string", "integer"]},
+              "doc_count": {"type": "integer", "minimum": 0}
+            }
+          }
+        }
+      }
+    },
+    "top_hits": {
+      "type": "object",
+      "required": ["hits"],
+      "properties": {
+        "hits": {
+          "type": "object",
+          "required": ["hits"],
+          "properties": {
+            "hits": {"type": "array", "maxItems": 1}
+          }
+        }
+      }
+    },
+    "top_rule": {
+      "type": "object",
+      "required": ["doc_count", "rules"],
+      "properties": {
+        "doc_count": {"type": "integer", "minimum": 0},
+        "rules": {"$ref": "#/$defs/terms"}
+      }
+    },
+    "wan_local": {
+      "type": "object",
+      "required": ["doc_count", "top_srcip", "top_dstport"],
+      "properties": {
+        "doc_count": {"type": "integer", "minimum": 0},
+        "top_srcip": {"$ref": "#/$defs/terms"},
+        "top_dstport": {"$ref": "#/$defs/terms"}
+      }
+    },
+    "ugreen": {
+      "type": "object",
+      "required": [
+        "doc_count",
+        "web_success",
+        "web_failures",
+        "ssh_success",
+        "account_changes",
+        "storage_alerts",
+        "top_srcip",
+        "latest"
+      ],
+      "properties": {
+        "doc_count": {"type": "integer", "minimum": 0},
+        "web_success": {"$ref": "#/$defs/count"},
+        "web_failures": {"$ref": "#/$defs/count"},
+        "ssh_success": {"$ref": "#/$defs/count"},
+        "account_changes": {"$ref": "#/$defs/count"},
+        "storage_alerts": {"$ref": "#/$defs/count"},
+        "top_srcip": {"$ref": "#/$defs/terms"},
+        "latest": {"$ref": "#/$defs/top_hits"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["doc_count", "elevated", "high", "latest"],
+      "properties": {
+        "doc_count": {"type": "integer", "minimum": 0},
+        "elevated": {"$ref": "#/$defs/count"},
+        "high": {"$ref": "#/$defs/count"},
+        "latest": {"$ref": "#/$defs/top_hits"}
+      }
+    },
+    "sources": {
+      "type": "object",
+      "required": ["unifi", "safeline", "ugreen", "home_assistant", "synology"],
+      "properties": {
+        "unifi": {"$ref": "#/$defs/source"},
+        "safeline": {"$ref": "#/$defs/source"},
+        "ugreen": {"$ref": "#/$defs/source"},
+        "home_assistant": {"$ref": "#/$defs/source"},
+        "synology": {"$ref": "#/$defs/source"}
+      }
+    }
+  }
+}
