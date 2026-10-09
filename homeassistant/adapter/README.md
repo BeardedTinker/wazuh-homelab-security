@@ -201,9 +201,12 @@ successful `summary-v1` responses. They exist to verify availability behavior.
 
 The published package preserves every entity ID in [`CONTRACT.md`](CONTRACT.md)
 and uses the two documented REST resources. The equivalent two-resource
-configuration passed Home Assistant configuration validation on the audited
-deployment. The fixtures cover full, absent-source, empty, partial, and failed
-responses.
+configuration passed Home Assistant 2026.10.0 configuration validation on the
+audited proxy deployment. All 32 contract entities were available and both
+shared REST resources continued polling successfully after the upgrade. The
+fixtures cover full, absent-source, empty, partial, and failed responses.
+
+This is one deployment validation, not a general compatibility claim.
 
 This remains an example until Phase 5 validates multiple independent proxy
 deployments with different source subsets. Report results with the Home

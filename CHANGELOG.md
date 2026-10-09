@@ -12,6 +12,8 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 - made a constrained read-only HTTPS proxy the recommended Home Assistant
   adapter boundary and marked direct Indexer access as a non-recommended,
   already-segmented deployment exception
+- validated the equivalent two-resource proxy configuration on Home Assistant
+  2026.10.0 with all 32 contract entities available
 
 ---
 
