@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Literal source snippets intentionally use single quotes to prevent expansion.
+# shellcheck disable=SC2016
+
 set -Eeuo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

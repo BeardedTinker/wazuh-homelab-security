@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Guard chains use pass/fail helpers; fail exits and pass returns success.
+# shellcheck disable=SC2015
+
 set -Eeuo pipefail
 umask 077
 
@@ -828,7 +831,8 @@ create_backup() {
   [[ ! -f "$RUN_DIR/regression.before.json" ]] || cp "$RUN_DIR/regression.before.json" "$backup_dir/"
   cp "$LOG_FILE" "$backup_dir/preflight.log"
   (cd "$backup_dir" && find . -maxdepth 1 -type f ! -name SHA256SUMS \
-    -printf '%P\0' | sort -z | xargs -0 -r sha256sum > SHA256SUMS)
+    -printf '%P\0' | sort -z | xargs -0 -r sha256sum) \
+    > "$backup_dir/SHA256SUMS"
   (cd "$backup_dir" && sha256sum -c SHA256SUMS >/dev/null)
   chmod -R go-rwx "$backup_dir"
   printf '%s\n' "$backup_dir" > "$RUN_DIR/backup-path"
@@ -932,8 +936,8 @@ wait_for_indexer() {
 }
 
 wait_for_green() {
-  local attempt response status unassigned relocating initializing
-  for attempt in {1..90}; do
+  local response status unassigned relocating initializing
+  for _ in {1..90}; do
     response=$(indexer_curl "$INDEXER_URL/_cluster/health" 2>/dev/null || true)
     if [[ -n "$response" ]]; then
       status=$(json_field "d.get('status', 'unknown')" <<<"$response")
