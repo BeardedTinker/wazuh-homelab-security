@@ -1,0 +1,32 @@
+# BeardedTinker homelab profile. Copy to /etc/wazuh-aio-upgrade.conf and keep mode 0600.
+PROFILE="homelab"
+
+SOURCE_VERSION="4.14.8"
+TARGET_VERSION="4.14.9"
+MIN_FREE_GIB="10"
+
+INDEXER_URL="https://127.0.0.1:9200"
+INDEXER_CA="/etc/wazuh-indexer/certs/root-ca.pem"
+INDEXER_ADMIN_CERT="/etc/wazuh-indexer/certs/admin.pem"
+INDEXER_ADMIN_KEY="/etc/wazuh-indexer/certs/admin-key.pem"
+INDEXER_INSECURE="false"
+
+SNAPSHOT_REPOSITORY="wazuh-upgrade-fs"
+SNAPSHOT_PATH="/var/backups/wazuh-indexer-snapshots"
+ALLOW_NO_INDEX_SNAPSHOT="false"
+DASHBOARD_EXPORT_ACK_FILE="/root/wazuh-dashboard-export.ndjson"
+ALLOW_NO_DASHBOARD_EXPORT="false"
+MAX_ACK_AGE_HOURS="24"
+
+REPO_CHECKOUT="/opt/wazuh-homelab-security"
+BACKUP_ROOT="/home/bearded"
+STATE_ROOT="/var/lib/wazuh-aio-upgrade"
+LOG_ROOT="/var/log/wazuh-aio-upgrade"
+DASHBOARD_URL="https://127.0.0.1"
+INGEST_LOOKBACK="24h"
+EXPECTED_AGENT_NAMES=""
+
+REGRESSION_TIMEOUT_SECONDS="300"
+REGRESSION_ALLOWED_FAILURES="ugreen/storage-repeated-io ugreen/web-bruteforce ugreen/web-login-success ugreen/web-success-after-failure"
+SERVICE_WAIT_SECONDS="300"
+DASHBOARD_WAIT_SECONDS="300"

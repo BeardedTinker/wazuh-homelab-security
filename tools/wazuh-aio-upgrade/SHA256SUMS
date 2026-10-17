@@ -1,0 +1,5 @@
+d8b9e79a1f63df166c8f9c00d93f4f596b197c0b311308fe0ec3234f94a0f468  wazuh-aio-upgrade.sh
+a28fed0c2f1c27b1a9d9e1f1504ff31f4d9dd89ffd0c42b9279b9060fd939db7  wazuh-aio-upgrade.conf.example
+ae8ef16e27f370c4b4128023388be093ac0a0aca65975c3b6823ced5f323022e  wazuh-aio-upgrade-homelab.conf.example
+5c5bb146f2f2aa9c70684bf60a3f0c079588eb2a6ebca459fd4bf43689f16de0  README.md
+02e12c2c6ec1cffe205f11c32ddc4f837fe377cf59486455afe6215714a8cc6f  tests/smoke-test.sh

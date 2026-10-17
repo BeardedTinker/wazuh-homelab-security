@@ -199,6 +199,7 @@ In the tested setup, GeoIP enrichment is performed in the Wazuh Indexer, not in 
 │   ├── ugreen/
 │   └── unifi/
 ├── tools/
+│   ├── wazuh-aio-upgrade/
 │   ├── regression/
 │   └── sanitize/
 └── wazuh/
@@ -268,6 +269,21 @@ to RFC 5737 TEST-NET space.
 `run_samples.py` sends every non-PENDING scenario through
 `wazuh-logtest-legacy`, preserving state across all lines in each scenario.
 See `tools/regression/README.md` for production and isolated-tree commands.
+
+---
+
+### tools/wazuh-aio-upgrade/
+
+`wazuh-aio-upgrade.sh` is a fail-closed upgrade helper for package-based,
+single-node Wazuh AIO installations on Ubuntu 24.04. The generic profile covers
+standard Wazuh components; the homelab profile additionally protects this
+repository's custom rules, decoders, rsyslog routing, source ingest, and
+regression baseline. Read its
+[upgrade and recovery guide](tools/wazuh-aio-upgrade/README.md) and review a
+successful `preflight` log before running `apply`.
+
+Docker, RPM, and multi-node deployments are outside the helper's supported
+boundary.
 
 ---
 
