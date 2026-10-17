@@ -32,6 +32,7 @@ Please keep contributions aligned with these goals:
 
 ```
 samples/
+tools/wazuh-aio-upgrade/
 tools/regression/
 tools/sanitize/
 wazuh/decoders/

@@ -30,3 +30,13 @@ jobs:
 
       - name: Validate repository
         run: python3 tools/validate_repository.py
+
+      - name: Verify repository checksums
+        run: python3 tools/generate_checksums.py --check
+
+      - name: Test Wazuh AIO upgrade helper
+        run: bash tools/wazuh-aio-upgrade/tests/smoke-test.sh
+
+      - name: Verify Wazuh AIO upgrade helper checksums
+        working-directory: tools/wazuh-aio-upgrade
+        run: sha256sum --check SHA256SUMS
