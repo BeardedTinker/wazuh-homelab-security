@@ -927,8 +927,7 @@ set_allocation() {
 }
 
 wait_for_indexer() {
-  local attempt
-  for attempt in {1..60}; do
+  for _ in {1..60}; do
     if indexer_curl "$INDEXER_URL/_cluster/health" >/dev/null 2>&1; then return 0; fi
     sleep 2
   done
