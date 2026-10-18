@@ -1,0 +1,13 @@
+{
+  "decoder": "minecraft-paper-prelogin-disconnect",
+  "fields": {
+    "data.srcuser": "ExamplePlayer1",
+    "data.srcip": "198.51.100.21",
+    "data.srcport": "61537",
+    "data.minecraft_reason": "Disconnected"
+  },
+  "rules_expected": [
+    100700
+  ],
+  "description": "A pre-login disconnect triggers the low-severity base rule."
+}

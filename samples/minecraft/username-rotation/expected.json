@@ -1,0 +1,11 @@
+{
+  "decoder": "minecraft-paper-prelogin-disconnect",
+  "fields": {
+    "data.srcip": "198.51.100.41"
+  },
+  "rules_expected": [
+    100700,
+    100711
+  ],
+  "description": "Three different player names from one source in one hour trigger rule 100711."
+}

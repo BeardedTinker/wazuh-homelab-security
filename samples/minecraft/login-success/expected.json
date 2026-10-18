@@ -1,0 +1,12 @@
+{
+  "decoder": "minecraft-paper-login-success",
+  "fields": {
+    "data.srcuser": "ExamplePlayer30",
+    "data.srcip": "198.51.100.51",
+    "data.srcport": "43001"
+  },
+  "rules_expected": [
+    100720
+  ],
+  "description": "A completed Paper player login triggers rule 100720."
+}

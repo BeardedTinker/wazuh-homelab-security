@@ -1,0 +1,4 @@
+{
+  "classification": "pass",
+  "summary": "A sanitized Paper pre-login disconnect exposes the attempted player and remote endpoint."
+}

@@ -1,0 +1,10 @@
+{
+  "rules_forbidden": [
+    100700,
+    100701,
+    100702,
+    100710,
+    100711
+  ],
+  "description": "A normal logout has no remote endpoint and must not match the pre-login rules."
+}

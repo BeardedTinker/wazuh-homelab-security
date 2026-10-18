@@ -1,0 +1,4 @@
+{
+  "classification": "pass",
+  "summary": "A normal post-login Paper disconnect must not trigger a Minecraft pre-login rule."
+}

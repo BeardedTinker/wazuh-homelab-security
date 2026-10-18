@@ -3,13 +3,14 @@
 Detection rules and decoders used in the BeardedTinker homelab SIEM setup.
 Practical Wazuh rules, decoders, sample logs, and dashboard building blocks for a real homelab setup.
 
-This repository focuses on five common homelab telemetry sources:
+This repository focuses on six common homelab telemetry sources:
 
 - UniFi firewall / IDS / IPS events
 - Synology DSM authentication events
 - Home Assistant security-relevant logs via Wazuh Agent + journald
 - SafeLine WAF attack events via a schema-versioned JSON collector
 - UGREEN UGOS Pro authentication and storage events via a narrow Fluent Bit pipeline
+- Minecraft Java Paper pre-login scanning and player logins via a host Wazuh Agent
 
 The goal is simple: detect real security signals in a homelab without introducing enterprise-only complexity.
 
@@ -43,7 +44,7 @@ The complete post-upgrade regression result matched the 4.14.8 baseline.
 | Known limitation | The behavior is understood and intentionally retained. |
 | PENDING | No claim is made until an authentic production event is available. |
 
-Current regression status: **18 PASS, 0 FAIL, 2 PENDING, 0 XPASS**.
+Current regression status: **25 PASS, 0 FAIL, 2 PENDING, 0 XPASS**.
 The two PENDING scenarios are `homeassistant/auth-failed` and
 `synology/bruteforce-login`; synthetic events must not be used to close them.
 
@@ -54,6 +55,7 @@ UniFi / Synology ──UDP/514──> rsyslogd ──> /var/log/*.log ──> Wa
 UGREEN ──Fluent Bit RFC3164 UDP/514──> rsyslogd ──> /var/log/ugreen.log
 Home Assistant ──agent secure TCP/1514──────────────────────> Wazuh remoted
 SafeLine Open API ──schema-v1 collector──> attacks.json ──> Wazuh Agent 023
+Minecraft Paper latest.log ──host Wazuh Agent───────────────> Wazuh remoted
 New agents ──password-protected TCP/1515────────────────────> Wazuh authd
 Wazuh alerts ──Filebeat──> Wazuh Indexer ingest pipeline ──> GeoLocation.*
 ```
@@ -162,6 +164,24 @@ example, rsyslog routing, retention, and deployment constraints.
 
 ---
 
+## Minecraft Java Paper
+
+The production-derived Paper log contract covers:
+
+- low-severity pre-login disconnect visibility (`100700`)
+- whitelist rejection (`100701`)
+- authentication-service availability failures (`100702`)
+- distributed low-rate pre-login spray (`100710`)
+- same-source player-name rotation (`100711`)
+- completed player login (`100720`)
+
+Normal post-login disconnects do not contain the remote endpoint shape required
+by the pre-login decoder. See [`minecraft/README.md`](minecraft/README.md) for
+the observed contract, host-path discovery, thresholds, installation, privacy,
+and validation boundaries.
+
+---
+
 ## GeoIP enrichment
 
 This repository also includes an optional Wazuh Indexer GeoIP pipeline for enriching alerts with geographic context.
@@ -194,8 +214,11 @@ In the tested setup, GeoIP enrichment is performed in the Wazuh Indexer, not in 
 │   └── README.md
 ├── homeassistant/
 │   └── README.md
+├── minecraft/
+│   └── README.md
 ├── samples/
 │   ├── homeassistant/
+│   ├── minecraft/
 │   ├── safeline/
 │   ├── synology/
 │   ├── ugreen/
@@ -298,6 +321,8 @@ Examples:
 - 0100-unifi-decoders.xml
 - 0200-synology-decoders.xml
 - 0300-homeassistant-decoders.xml
+- 0500-ugreen-decoders.xml
+- 0600-minecraft-decoders.xml
 
 This includes the working UniFi UCG Ultra CEF decoder used to extract:
 
@@ -323,6 +348,7 @@ Examples:
 - 0300-homeassistant-rules.xml
 - 0400-safeline-rules.xml
 - 0500-ugreen-rules.xml
+- 0600-minecraft-rules.xml
 
 Rules are intentionally organized by source domain to keep the repository readable.
 
@@ -354,6 +380,7 @@ Examples include:
 - Synology log ingestion
 - journald ingestion for Home Assistant
 - UGREEN file-based log ingestion
+- Minecraft Paper live-log ingestion on the emitting host agent
 
 In the tested deployment, `rsyslogd` owns UDP/514 and writes UniFi, Synology,
 and UGREEN events to source-specific files; Wazuh reads them through
@@ -386,7 +413,8 @@ Recommended workflow when applying these rules:
 5. Store the enrollment password in `/var/ossec/etc/authd.pass`; never put it
    in Git or inline XML.
 6. Configure rsyslog to write UniFi, Synology, and UGREEN events to the paths
-   consumed by the `<localfile>` blocks.
+   consumed by the `<localfile>` blocks, or configure the Minecraft host agent
+   to read Paper's verified host-side `latest.log` path.
 7. Optionally configure the Indexer GeoIP pipeline.
 8. Validate XML and all Wazuh daemons before restarting.
 9. Run the complete regression suite and verify indexed documents.
@@ -499,6 +527,9 @@ does not depend on one final SID.
 | 100611 | 10 | UGOS web success after same-source failure | Production logtest-confirmed |
 | 100620 | 5 | UGREEN root password change | Production-confirmed; low severity is intentional |
 | 100630 / 100631 | 10 / 13 | UGREEN storage I/O error and repeated same-device correlation | Production logtest-confirmed |
+| 100700–100702 | 3–8 | Paper pre-login disconnect, whitelist rejection, and authentication outage | Production-derived regression coverage |
+| 100710 / 100711 | 10 / 12 | Distributed pre-login spray and same-source player-name rotation | Production-derived regression coverage |
+| 100720 | 3 | Paper player login completed | Production-derived regression coverage |
 
 ---
 
@@ -648,6 +679,7 @@ Custom rules in this repository use a dedicated rule ID range to avoid conflicts
 100400–100499   Home Assistant detections
 100500–100599   SafeLine WAF detections
 100600–100699   UGREEN UGOS Pro detections
+100700–100799   Minecraft Java Paper detections
 ```
 
 If you extend this repository, it is recommended to keep new rules within the same logical ranges.

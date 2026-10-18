@@ -8,7 +8,18 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 
 ## [Unreleased]
 
+### Added
+- Minecraft Java Paper decoders and rules for pre-login disconnects, whitelist
+  rejection, authentication-service outages, distributed scanning,
+  same-source player-name rotation, and completed logins
+- sanitized production-derived Minecraft regression scenarios, including a
+  negative assertion for normal post-login disconnects
+- MineOS/Paper host-path discovery, agent collection, validation, privacy, and
+  threshold documentation
+
 ### Changed
+- extended the regression runner with forbidden-rule assertions and the
+  Minecraft disconnect-reason field
 - updated the current production compatibility baseline from Wazuh 4.14.8 to
   4.14.9 after an in-place upgrade, daemon validation, and exact pre/post
   regression match

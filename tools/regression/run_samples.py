@@ -23,6 +23,7 @@ FIELD_NAMES = (
     "dstuser",
     "srcuser",
     "storage_device",
+    "minecraft_reason",
 )
 
 
@@ -49,7 +50,7 @@ def parse_args() -> argparse.Namespace:
         "--logtest-bin",
         type=Path,
         default=Path("/var/ossec/bin/wazuh-logtest-legacy"),
-        help="Path to the Wazuh 4.14.8 wazuh-logtest-legacy binary.",
+        help="Path to the Wazuh 4.14.9 wazuh-logtest-legacy binary.",
     )
     parser.add_argument(
         "--wazuh-root",
@@ -119,6 +120,9 @@ def event_matches(event: EventResult, expected: dict[str, Any]) -> list[str]:
     expected_rules = expected.get("rules", [])
     if expected_rules and event.rule not in expected_rules:
         errors.append(f"rule expected one of {expected_rules}, got {event.rule!r}")
+    forbidden_rules = expected.get("rules_forbidden", [])
+    if event.rule in forbidden_rules:
+        errors.append(f"rule {event.rule!r} is forbidden")
     return errors
 
 
@@ -161,6 +165,9 @@ def compare_object(events: list[EventResult], expected: dict[str, Any]) -> list[
             failures.append(
                 f"expected rule {rule} was not generated; actual rules: {sorted(actual_rules)}"
             )
+    forbidden_rules = actual_rules.intersection(expected.get("rules_forbidden", []))
+    if forbidden_rules:
+        failures.append(f"forbidden rules were generated: {sorted(forbidden_rules)}")
     return failures
 
 
