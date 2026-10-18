@@ -1,7 +1,7 @@
 # Safe installation and rollback
 
 This guide describes the supported installation approach for the current
-Wazuh 4.14.8 production baseline. Install one telemetry source at a time. Do
+Wazuh 4.14.9 production baseline. Install one telemetry source at a time. Do
 not copy the repository over `/var/ossec/etc`, and do not restart the manager
 until its configuration tests pass.
 

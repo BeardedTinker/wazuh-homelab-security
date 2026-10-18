@@ -1,7 +1,7 @@
 # Home Assistant telemetry setup
 
 This guide connects supported Home Assistant security events to the Wazuh
-4.14.8 baseline in this repository. The production-confirmed path uses a Wazuh
+4.14.9 baseline in this repository. The production-confirmed path uses a Wazuh
 agent with read-only journald access and preserves `homeassistant` as the
 pre-decoded program name.
 
@@ -48,8 +48,8 @@ events.
 
 The companion
 [`ha-wazuh-agent-addon`](https://github.com/BeardedTinker/ha-wazuh-agent-addon)
-runs the official Wazuh agent inside Home Assistant OS. Release `v1.2.2` bundles
-Wazuh Agent `4.14.8-1` and requires a Wazuh Manager at version 4.14.8 or newer.
+runs the official Wazuh agent inside Home Assistant OS. Release `v1.2.3` bundles
+Wazuh Agent `4.14.9-1` and requires a Wazuh Manager at version 4.14.9 or newer.
 Follow that repository's installation, enrollment, persistence, and upgrade
 documentation rather than copying add-on configuration from this guide.
 

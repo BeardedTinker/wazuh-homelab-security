@@ -7,13 +7,14 @@ published for other users.
 ## Project status
 
 The repository is an early public project built from a production homelab. Its
-current audited baseline is Wazuh 4.14.8. Unless a release or this document says
+current audited baseline is Wazuh 4.14.9. Unless a release or this document says
 otherwise, examples from other Wazuh versions are not assumed to be compatible.
 
-The repository currently ships detection content and transport examples. It
-does **not** currently ship a supported Home Assistant dashboard or polling
-adapter. Any local Home Assistant configuration used to develop such an adapter
-is a prototype, not a public API.
+The repository currently ships detection content, transport examples, and an
+optional Home Assistant YAML polling adapter with a versioned entity and response
+contract. It does **not** ship a supported dashboard or custom integration. The
+adapter has been validated on one deployment and remains an example until the
+independent-deployment gate in the roadmap is met.
 
 ## Architectural layers
 
@@ -109,12 +110,11 @@ Rules, queries, and adapters must behave predictably when a source is absent:
 Cross-source correlations are opt-in behavior. Their source, field, agent-scope,
 and timeframe assumptions must be documented alongside the rule.
 
-## Proposed Home Assistant adapter boundary
+## Home Assistant adapter boundary
 
-A future Home Assistant adapter belongs to the optional presentation layer. Its
-first public version should be a documented YAML example under a dedicated
-`home-assistant/` directory. A custom integration should be considered only
-after the query and entity contracts have been validated by multiple users.
+The published Home Assistant YAML adapter belongs to the optional presentation
+layer under `homeassistant/adapter/`. A custom integration should be considered
+only after the query and entity contracts have been validated by multiple users.
 
 The adapter must:
 

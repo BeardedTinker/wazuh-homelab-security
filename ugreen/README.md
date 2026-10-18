@@ -1,7 +1,7 @@
 # UGREEN UGOS Pro telemetry
 
 This guide forwards a narrow, security-focused subset of UGREEN UGOS Pro logs
-to the Wazuh 4.14.8 baseline in this repository. The production-confirmed
+to the Wazuh 4.14.9 baseline in this repository. The production-confirmed
 deployment uses a DXP4800 GT, Fluent Bit 5.1.2, an existing rsyslog receiver,
 and manager-side custom rules.
 
@@ -15,7 +15,7 @@ The tracked pipeline was validated with:
 - UGREEN DXP4800 GT running UGOS Pro
 - Fluent Bit 5.1.2 with the pinned image digest in `compose.yaml`
 - RFC 3164 syslog over UDP/514
-- Wazuh Manager 4.14.8
+- Wazuh Manager 4.14.9
 
 The current web-login decoders require:
 
@@ -30,7 +30,7 @@ an IPv6 event is not evidence that it will decode. Add an authentic sanitized
 fixture before extending this contract.
 
 The storage decoder is a child of Wazuh's built-in `kernel` decoder. That parent
-exists in the audited 4.14.8 ruleset. Compatibility with another Wazuh version
+exists in the audited 4.14.9 ruleset. Compatibility with another Wazuh version
 must be verified rather than inferred.
 
 ## Data flow

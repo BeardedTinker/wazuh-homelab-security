@@ -4,7 +4,9 @@ These samples contain collector-normalized SafeLine WAF events for Wazuh rule
 regression testing.
 
 All four scenarios are derived from end-to-end production events observed with
-SafeLine 9.4.2, collector schema version 1, Wazuh agent 023, and Wazuh 4.14.8:
+SafeLine 9.4.2, collector schema version 1, Wazuh agent 023, and Wazuh 4.14.8.
+The same scenarios were regression-validated after the Manager upgrade to
+Wazuh 4.14.9:
 
 | Scenario | Production-confirmed result |
 |---|---|

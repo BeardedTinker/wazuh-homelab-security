@@ -6,11 +6,15 @@ when its exit criteria are met.
 
 ## Current baseline
 
-- Detection content is production-audited on Wazuh 4.14.8.
+- Detection content is production-audited on Wazuh 4.14.9 after an in-place
+  upgrade with an exact pre/post regression match.
 - The regression suite reports 18 PASS, 0 FAIL, 2 PENDING, and 0 XPASS.
 - UniFi, Synology, Home Assistant, SafeLine, and UGREEN content is present.
-- The repository has no tagged release after the initial `0.1.0` changelog entry.
-- No supported Home Assistant polling or dashboard adapter is published.
+- Release candidates `v0.2.0-rc.1` and `v0.2.0-rc.2` are tagged; no stable
+  `0.2.0` release has been published.
+- An optional Home Assistant YAML polling adapter is published with a versioned
+  contract and one-deployment validation; no dashboard or custom integration is
+  published.
 - Fresh-install issue #1 is fixed in the repository but awaits user confirmation.
 
 ## Phase 1: Stabilize installation
@@ -28,7 +32,7 @@ Work:
 
 Exit criteria:
 
-- a clean Wazuh 4.14.8 installation passes daemon validation after following the docs
+- a clean Wazuh 4.14.9 installation passes daemon validation after following the docs
 - every source has an independent install and uninstall path
 - no instruction requires replacing a complete manager configuration directory
 
@@ -70,9 +74,12 @@ Exit criteria:
 - documentation refers to the released files, not moving branch content
 - upgrade notes cover users of the initial public configuration
 
-## Phase 4: Design the Home Assistant adapter
+## Phase 4: Design the Home Assistant adapter (v1 complete)
 
 Goal: define the adapter contract before publishing implementation details.
+
+Status: completed for the published version 1 YAML adapter. Future contract
+changes remain subject to the same design gates.
 
 Work:
 

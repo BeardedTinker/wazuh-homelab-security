@@ -19,12 +19,13 @@ This repository reflects a real working homelab deployment.
 
 The primary product is the Wazuh detection core: decoders, rules, collectors,
 sanitized samples, and regression tooling. Indexer enrichment and presentation
-layers are optional. A supported Home Assistant polling or dashboard adapter is
-not currently published in this repository.
+layers are optional. The repository publishes an optional Home Assistant YAML
+polling adapter, but no supported dashboard or custom integration.
 
-This is an early project with an audited Wazuh 4.14.8 baseline. Pin a tagged
-release when one is available; until then, review changes before deploying from
-`main` and always run Wazuh daemon validation before restart.
+This is an early project whose current `main` branch has an audited Wazuh 4.14.9
+baseline. The latest tagged release candidate, `v0.2.0-rc.2`, retains its
+historical Wazuh 4.14.8 baseline. Pin the exact ref you deploy, review changes,
+and always run Wazuh daemon validation before restart.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for project boundaries and compatibility
 promises, and [ROADMAP.md](ROADMAP.md) for the documentation, release, and
@@ -33,7 +34,8 @@ source-by-source backup, validation, restart, and rollback workflow.
 
 ## Audited production baseline
 
-The current baseline was exported from and validated on **Wazuh 4.14.8**.
+The current baseline was upgraded in place and validated on **Wazuh 4.14.9**.
+The complete post-upgrade regression result matched the 4.14.8 baseline.
 
 | Status | Meaning |
 |---|---|
@@ -120,7 +122,7 @@ validation, and current PENDING coverage.
 
 ## SafeLine WAF
 
-Production-confirmed detections on Wazuh 4.14.8:
+Production-confirmed detections on Wazuh 4.14.9:
 
 - blocked risk-level-3 SQL injection (`100510`)
 - blocked risk-level-3 XSS (`100520`)
@@ -145,7 +147,7 @@ runtime paths, privacy behavior, and pipeline.
 
 ## UGREEN UGOS Pro
 
-Production deployment and regression coverage on Wazuh 4.14.8 includes:
+Production deployment and regression coverage on Wazuh 4.14.9 includes:
 
 - UGOS web login success and failure (`100600`, `100601`)
 - repeated same-source web failures (`100610`)
@@ -355,7 +357,7 @@ Examples include:
 
 In the tested deployment, `rsyslogd` owns UDP/514 and writes UniFi, Synology,
 and UGREEN events to source-specific files; Wazuh reads them through
-`<localfile>`. Stock Wazuh 4.14.8 manager-side GeoIP expects legacy libGeoIP
+`<localfile>`. Stock Wazuh 4.14.9 manager-side GeoIP expects legacy libGeoIP
 data and is not configured.
 
 ---
@@ -669,7 +671,7 @@ Future improvements may include:
 This repository is tested primarily with:
 
 ```
-Wazuh 4.14.8
+Wazuh 4.14.9
 ```
 
 Earlier versions may still work but some features behave differently depending on the Wazuh release.
@@ -677,7 +679,7 @@ Earlier versions may still work but some features behave differently depending o
 In particular:
 
 - UniFi IDS / IPS events rely on the custom `unifi-ucg-cef` decoder included in this repository.
-- Stock Wazuh 4.14.8 manager packages do not consume GeoLite2 `.mmdb` files for rule evaluation.
+- Stock Wazuh 4.14.9 manager packages do not consume GeoLite2 `.mmdb` files for rule evaluation.
 - In this setup GeoIP enrichment is performed in the **Wazuh Indexer** using an ingest pipeline.
 
 Because of these differences, dashboards and monitors should rely on structured fields such as:

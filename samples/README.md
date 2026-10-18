@@ -74,7 +74,7 @@ Each scenario can include `scenario.json` with one of these classifications:
 Known failures must not be made green by weakening `expected.json`. See
 `tools/regression/README.md` for isolated/offline runner options.
 
-Current audited result on Wazuh 4.14.8:
+Current audited result on Wazuh 4.14.9:
 
 ```text
 PASS=18, FAIL=0, PENDING=2, XPASS=0
