@@ -149,9 +149,16 @@ only the SafeLine rules:
 
 ```bash
 sudo install -o root -g wazuh -m 0640 \
-  wazuh/rules/0400-safeline-rules.xml \
-  /var/ossec/etc/rules/0400-safeline-rules.xml
+  wazuh/rules/0480-safeline-rules.xml \
+  /var/ossec/etc/rules/0480-safeline-rules.xml
 ```
+
+The `0480` prefix is intentional: Wazuh must load built-in
+`0475-suricata_rules.xml`, which defines parent rule `86600`, before loading the
+SafeLine children. When upgrading from a checkout that installed
+`0400-safeline-rules.xml`, back up the manager configuration and remove that old
+file before installing `0480-safeline-rules.xml`. Never load both filenames;
+their identical rule IDs would be duplicates.
 
 ## Validate before restart
 
