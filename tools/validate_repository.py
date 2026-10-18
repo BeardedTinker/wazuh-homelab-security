@@ -212,7 +212,7 @@ class Validator:
             if isinstance(decoder, str):
                 self.expected_decoders.append((decoder, path))
 
-            for key in ("rules", "rules_expected"):
+            for key in ("rules", "rules_expected", "rules_forbidden"):
                 rules = value.get(key)
                 if rules is None:
                     continue

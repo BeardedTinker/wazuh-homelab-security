@@ -37,7 +37,7 @@ Collectors and transport examples bring source telemetry to the detection core:
 
 - SafeLine schema-versioned JSON collector
 - UGREEN Fluent Bit and rsyslog pipeline
-- UniFi, Synology, and Home Assistant localfile or journald snippets
+- UniFi, Synology, Home Assistant, and Minecraft localfile or journald snippets
 
 Every source is optional. Installing one source must not require installing any
 other source. A collector failure must not stop the Wazuh manager or unrelated
@@ -104,8 +104,8 @@ Rules, queries, and adapters must behave predictably when a source is absent:
 - missing sources produce no matching alerts, not setup failures
 - dashboards show zero or an explicitly empty state
 - source-specific attributes may be absent
-- no query assumes that every user has UniFi, Synology, SafeLine, UGREEN, or
-  Home Assistant telemetry
+- no query assumes that every user has UniFi, Synology, SafeLine, UGREEN,
+  Home Assistant, or Minecraft telemetry
 
 Cross-source correlations are opt-in behavior. Their source, field, agent-scope,
 and timeframe assumptions must be documented alongside the rule.

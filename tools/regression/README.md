@@ -38,7 +38,11 @@ python3 tools/regression/run_samples.py \
 An unexpected pass for a `known_fail` scenario is reported as `XPASS`, requiring
 review before the metadata is changed.
 
-The audited Wazuh 4.14.9 baseline currently has 18 passing scenarios, no
+An expected result can also declare `rules_forbidden`. The scenario fails if
+any listed rule appears, which protects narrow decoders against known benign
+formats such as a normal Minecraft post-login disconnect.
+
+The audited Wazuh 4.14.9 baseline currently has 25 passing scenarios, no
 `known_fail` scenarios, and two
 scenarios remain PENDING because authentic production input is unavailable:
 

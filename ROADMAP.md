@@ -8,8 +8,9 @@ when its exit criteria are met.
 
 - Detection content is production-audited on Wazuh 4.14.9 after an in-place
   upgrade with an exact pre/post regression match.
-- The regression suite reports 18 PASS, 0 FAIL, 2 PENDING, and 0 XPASS.
-- UniFi, Synology, Home Assistant, SafeLine, and UGREEN content is present.
+- The regression suite reports 25 PASS, 0 FAIL, 2 PENDING, and 0 XPASS.
+- UniFi, Synology, Home Assistant, SafeLine, UGREEN, and Minecraft Paper content
+  is present.
 - Release candidates `v0.2.0-rc.1` and `v0.2.0-rc.2` are tagged; no stable
   `0.2.0` release has been published.
 - An optional Home Assistant YAML polling adapter is published with a versioned

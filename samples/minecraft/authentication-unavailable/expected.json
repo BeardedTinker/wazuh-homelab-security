@@ -1,0 +1,10 @@
+{
+  "decoder": "minecraft-paper-prelogin-disconnect",
+  "fields": {
+    "data.minecraft_reason": "Authentication servers are down. Please try again later. Sorry!"
+  },
+  "rules_expected": [
+    100702
+  ],
+  "description": "An authentication-service outage triggers operational rule 100702."
+}

@@ -1,0 +1,13 @@
+<!-- Paper pre-login disconnects include the attempted player name and remote endpoint. -->
+<decoder name="minecraft-paper-prelogin-disconnect">
+  <prematch type="pcre2">^\[[0-9]{2}:[0-9]{2}:[0-9]{2}\] \[Server thread/INFO\]: [A-Za-z0-9_]{1,16} \(/[0-9.]+:[0-9]+\) lost connection: </prematch>
+  <regex type="pcre2">^\[[0-9]{2}:[0-9]{2}:[0-9]{2}\] \[Server thread/INFO\]: ([A-Za-z0-9_]{1,16}) \(/((?:[0-9]{1,3}\.){3}[0-9]{1,3}):([0-9]{1,5})\) lost connection: (.+)$</regex>
+  <order>srcuser,srcip,srcport,minecraft_reason</order>
+</decoder>
+
+<!-- A completed Paper login uses square brackets around the remote endpoint. -->
+<decoder name="minecraft-paper-login-success">
+  <prematch type="pcre2">^\[[0-9]{2}:[0-9]{2}:[0-9]{2}\] \[Server thread/INFO\]: [A-Za-z0-9_]{1,16}\[/[0-9.]+:[0-9]+\] logged in with entity id </prematch>
+  <regex type="pcre2">^\[[0-9]{2}:[0-9]{2}:[0-9]{2}\] \[Server thread/INFO\]: ([A-Za-z0-9_]{1,16})\[/((?:[0-9]{1,3}\.){3}[0-9]{1,3}):([0-9]{1,5})\] logged in with entity id [0-9]+ at </regex>
+  <order>srcuser,srcip,srcport</order>
+</decoder>

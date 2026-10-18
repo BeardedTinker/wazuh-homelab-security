@@ -1,0 +1,12 @@
+{
+  "decoder": "minecraft-paper-prelogin-disconnect",
+  "fields": {
+    "data.srcuser": "ExamplePlayer2",
+    "data.srcip": "198.51.100.22",
+    "data.minecraft_reason": "You are not whitelisted on this server!"
+  },
+  "rules_expected": [
+    100701
+  ],
+  "description": "A non-whitelisted pre-login attempt triggers rule 100701."
+}

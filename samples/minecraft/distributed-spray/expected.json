@@ -1,0 +1,8 @@
+{
+  "decoder": "minecraft-paper-prelogin-disconnect",
+  "rules_expected": [
+    100700,
+    100710
+  ],
+  "description": "Five pre-login disconnects in one hour trigger the distributed spray rule."
+}

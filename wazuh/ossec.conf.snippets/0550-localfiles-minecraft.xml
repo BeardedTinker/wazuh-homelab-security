@@ -1,0 +1,5 @@
+<!-- Merge on the Minecraft host agent, not on the Wazuh manager. Replace the example path. -->
+<localfile>
+  <log_format>syslog</log_format>
+  <location>/path/to/minecraft/server/logs/latest.log</location>
+</localfile>
