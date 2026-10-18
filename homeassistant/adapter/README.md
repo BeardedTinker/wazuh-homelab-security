@@ -90,7 +90,7 @@ Version 1 uses two shared responses:
 | Response | Default interval | Purpose | Requests/hour |
 | --- | ---: | --- | ---: |
 | `fast-v1` | 120 seconds | Last five security alerts and SafeLine activity | 30 |
-| `summary-v1` | 300 seconds | Severity, source, UniFi, and UGREEN summaries | 12 |
+| `summary-v1` | 300 seconds | Severity, source, UniFi, UGREEN, and Minecraft summaries | 12 |
 | **Total** |  |  | **42** |
 
 The development installation currently uses five resources and approximately
@@ -112,14 +112,16 @@ boundary consumed by Home Assistant templates.
 - [`schema/fast-v1.schema.json`](schema/fast-v1.schema.json)
 - [`schema/summary-v1.schema.json`](schema/summary-v1.schema.json)
 
-Adding optional fields is compatible. Renaming or removing a documented path,
-changing its type, or changing its meaning requires a new schema version.
+Adding optional fields is compatible. The Minecraft source branch is an
+optional v1 field so responses generated before this extension remain valid.
+Renaming or removing a documented path, changing its type, or changing its
+meaning requires a new schema version.
 
 ## Optional sources
 
-UniFi, Synology, Home Assistant, SafeLine, and UGREEN are independently
-optional. A source that is not installed produces valid zero counts and empty
-hit lists. It does not make the adapter unavailable.
+UniFi, Synology, Home Assistant, SafeLine, UGREEN, and Minecraft are
+independently optional. A source that is not installed produces valid zero
+counts and empty hit lists. It does not make the adapter unavailable.
 
 The following states have distinct meanings:
 
@@ -156,7 +158,7 @@ attack types. Repeated alerts remain visible because collapsing them could hide
 an active repeated probe.
 
 The YAML implementation will exclude this entity, both source-specific last
-event entities, and all five source-summary entities from Recorder. Their
+event entities, and all six source-summary entities from Recorder. Their
 current states and attributes remain available to dashboards, but alert details
 are not written into Home Assistant's historical database by default. Wazuh
 remains the source of truth for historical security events.
@@ -168,7 +170,7 @@ before publication:
 
 - Home Assistant configuration validation passed
 - the REST integration reloaded without a Core restart
-- all 32 contracted entities remained present and available
+- all 32 entities in the original v1 baseline remained present and available
 - `sensor.wazuh_security_last_5` retained five bounded recent hits
 - an optional source with no matching events returned valid zero and empty states
 - the number of configured REST resources decreased from five to two
@@ -184,7 +186,7 @@ identifiers:
 - [`fixtures/fast-full.json`](fixtures/fast-full.json) — recent security and
   SafeLine hits
 - [`fixtures/summary-full.json`](fixtures/summary-full.json) — every source
-  represented
+  represented, including a sanitized Minecraft latest hit
 - [`fixtures/summary-missing-sources.json`](fixtures/summary-missing-sources.json)
   — optional sources with zero matches
 - [`fixtures/summary-empty.json`](fixtures/summary-empty.json) — empty index
@@ -199,12 +201,14 @@ successful `summary-v1` responses. They exist to verify availability behavior.
 
 ## Validation and support boundary
 
-The published package preserves every entity ID in [`CONTRACT.md`](CONTRACT.md)
-and uses the two documented REST resources. The equivalent two-resource
-configuration passed Home Assistant 2026.10.0 configuration validation on the
-audited proxy deployment. All 32 contract entities were available and both
-shared REST resources continued polling successfully after the upgrade. The
-fixtures cover full, absent-source, empty, partial, and failed responses.
+The published package preserves every existing entity ID in
+[`CONTRACT.md`](CONTRACT.md), adds one Minecraft source entity, and uses the two
+documented REST resources. The equivalent two-resource configuration passed
+Home Assistant 2026.10.0 configuration validation on the audited proxy
+deployment with the original 32 entities. The additive Minecraft aggregation
+and entity were then validated on Home Assistant 2026.10.2 with a live
+read-only proxy response. The fixtures cover full, absent-source, empty,
+partial, and failed responses.
 
 This is one deployment validation, not a general compatibility claim.
 

@@ -99,6 +99,29 @@
           "elevated": {"doc_count": 1},
           "high": {"doc_count": 0},
           "latest": {"hits": {"hits": []}}
+        },
+        "minecraft": {
+          "doc_count": 8,
+          "elevated": {"doc_count": 0},
+          "high": {"doc_count": 0},
+          "prelogin": {"doc_count": 8},
+          "whitelist": {"doc_count": 0},
+          "auth_unavailable": {"doc_count": 0},
+          "distributed_spray": {"doc_count": 0},
+          "username_rotation": {"doc_count": 0},
+          "successful_logins": {"doc_count": 0},
+          "latest": {
+            "hits": {
+              "hits": [
+                {
+                  "_source": {
+                    "@timestamp": "2026-01-15T11:59:00.000Z",
+                    "rule": {"id": "100700", "level": 3}
+                  }
+                }
+              ]
+            }
+          }
         }
       }
     }

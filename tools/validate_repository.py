@@ -36,6 +36,7 @@ ADAPTER_UNIQUE_IDS = {
     "wazuh_safeline_xss_24h",
     "wazuh_security_last_5",
     "wazuh_source_home_assistant_24h",
+    "wazuh_source_minecraft_24h",
     "wazuh_source_safeline_24h",
     "wazuh_source_synology_24h",
     "wazuh_source_ugreen_24h",
@@ -57,6 +58,7 @@ ADAPTER_RECORDER_EXCLUSIONS = {
     "sensor.wazuh_safeline_last_attack",
     "sensor.wazuh_security_last_5",
     "sensor.wazuh_source_home_assistant_24h",
+    "sensor.wazuh_source_minecraft_24h",
     "sensor.wazuh_source_safeline_24h",
     "sensor.wazuh_source_synology_24h",
     "sensor.wazuh_source_ugreen_24h",
@@ -275,12 +277,30 @@ class Validator:
     def validate_home_assistant_adapter(self) -> None:
         package = ROOT / "homeassistant" / "adapter" / "wazuh_adapter.yaml"
         secrets = ROOT / "homeassistant" / "adapter" / "secrets.example.yaml"
+        summary_schema = (
+            ROOT / "homeassistant" / "adapter" / "schema" / "summary-v1.schema.json"
+        )
+        fixture_directory = ROOT / "homeassistant" / "adapter" / "fixtures"
+        summary_fixture_names = (
+            "summary-empty.json",
+            "summary-full.json",
+            "summary-missing-sources.json",
+            "summary-partial.json",
+        )
 
         try:
             package_text = package.read_text(encoding="utf-8")
             secrets_text = secrets.read_text(encoding="utf-8")
+            schema_data = json.loads(summary_schema.read_text(encoding="utf-8"))
+            summary_fixtures = {
+                name: json.loads((fixture_directory / name).read_text(encoding="utf-8"))
+                for name in summary_fixture_names
+            }
         except OSError as exc:
             self.error("homeassistant/adapter", f"cannot read adapter files: {exc}")
+            return
+        except json.JSONDecodeError as exc:
+            self.error("homeassistant/adapter", f"cannot parse adapter JSON: {exc}")
             return
 
         resources = re.findall(
@@ -315,6 +335,68 @@ class Validator:
         for entity_id in sorted(ADAPTER_RECORDER_EXCLUSIONS):
             if package_text.count(f"- {entity_id}") != 1:
                 self.error(package, f"Recorder exclusion must occur once: {entity_id}")
+
+        minecraft_rule_ids = {"100700", "100701", "100702", "100710", "100711", "100720"}
+        for rule_id in sorted(minecraft_rule_ids):
+            if rule_id not in package_text:
+                self.error(package, f"missing Minecraft rule filter {rule_id}")
+
+        try:
+            sources_schema = schema_data["$defs"]["sources"]
+            minecraft_schema = schema_data["$defs"]["minecraft_source"]
+        except (KeyError, TypeError) as exc:
+            self.error("homeassistant/adapter", f"missing Minecraft adapter branch: {exc}")
+        else:
+            if "minecraft" in sources_schema.get("required", []):
+                self.error(summary_schema, "Minecraft must remain an optional v1 source field")
+            if "minecraft" not in sources_schema.get("properties", {}):
+                self.error(summary_schema, "sources schema does not define Minecraft")
+
+            required_counts = {
+                "elevated",
+                "high",
+                "prelogin",
+                "whitelist",
+                "auth_unavailable",
+                "distributed_spray",
+                "username_rotation",
+                "successful_logins",
+            }
+            if not required_counts <= set(minecraft_schema.get("required", [])):
+                self.error(summary_schema, "Minecraft schema is missing required counters")
+
+            for name, fixture_data in summary_fixtures.items():
+                fixture_path = fixture_directory / name
+                try:
+                    minecraft_fixture = fixture_data["aggregations"]["adapter_v1"][
+                        "sources"
+                    ]["minecraft"]
+                except (KeyError, TypeError) as exc:
+                    self.error(fixture_path, f"missing Minecraft source branch: {exc}")
+                    continue
+                if not required_counts <= set(minecraft_fixture):
+                    self.error(fixture_path, "Minecraft fixture is missing required counters")
+
+            full_minecraft = (
+                summary_fixtures["summary-full.json"]
+                .get("aggregations", {})
+                .get("adapter_v1", {})
+                .get("sources", {})
+                .get("minecraft", {})
+            )
+            hits = full_minecraft.get("latest", {}).get("hits", {}).get("hits", [])
+            if hits:
+                source = hits[0].get("_source", {})
+                if set(source) - {"@timestamp", "rule"}:
+                    self.error(
+                        fixture_directory / "summary-full.json",
+                        "Minecraft latest hit contains extra source fields",
+                    )
+                if set(source.get("rule", {})) - {"id", "level"}:
+                    self.error(
+                        fixture_directory / "summary-full.json",
+                        "Minecraft latest rule contains sensitive fields",
+                    )
 
         secret_keys = set(
             re.findall(r"^([a-z0-9_]+):", secrets_text, flags=re.MULTILINE)

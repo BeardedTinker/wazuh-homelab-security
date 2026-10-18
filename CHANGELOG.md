@@ -8,6 +8,10 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 
 ## [Unreleased]
 
+---
+
+## [0.2.0-rc.3] - 2026-10-18
+
 ### Added
 - Minecraft Java Paper decoders and rules for pre-login disconnects, whitelist
   rejection, authentication-service outages, distributed scanning,
@@ -16,6 +20,10 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
   negative assertion for normal post-login disconnects
 - MineOS/Paper host-path discovery, agent collection, validation, privacy, and
   threshold documentation
+- an additive Minecraft source entity in the Home Assistant adapter with
+  pre-login, whitelist, authentication-backend, spray, player-name rotation,
+  successful-login, severity, and sanitized latest-event attributes
+- compatible summary-v1 schema coverage and sanitized Minecraft fixtures
 
 ### Changed
 - extended the regression runner with forbidden-rule assertions and the
@@ -32,6 +40,8 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
   already-segmented deployment exception
 - validated the equivalent two-resource proxy configuration on Home Assistant
   2026.10.0 with all 32 contract entities available
+- extended the adapter contract to 33 entities while preserving all existing
+  entity IDs and required summary-v1 paths
 
 ---
 

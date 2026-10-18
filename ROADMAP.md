@@ -11,8 +11,8 @@ when its exit criteria are met.
 - The regression suite reports 25 PASS, 0 FAIL, 2 PENDING, and 0 XPASS.
 - UniFi, Synology, Home Assistant, SafeLine, UGREEN, and Minecraft Paper content
   is present.
-- Release candidates `v0.2.0-rc.1` and `v0.2.0-rc.2` are tagged; no stable
-  `0.2.0` release has been published.
+- Release candidates `v0.2.0-rc.1` and `v0.2.0-rc.2` are tagged; `v0.2.0-rc.3`
+  is prepared but not yet published, and no stable `0.2.0` release exists.
 - An optional Home Assistant YAML polling adapter is published with a versioned
   contract and one-deployment validation; no dashboard or custom integration is
   published.
@@ -88,7 +88,7 @@ Work:
 - define stable entity IDs and units
 - define a versioned shared-response schema
 - create fixtures for full, partial, empty, and failed responses
-- make UniFi, Synology, Home Assistant, SafeLine, and UGREEN independently optional
+- make UniFi, Synology, Home Assistant, SafeLine, UGREEN, and Minecraft independently optional
 - measure Indexer request volume and response size
 - document Recorder exclusions and freshness semantics
 

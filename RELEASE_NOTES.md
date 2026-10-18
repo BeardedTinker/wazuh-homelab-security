@@ -1,30 +1,33 @@
-# Wazuh Homelab Security 0.2.0-rc.2
+# Wazuh Homelab Security 0.2.0-rc.3
 
-This second release candidate adds the optional Home Assistant YAML presentation
-adapter to the Wazuh 4.14.8 detection baseline published in `0.2.0-rc.1`.
-Decoder, rule, collector, and regression expectations are unchanged from RC1.
+This third release candidate adds Minecraft Java Paper detection and presentation
+support and updates the audited baseline from Wazuh 4.14.8 to 4.14.9. It retains
+the two-response Home Assistant adapter design published in `0.2.0-rc.2`.
 
 Do not treat the `rc` suffix as a claim of broad production compatibility.
 Review the source-specific contracts and validate against your own Wazuh
 manager before restart.
 
-## Changes since 0.2.0-rc.1
+## Changes since 0.2.0-rc.2
 
-- added a transparent Home Assistant YAML package with 32 stable entities
-- reduced the adapter from five REST resources to two shared responses
-- retained the last five alerts at rule level 10 or higher
-- added versioned fast and summary response schemas
-- added sanitized full, missing-source, empty, partial, and failed fixtures
-- documented TLS, read-only credentials, migration, freshness, and Recorder
-  behavior
-- extended dependency-free validation with adapter-specific invariants
-- expanded `SHA256SUMS` to include the adapter package and secrets example
+- added Minecraft Paper decoders and rules in the reserved `100700–100799` range
+- added seven sanitized production-derived Minecraft regression scenarios,
+  including a normal-logout negative assertion
+- documented host-side Paper log collection without Docker socket access
+- updated the audited Wazuh baseline to 4.14.9 after exact pre/post regression
+  comparison
+- added `sensor.wazuh_source_minecraft_24h` to the Home Assistant adapter
+- added bounded Minecraft security counters and a latest hit that requests only
+  timestamp, rule ID, and rule level
+- extended the summary-v1 schema compatibly with an optional Minecraft branch
+- extended sanitized fixtures, repository validation, Recorder exclusions, and
+  adapter documentation from 32 to 33 entities
 
 ## Compatibility
 
 The audited baseline is:
 
-- Wazuh Manager 4.14.8
+- Wazuh Manager 4.14.9
 - UniFi UCG Ultra production message formats documented in `unifi/README.md`
 - Synology DSM `Connection:` authentication messages documented in
   `synology/README.md`
@@ -32,8 +35,10 @@ The audited baseline is:
   in `homeassistant/README.md`
 - SafeLine 9.4.2 with collector schema version 1
 - UGREEN DXP4800 GT running UGOS Pro with the pinned Fluent Bit 5.1.2 pipeline
-- Home Assistant adapter locally validated on Home Assistant 2026.9.4 through a
-  read-only HTTPS proxy
+- Minecraft Java Paper production message formats documented in
+  `minecraft/README.md`
+- Home Assistant adapter baseline validated through a read-only HTTPS proxy;
+  the additive Minecraft source was validated on Home Assistant 2026.10.2
 
 Compatibility with another product, firmware, message language, transport
 shape, or Wazuh version is not implied.
@@ -46,11 +51,12 @@ shape, or Wazuh version is not implied.
 - SafeLine schema-v1 collector
 - UGREEN Fluent Bit, rsyslog, and log rotation examples
 - optional Wazuh Indexer GeoIP pipeline
-- 18 passing production-derived regression scenarios
+- 25 passing production-derived regression scenarios
 - 2 explicitly pending scenarios
 - dependency-free static repository validation in GitHub Actions
 - architecture, installation, source setup, dashboard, and regression guides
-- optional Home Assistant YAML adapter, schema contract, and sanitized fixtures
+- optional 33-entity Home Assistant YAML adapter, schema contract, and sanitized
+  fixtures
 
 ## Integrity verification
 
@@ -98,20 +104,23 @@ configure the Indexer, or make Home Assistant responsible for detection.
 
 The default polling model performs approximately 42 Indexer requests per hour:
 30 fast requests at 120 seconds and 12 summary requests at 300 seconds. The
-package excludes eight entities carrying recent-event attributes from Recorder;
+package excludes nine entities carrying recent-event attributes from Recorder;
 Wazuh remains the source of truth for incident history.
 
 Existing local Wazuh REST definitions must be removed or disabled during
 migration. Loading both versions creates duplicate unique IDs and preserves the
 old polling load. The package does not include a Home Assistant dashboard.
 
-## Upgrade from 0.2.0-rc.1
+## Upgrade from 0.2.0-rc.2
 
-No Wazuh manager content changed. Users who do not want the optional Home
-Assistant presentation adapter can update without deploying it.
+This release adds Wazuh manager content for Minecraft. Existing users who do not
+collect Minecraft logs may update the repository without deploying the
+Minecraft decoder, rule, or localfile snippet.
 
-Users adopting the adapter should follow the optional adapter steps above and
-must not copy example secrets over an existing Home Assistant secrets file.
+Adapter users can replace the complete YAML package after backing up their
+configuration and running a full Home Assistant configuration check. Existing
+entity IDs remain unchanged; the Minecraft source entity is additive. Do not
+copy example secrets over an existing Home Assistant secrets file.
 
 ## Upgrade from the initial public configuration
 
@@ -166,7 +175,7 @@ that backup.
 The audited runtime baseline is:
 
 ```text
-PASS=18, FAIL=0, PENDING=2, XPASS=0
+PASS=25, FAIL=0, PENDING=2, XPASS=0
 ```
 
 The PENDING scenarios are:
