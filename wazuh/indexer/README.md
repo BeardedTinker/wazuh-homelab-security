@@ -189,7 +189,7 @@ These fields should be used directly in visualizations and aggregations.
 
 - GeoIP enrichment in this homelab setup is performed in the **Wazuh Indexer**, not in the Wazuh manager alert JSON.
 - This means `alerts.json` may not contain `GeoLocation`, while indexed documents in `wazuh-alerts-*` do.
-- Stock Wazuh 4.14.8 manager GeoIP uses legacy libGeoIP data and does not consume the GeoLite2 `.mmdb` pipeline database.
+- Stock Wazuh 4.14.9 manager GeoIP uses legacy libGeoIP data and does not consume the GeoLite2 `.mmdb` pipeline database.
 - The production deployment shows Indexer-side `GeoLocation.*` enrichment, but
   the exact live template and credential configuration are intentionally not
   exported into this repository.

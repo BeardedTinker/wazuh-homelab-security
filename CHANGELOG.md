@@ -9,6 +9,13 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 ## [Unreleased]
 
 ### Changed
+- updated the current production compatibility baseline from Wazuh 4.14.8 to
+  4.14.9 after an in-place upgrade, daemon validation, and exact pre/post
+  regression match
+- updated the Home Assistant telemetry guide for add-on 1.2.3, bundled Wazuh
+  Agent 4.14.9-1, and required Manager 4.14.9 or newer
+- synchronized project and adapter status documentation with the existing
+  `v0.2.0-rc.2` release
 - made a constrained read-only HTTPS proxy the recommended Home Assistant
   adapter boundary and marked direct Indexer access as a non-recommended,
   already-segmented deployment exception

@@ -1,7 +1,7 @@
 # Synology DSM telemetry setup
 
 This guide connects supported Synology DSM authentication events to the Wazuh
-4.14.8 baseline in this repository. The decoder intentionally follows one
+4.14.9 baseline in this repository. The decoder intentionally follows one
 production-confirmed message contract rather than attempting to match every DSM
 version, language, or service.
 

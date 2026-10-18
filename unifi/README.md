@@ -1,6 +1,6 @@
 # UniFi telemetry setup
 
-This guide connects supported UniFi security events to the Wazuh 4.14.8
+This guide connects supported UniFi security events to the Wazuh 4.14.9
 baseline in this repository. It documents two distinct input formats. Confirm
 which format you actually receive before installing the decoder and rules.
 

@@ -56,7 +56,7 @@ Examples:
 Please do the following:
 
 1. validate XML syntax
-2. test with `wazuh-logtest-legacy` on Wazuh 4.14.8
+2. test with `wazuh-logtest-legacy` on Wazuh 4.14.9
 3. verify expected field extraction
 4. verify rule behavior on repeated events if relevant
 5. sanitize logs before publishing

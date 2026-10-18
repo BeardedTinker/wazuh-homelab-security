@@ -1,7 +1,7 @@
 # SafeLine collector and Wazuh setup
 
 This guide connects production-confirmed SafeLine WAF events to the Wazuh
-4.14.8 baseline in this repository. The collector runs on the SafeLine host,
+4.14.9 baseline in this repository. The collector runs on the SafeLine host,
 normalizes Open API records into schema-v1 JSONL, and lets a local Wazuh agent
 forward that file to the manager.
 
@@ -14,8 +14,8 @@ The current implementation was validated with:
 
 - SafeLine 9.4.2
 - collector schema version 1
-- Wazuh Agent and Manager 4.14.8
-- the Wazuh 4.14.8 built-in JSON decoder and rule `86600`
+- Wazuh Agent 4.14.8 and Manager 4.14.9
+- the Wazuh 4.14.9 built-in JSON decoder and rule `86600`
 
 The collector has fixed runtime assumptions:
 
@@ -38,7 +38,7 @@ its certificate may not validate for `127.0.0.1`.
 Compatibility with another SafeLine or Wazuh version must be confirmed with
 sanitized fixtures and the complete regression suite. In particular, rule
 `100500` is deliberately a child of built-in Wazuh rule `86600`, whose behavior
-is part of the audited 4.14.8 contract.
+is part of the audited 4.14.9 contract.
 
 ## Production data flow
 
@@ -229,7 +229,7 @@ JSON localfile fragment is loaded exactly once on the SafeLine agent.
 
 Verify the event has `schema_version=1`, `integration=safeline`, and
 `event_type=waf_attack`. Then confirm the installed Wazuh version's built-in
-JSON rule `86600` still provides the parent behavior audited on 4.14.8.
+JSON rule `86600` still provides the parent behavior audited on 4.14.9.
 
 ### Duplicate events appear
 

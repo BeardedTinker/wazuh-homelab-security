@@ -1,6 +1,6 @@
 # Production manager baseline
 
-The production baseline is Wazuh **4.14.8**. Custom rules and decoders are kept
+The production baseline is Wazuh **4.14.9**. Custom rules and decoders are kept
 in the sibling `rules/` and `decoders/` directories. The `ossec.conf.snippets/`
 directory contains the publishable production-relevant sections that must be
 merged into the manager configuration.
