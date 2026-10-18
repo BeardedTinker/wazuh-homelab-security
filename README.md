@@ -293,7 +293,9 @@ to RFC 5737 TEST-NET space.
 
 `run_samples.py` sends every non-PENDING scenario through
 `wazuh-logtest-legacy`, preserving state across all lines in each scenario.
-See `tools/regression/README.md` for production and isolated-tree commands.
+GitHub Actions repeats the suite against a checksum-pinned Wazuh Manager
+`4.14.9-1` package and retains a machine-readable result artifact. See
+`tools/regression/README.md` for production, CI, and isolated-tree commands.
 
 ---
 
@@ -346,7 +348,7 @@ Examples:
 - 0100-unifi-rules.xml
 - 0200-synology-rules.xml
 - 0300-homeassistant-rules.xml
-- 0400-safeline-rules.xml
+- 0480-safeline-rules.xml
 - 0500-ugreen-rules.xml
 - 0600-minecraft-rules.xml
 

@@ -40,3 +40,54 @@ jobs:
       - name: Verify Wazuh AIO upgrade helper checksums
         working-directory: tools/wazuh-aio-upgrade
         run: sha256sum --check SHA256SUMS
+
+  runtime-regression:
+    name: Runtime regression
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Restore pinned Wazuh Manager package
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .cache/wazuh/wazuh-manager_4.14.9-1_amd64.deb
+          key: wazuh-manager-4.14.9-1-amd64-8b6f615f84c93a51c6023e7e542b9519945684434b117396ae61517bcdcba5f8
+
+      - name: Create Wazuh service identity
+        run: |
+          sudo groupadd --system wazuh
+          sudo useradd \
+            --system \
+            --gid wazuh \
+            --home-dir /var/ossec \
+            --no-create-home \
+            --shell /usr/sbin/nologin \
+            wazuh
+
+      - name: Prepare isolated Wazuh tree
+        run: |
+          bash tools/regression/prepare_ci_wazuh.sh \
+            .cache/wazuh/wazuh-manager_4.14.9-1_amd64.deb \
+            "${{ runner.temp }}/wazuh-manager-4.14.9"
+          sudo chown -R wazuh:wazuh \
+            "${{ runner.temp }}/wazuh-manager-4.14.9/var/ossec"
+
+      - name: Run Wazuh runtime regression
+        run: |
+          sudo python3 tools/regression/run_samples.py \
+            --logtest-bin "${{ runner.temp }}/wazuh-manager-4.14.9/var/ossec/bin/wazuh-logtest-legacy" \
+            --wazuh-root "${{ runner.temp }}/wazuh-manager-4.14.9/var/ossec" \
+            --config etc/ossec.conf \
+            --json-report "${{ runner.temp }}/wazuh-regression-results.json"
+
+      - name: Upload machine-readable regression report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: wazuh-regression-results-4.14.9
+          path: ${{ runner.temp }}/wazuh-regression-results.json
+          if-no-files-found: warn
+          retention-days: 14

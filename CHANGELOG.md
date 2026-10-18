@@ -8,6 +8,17 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 
 ## [Unreleased]
 
+### Added
+- reproducible GitHub Actions runtime regression against a SHA-256-pinned Wazuh
+  Manager 4.14.9 package, with a machine-readable result artifact
+- a fail-closed helper that prepares an isolated Wazuh test tree without
+  installing or starting manager services
+
+### Fixed
+- renamed the SafeLine rule file from `0400` to `0480` so built-in parent rule
+  `86600` loads first on fresh split-file installations; rule IDs and detection
+  logic are unchanged
+
 ---
 
 ## [0.2.0-rc.3] - 2026-10-18

@@ -11,8 +11,8 @@ when its exit criteria are met.
 - The regression suite reports 25 PASS, 0 FAIL, 2 PENDING, and 0 XPASS.
 - UniFi, Synology, Home Assistant, SafeLine, UGREEN, and Minecraft Paper content
   is present.
-- Release candidates `v0.2.0-rc.1` and `v0.2.0-rc.2` are tagged; `v0.2.0-rc.3`
-  is prepared but not yet published, and no stable `0.2.0` release exists.
+- Release candidates `v0.2.0-rc.1`, `v0.2.0-rc.2`, and `v0.2.0-rc.3` are
+  published; no stable `0.2.0` release exists.
 - An optional Home Assistant YAML polling adapter is published with a versioned
   contract and one-deployment validation; no dashboard or custom integration is
   published.
@@ -44,9 +44,10 @@ Goal: prevent a decoder or rule change from reproducing a startup failure.
 Work:
 
 - add CI for XML parsing and repository structure checks
-- run the regression suite in a pinned Wazuh test environment where practical
+- keep the regression suite running in the pinned Wazuh 4.14.9 CI environment
 - verify documented rule IDs, decoder names, groups, and sample metadata
-- generate a machine-readable regression report as a release artifact
+- retain the machine-readable CI regression report and attach it to releases
+  when the release workflow is automated
 - add issue templates that request Wazuh version, validation output, and exact source format
 
 Exit criteria:
