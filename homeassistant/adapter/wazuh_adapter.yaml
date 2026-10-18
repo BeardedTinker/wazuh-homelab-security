@@ -307,6 +307,42 @@ rest:
                         }
                       }
                     }
+                  },
+                  "minecraft": {
+                    "filter": {"term": {"rule.groups.keyword": "minecraft"}},
+                    "aggs": {
+                      "elevated": {"filter": {"range": {"rule.level": {"gte": 7}}}},
+                      "high": {"filter": {"range": {"rule.level": {"gte": 12}}}},
+                      "prelogin": {
+                        "filter": {
+                          "terms": {
+                            "rule.id.keyword": ["100700", "100701", "100702", "100710", "100711"]
+                          }
+                        }
+                      },
+                      "whitelist": {
+                        "filter": {"term": {"rule.id.keyword": "100701"}}
+                      },
+                      "auth_unavailable": {
+                        "filter": {"term": {"rule.id.keyword": "100702"}}
+                      },
+                      "distributed_spray": {
+                        "filter": {"term": {"rule.id.keyword": "100710"}}
+                      },
+                      "username_rotation": {
+                        "filter": {"term": {"rule.id.keyword": "100711"}}
+                      },
+                      "successful_logins": {
+                        "filter": {"term": {"rule.id.keyword": "100720"}}
+                      },
+                      "latest": {
+                        "top_hits": {
+                          "size": 1,
+                          "sort": [{"@timestamp": {"order": "desc"}}],
+                          "_source": ["@timestamp", "rule.id", "rule.level"]
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -502,6 +538,24 @@ rest:
           - elevated
           - high
           - latest
+      - name: "Wazuh Source Minecraft 24h"
+        unique_id: wazuh_source_minecraft_24h
+        unit_of_measurement: "events"
+        availability: >-
+          {{ value_json is defined and value_json.get('aggregations', {}).get('adapter_v1', {}).get('sources', {}).get('minecraft', {}).get('doc_count') is not none }}
+        value_template: >-
+          {{ value_json.get('aggregations', {}).get('adapter_v1', {}).get('sources', {}).get('minecraft', {}).get('doc_count', 0) | int(0) }}
+        json_attributes_path: "$.aggregations.adapter_v1.sources.minecraft"
+        json_attributes:
+          - elevated
+          - high
+          - prelogin
+          - whitelist
+          - auth_unavailable
+          - distributed_spray
+          - username_rotation
+          - successful_logins
+          - latest
 
 template:
   - sensor:
@@ -532,3 +586,4 @@ recorder:
       - sensor.wazuh_source_ugreen_24h
       - sensor.wazuh_source_home_assistant_24h
       - sensor.wazuh_source_synology_24h
+      - sensor.wazuh_source_minecraft_24h

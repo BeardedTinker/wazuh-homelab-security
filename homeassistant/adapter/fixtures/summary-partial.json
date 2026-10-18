@@ -47,6 +47,18 @@
           "elevated": {"doc_count": 0},
           "high": {"doc_count": 0},
           "latest": {"hits": {"hits": []}}
+        },
+        "minecraft": {
+          "doc_count": 0,
+          "elevated": {"doc_count": 0},
+          "high": {"doc_count": 0},
+          "prelogin": {"doc_count": 0},
+          "whitelist": {"doc_count": 0},
+          "auth_unavailable": {"doc_count": 0},
+          "distributed_spray": {"doc_count": 0},
+          "username_rotation": {"doc_count": 0},
+          "successful_logins": {"doc_count": 0},
+          "latest": {"hits": {"hits": []}}
         }
       }
     }

@@ -126,6 +126,33 @@
         "latest": {"$ref": "#/$defs/top_hits"}
       }
     },
+    "minecraft_source": {
+      "type": "object",
+      "required": [
+        "doc_count",
+        "elevated",
+        "high",
+        "prelogin",
+        "whitelist",
+        "auth_unavailable",
+        "distributed_spray",
+        "username_rotation",
+        "successful_logins",
+        "latest"
+      ],
+      "properties": {
+        "doc_count": {"type": "integer", "minimum": 0},
+        "elevated": {"$ref": "#/$defs/count"},
+        "high": {"$ref": "#/$defs/count"},
+        "prelogin": {"$ref": "#/$defs/count"},
+        "whitelist": {"$ref": "#/$defs/count"},
+        "auth_unavailable": {"$ref": "#/$defs/count"},
+        "distributed_spray": {"$ref": "#/$defs/count"},
+        "username_rotation": {"$ref": "#/$defs/count"},
+        "successful_logins": {"$ref": "#/$defs/count"},
+        "latest": {"$ref": "#/$defs/top_hits"}
+      }
+    },
     "sources": {
       "type": "object",
       "required": ["unifi", "safeline", "ugreen", "home_assistant", "synology"],
@@ -134,7 +161,8 @@
         "safeline": {"$ref": "#/$defs/source"},
         "ugreen": {"$ref": "#/$defs/source"},
         "home_assistant": {"$ref": "#/$defs/source"},
-        "synology": {"$ref": "#/$defs/source"}
+        "synology": {"$ref": "#/$defs/source"},
+        "minecraft": {"$ref": "#/$defs/minecraft_source"}
       }
     }
   }

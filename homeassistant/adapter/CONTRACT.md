@@ -65,7 +65,7 @@ newest event and is excluded from Recorder by default.
 All source summary entities use the unit `events`. Their state is the matching
 24-hour event count. Their attributes contain `elevated`, `high`, and `latest`
 subsets from the same source aggregation. Because `latest` contains security
-event details, all five entities are excluded from Recorder by default.
+event details, all six entities are excluded from Recorder by default.
 
 | Entity ID | Source filter | Empty state | Response |
 | --- | --- | --- | --- |
@@ -74,11 +74,20 @@ event details, all five entities are excluded from Recorder by default.
 | `sensor.wazuh_source_ugreen_24h` | UGREEN log location | `0` | summary |
 | `sensor.wazuh_source_home_assistant_24h` | Rule group `homeassistant` | `0` | summary |
 | `sensor.wazuh_source_synology_24h` | Rule group `synology` | `0` | summary |
+| `sensor.wazuh_source_minecraft_24h` | Rule group `minecraft` | `0` | summary |
+
+The Minecraft entity also exposes bounded count objects for `prelogin`,
+`whitelist`, `auth_unavailable`, `distributed_spray`, `username_rotation`, and
+`successful_logins`. Its `latest` hit limits `_source` to the timestamp, rule ID,
+and rule level; player names, remote endpoints, and raw descriptions are not
+requested.
 
 ## Compatibility rules
 
 - Existing entity IDs, unique IDs, units, and state meanings must not change in
   an internal polling refactor.
+- New optional source fields and entities may be added without changing the v1
+  response name when existing required paths remain unchanged.
 - Missing optional sources return valid zero or empty states.
 - Missing required response paths make only the affected entities unavailable.
 - Authentication and transport failures make all entities attached to the
