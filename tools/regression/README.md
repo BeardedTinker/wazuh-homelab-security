@@ -50,3 +50,34 @@ scenarios remain PENDING because authentic production input is unavailable:
 - `synology/bruteforce-login`
 
 Do not add fabricated `raw.log` files to make these scenarios executable.
+
+## GitHub Actions baseline
+
+The repository workflow also runs the complete suite in an isolated Wazuh
+Manager `4.14.9-1` tree on `ubuntu-24.04`. The preparation helper downloads the
+exact official `amd64` package, verifies its pinned SHA-256 and Debian package
+metadata, extracts it without installing manager services, and copies only this
+repository's published decoder, rule, and internal-options files into the test
+tree.
+
+The workflow creates the package-required local `wazuh` service identity on the
+disposable runner. It does not start Wazuh, open listeners, contact a live
+manager, or use repository secrets. A successful or failed executable run
+uploads `wazuh-regression-results-4.14.9` as a JSON artifact for 14 days. The
+package cache is an optimization only; every cached package is checked against
+the pinned digest before extraction.
+
+To prepare the same isolated tree manually on a compatible Debian or Ubuntu
+`amd64` host:
+
+```bash
+sudo groupadd --system wazuh
+sudo useradd --system --gid wazuh --home-dir /var/ossec \
+  --no-create-home --shell /usr/sbin/nologin wazuh
+bash tools/regression/prepare_ci_wazuh.sh \
+  .cache/wazuh/wazuh-manager_4.14.9-1_amd64.deb \
+  /path/to/new/wazuh-manager-4.14.9
+```
+
+Use a destination that does not already exist. The helper deliberately refuses
+to replace or clean an existing path.
