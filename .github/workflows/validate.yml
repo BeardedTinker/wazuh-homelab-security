@@ -72,10 +72,12 @@ jobs:
           bash tools/regression/prepare_ci_wazuh.sh \
             .cache/wazuh/wazuh-manager_4.14.9-1_amd64.deb \
             "${{ runner.temp }}/wazuh-manager-4.14.9"
+          sudo chown -R wazuh:wazuh \
+            "${{ runner.temp }}/wazuh-manager-4.14.9/var/ossec"
 
       - name: Run Wazuh runtime regression
         run: |
-          python3 tools/regression/run_samples.py \
+          sudo python3 tools/regression/run_samples.py \
             --logtest-bin "${{ runner.temp }}/wazuh-manager-4.14.9/var/ossec/bin/wazuh-logtest-legacy" \
             --wazuh-root "${{ runner.temp }}/wazuh-manager-4.14.9/var/ossec" \
             --config etc/ossec.conf \
