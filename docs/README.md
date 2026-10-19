@@ -21,6 +21,7 @@ by repository validation.
 | Concise source-by-source installation checklist | [`QUICKSTART.md`](QUICKSTART.md) |
 | Architecture, public contracts, and non-goals | [`ARCHITECTURE.md`](../ARCHITECTURE.md) |
 | Installation, backup, validation, restart, and rollback | [`INSTALL.md`](../INSTALL.md) |
+| Rule-ID and decoder-name preflight | [`COLLISION_CHECKS.md`](COLLISION_CHECKS.md) |
 | Versions and deployment assumptions | [`COMPATIBILITY.md`](COMPATIBILITY.md) |
 | Detection coverage, correlations, and rule reference | [`DETECTION_REFERENCE.md`](DETECTION_REFERENCE.md) |
 | Repository structure and folder purpose | [`REPOSITORY_LAYOUT.md`](REPOSITORY_LAYOUT.md) |

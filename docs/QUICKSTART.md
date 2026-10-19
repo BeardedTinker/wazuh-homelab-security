@@ -47,10 +47,16 @@ git describe --tags --always --dirty
 sudo /var/ossec/bin/wazuh-control info
 ```
 
-Confirm that the selected rule IDs and decoder names do not collide with local
-content. The full [installation guide](../INSTALL.md) describes the required
-preflight boundary. If the existing installation has custom merged files and
-you cannot determine ownership, stop and compare before copying anything.
+Run the read-only collision checker for the selected source. For example:
+
+```bash
+sudo python3 tools/check_wazuh_collisions.py --source unifi
+```
+
+Replace `unifi` with the selected source key. Follow the
+[collision-check guide](COLLISION_CHECKS.md), especially when replacing an
+existing split file. If the installation has custom merged files and you cannot
+determine ownership, stop and compare before copying anything.
 
 ## 3. Back up before the first change
 

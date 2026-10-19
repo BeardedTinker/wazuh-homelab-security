@@ -30,7 +30,7 @@ Work:
 - maintain the concise quick-start for one source at a time
 - document backup, validation, restart, verification, and rollback
 - add a compatibility matrix for Wazuh and relevant operating-system packages
-- document duplicate rule-ID and decoder-name checks
+- maintain the read-only rule-ID and decoder-name collision checker
 - add source setup pages for UniFi, Synology, and Home Assistant
 
 Exit criteria:
