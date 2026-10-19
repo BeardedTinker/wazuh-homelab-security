@@ -13,6 +13,8 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
   restart verification, and rollback gates
 - a dependency-free, read-only preflight tool for checking repository rule IDs
   and decoder names against custom and built-in Wazuh XML trees
+- structured bug-report and detection-request forms that require versioned,
+  sanitized reproduction evidence
 
 ### Changed
 - reorganized the oversized root README into a concise project landing page and

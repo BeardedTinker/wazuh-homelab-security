@@ -1,0 +1,116 @@
+name: Bug report
+description: Report an installation, validation, parsing, or detection problem
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem. Provide only sanitized evidence.
+
+        **Do not include passwords, tokens, API keys, private identifiers, raw player data, or unsanitized logs.** Replace sensitive values while preserving the event structure needed to reproduce the issue.
+
+  - type: input
+    id: wazuh-version
+    attributes:
+      label: Wazuh version
+      description: Provide the exact Manager version, not only the major version.
+      placeholder: 4.14.9
+    validations:
+      required: true
+
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment type
+      description: Select the environment in which the problem occurs.
+      options:
+        - Wazuh all-in-one package installation
+        - Wazuh Manager package installation
+        - Docker or container deployment
+        - Other or unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: source
+    attributes:
+      label: Affected source or component
+      options:
+        - UniFi
+        - Synology DSM
+        - Home Assistant detection content
+        - SafeLine
+        - UGREEN NAS
+        - Minecraft Paper
+        - Wazuh AIO upgrade helper
+        - Home Assistant polling adapter
+        - Multiple sources
+        - Other or unknown
+    validations:
+      required: true
+
+  - type: input
+    id: repository-version
+    attributes:
+      label: Repository version
+      description: Provide the exact release tag or commit SHA used for installation.
+      placeholder: v0.2.0-rc.4 or a full commit SHA
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Problem summary
+      description: Describe what failed and when it began.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: List the smallest repeatable sequence, including the files installed and commands run.
+      placeholder: |
+        1. Checked out tag or commit ...
+        2. Installed ...
+        3. Ran ...
+        4. Observed ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: source-format
+    attributes:
+      label: Exact sanitized source format
+      description: Provide one minimal sanitized input event or the exact source format. Preserve delimiters and field names.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation-output
+    attributes:
+      label: Sanitized validation output
+      description: Include the relevant output from Wazuh daemon validation, logtest, or the repository tool that failed. Write "Not run" and explain why if unavailable.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-actual
+    attributes:
+      label: Expected and actual behavior
+      description: State the expected decoder, fields, rule IDs, or installation result and what happened instead.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I removed credentials, private identifiers, raw player data, and other sensitive values from this report.
+          required: true
+        - label: I searched existing issues and did not find the same problem with the same version and source format.
+          required: true

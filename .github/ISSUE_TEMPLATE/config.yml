@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Quick-start guide
+    url: https://github.com/BeardedTinker/wazuh-homelab-security/blob/main/docs/QUICKSTART.md
+    about: Review the source-by-source installation and validation gates before reporting an installation problem.
+  - name: Troubleshooting guide
+    url: https://github.com/BeardedTinker/wazuh-homelab-security/blob/main/docs/TROUBLESHOOTING.md
+    about: Follow the diagnostic sequence and sanitize all evidence before opening an issue.

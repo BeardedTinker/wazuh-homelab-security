@@ -50,7 +50,7 @@ Work:
 - verify documented rule IDs, decoder names, groups, and sample metadata
 - retain the machine-readable CI regression report and attach it to releases
   when the release workflow is automated
-- add issue templates that request Wazuh version, validation output, and exact source format
+- maintain issue forms that request Wazuh version, validation output, and exact source format
 
 Exit criteria:
 
