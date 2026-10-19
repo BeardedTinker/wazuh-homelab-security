@@ -33,8 +33,9 @@ synthetic events must not be used to close them.
 
 ## Start safely
 
-Read [`INSTALL.md`](INSTALL.md) before copying any file. The supported workflow
-is source-by-source:
+Start with the concise [`docs/QUICKSTART.md`](docs/QUICKSTART.md), then use
+[`INSTALL.md`](INSTALL.md) for the complete procedure. The supported workflow is
+source-by-source:
 
 1. Pin the exact tag or commit being installed.
 2. Back up the affected manager configuration.
@@ -51,6 +52,7 @@ are fragments and must not replace a complete `ossec.conf`.
 
 | Topic | Document |
 |---|---|
+| Source-by-source quick start | [`docs/QUICKSTART.md`](docs/QUICKSTART.md) |
 | Architecture and compatibility contract | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Installation, backup, validation, and rollback | [`INSTALL.md`](INSTALL.md) |
 | Validated versions and deployment assumptions | [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) |
