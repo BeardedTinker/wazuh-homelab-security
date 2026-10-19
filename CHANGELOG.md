@@ -15,6 +15,8 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
   and decoder names against custom and built-in Wazuh XML trees
 - structured bug-report and detection-request forms that require versioned,
   sanitized reproduction evidence
+- a manual, fail-closed workflow that validates an existing annotated tag and
+  prepares an unpublished release draft with checksums and regression evidence
 
 ### Changed
 - reorganized the oversized root README into a concise project landing page and

@@ -28,6 +28,7 @@ by repository validation.
 | Testing and troubleshooting | [`TROUBLESHOOTING.md`](TROUBLESHOOTING.md) |
 | Project phases and validation gates | [`ROADMAP.md`](../ROADMAP.md) |
 | Release-specific compatibility and migration | [`RELEASE_NOTES.md`](../RELEASE_NOTES.md) |
+| Draft-release preparation and review | [`RELEASE_PROCESS.md`](RELEASE_PROCESS.md) |
 
 ## Source setup guides
 

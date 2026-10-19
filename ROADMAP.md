@@ -48,8 +48,8 @@ Work:
 - add CI for XML parsing and repository structure checks
 - keep the regression suite running in the pinned Wazuh 4.14.9 CI environment
 - verify documented rule IDs, decoder names, groups, and sample metadata
-- retain the machine-readable CI regression report and attach it to releases
-  when the release workflow is automated
+- retain the machine-readable CI regression report and attach it through the
+  manual draft-release workflow
 - maintain issue forms that request Wazuh version, validation output, and exact source format
 
 Exit criteria:
