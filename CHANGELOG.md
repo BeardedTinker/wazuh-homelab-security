@@ -8,6 +8,11 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 
 ## [Unreleased]
 
+### Changed
+- reorganized the oversized root README into a concise project landing page and
+  versioned documentation for compatibility, detections, repository layout, and
+  troubleshooting
+
 ## [0.2.0-rc.4] - 2026-10-19
 
 ### Added
