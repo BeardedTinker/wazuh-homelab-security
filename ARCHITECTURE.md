@@ -12,9 +12,10 @@ otherwise, examples from other Wazuh versions are not assumed to be compatible.
 
 The repository currently ships detection content, transport examples, and an
 optional Home Assistant YAML polling adapter with a versioned entity and response
-contract. It does **not** ship a supported dashboard or custom integration. The
-adapter has been validated on one deployment and remains an example until the
-independent-deployment gate in the roadmap is met.
+contract and sanitized dashboard examples. It does **not** ship a supported
+dashboard export or custom integration. The adapter has been validated on one
+deployment and remains an example until the independent-deployment gate in the
+roadmap is met.
 
 ## Architectural layers
 

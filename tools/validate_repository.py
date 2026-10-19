@@ -277,6 +277,7 @@ class Validator:
     def validate_home_assistant_adapter(self) -> None:
         package = ROOT / "homeassistant" / "adapter" / "wazuh_adapter.yaml"
         secrets = ROOT / "homeassistant" / "adapter" / "secrets.example.yaml"
+        dashboard = ROOT / "homeassistant" / "adapter" / "dashboard-example.yaml"
         summary_schema = (
             ROOT / "homeassistant" / "adapter" / "schema" / "summary-v1.schema.json"
         )
@@ -291,6 +292,7 @@ class Validator:
         try:
             package_text = package.read_text(encoding="utf-8")
             secrets_text = secrets.read_text(encoding="utf-8")
+            dashboard_text = dashboard.read_text(encoding="utf-8")
             schema_data = json.loads(summary_schema.read_text(encoding="utf-8"))
             summary_fixtures = {
                 name: json.loads((fixture_directory / name).read_text(encoding="utf-8"))
@@ -335,6 +337,49 @@ class Validator:
         for entity_id in sorted(ADAPTER_RECORDER_EXCLUSIONS):
             if package_text.count(f"- {entity_id}") != 1:
                 self.error(package, f"Recorder exclusion must occur once: {entity_id}")
+
+        dashboard_entity_ids = set(
+            re.findall(
+                r"^\s+- entity: (sensor\.[a-z0-9_]+)$",
+                dashboard_text,
+                flags=re.MULTILINE,
+            )
+        )
+        contracted_entity_ids = {
+            f"sensor.{unique_id}" for unique_id in ADAPTER_UNIQUE_IDS
+        }
+        unexpected_dashboard_ids = sorted(
+            dashboard_entity_ids - contracted_entity_ids
+        )
+        if unexpected_dashboard_ids:
+            self.error(
+                dashboard,
+                "uses non-contract entities: " + ", ".join(unexpected_dashboard_ids),
+            )
+
+        required_dashboard_ids = {
+            "sensor.siem_security_score",
+            "sensor.wazuh_critical_24h",
+            "sensor.wazuh_high_24h",
+            "sensor.wazuh_indexer_last_successful_poll",
+            "sensor.wazuh_source_home_assistant_24h",
+            "sensor.wazuh_source_minecraft_24h",
+            "sensor.wazuh_source_safeline_24h",
+            "sensor.wazuh_source_synology_24h",
+            "sensor.wazuh_source_ugreen_24h",
+            "sensor.wazuh_source_unifi_24h",
+        }
+        missing_dashboard_ids = sorted(required_dashboard_ids - dashboard_entity_ids)
+        if missing_dashboard_ids:
+            self.error(
+                dashboard,
+                "missing required overview entities: "
+                + ", ".join(missing_dashboard_ids),
+            )
+        if "custom:" in dashboard_text:
+            self.error(dashboard, "must not require custom dashboard cards")
+        if not dashboard_entity_ids:
+            self.error(dashboard, "contains no contracted entities")
 
         minecraft_rule_ids = {"100700", "100701", "100702", "100710", "100711", "100720"}
         for rule_id in sorted(minecraft_rule_ids):
