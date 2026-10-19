@@ -24,9 +24,11 @@ layers are optional. The repository publishes an optional Home Assistant YAML
 polling adapter, but no supported dashboard or custom integration.
 
 This is an early project whose current `main` branch has an audited Wazuh 4.14.9
-baseline and targets `v0.2.0-rc.3`. Earlier release candidate `v0.2.0-rc.2`
-retains its historical Wazuh 4.14.8 baseline. Pin the exact ref you deploy,
-review changes, and always run Wazuh daemon validation before restart.
+baseline and targets `v0.2.0-rc.4`. Release candidate `v0.2.0-rc.3` introduced
+the current Minecraft and Home Assistant adapter contract, while
+`v0.2.0-rc.2` retains its historical Wazuh 4.14.8 baseline. Pin the exact ref
+you deploy, review changes, and always run Wazuh daemon validation before
+restart.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for project boundaries and compatibility
 promises, and [ROADMAP.md](ROADMAP.md) for the documentation, release, and
