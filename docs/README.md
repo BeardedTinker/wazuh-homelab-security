@@ -7,16 +7,18 @@ by repository validation.
 
 ## Begin here
 
-1. Read the [architecture and compatibility contract](../ARCHITECTURE.md).
-2. Review the [validated compatibility baseline](COMPATIBILITY.md).
-3. Follow the [safe installation and rollback guide](../INSTALL.md).
-4. Open the setup guide for exactly one telemetry source.
-5. Use the [troubleshooting guide](TROUBLESHOOTING.md) if validation fails.
+1. Follow the [source-by-source quick start](QUICKSTART.md).
+2. Read the [architecture and compatibility contract](../ARCHITECTURE.md).
+3. Review the [validated compatibility baseline](COMPATIBILITY.md).
+4. Use the [complete installation and rollback guide](../INSTALL.md).
+5. Open the setup guide for exactly one telemetry source.
+6. Use the [troubleshooting guide](TROUBLESHOOTING.md) if validation fails.
 
 ## Core documentation
 
 | Topic | Document |
 |---|---|
+| Concise source-by-source installation checklist | [`QUICKSTART.md`](QUICKSTART.md) |
 | Architecture, public contracts, and non-goals | [`ARCHITECTURE.md`](../ARCHITECTURE.md) |
 | Installation, backup, validation, restart, and rollback | [`INSTALL.md`](../INSTALL.md) |
 | Versions and deployment assumptions | [`COMPATIBILITY.md`](COMPATIBILITY.md) |

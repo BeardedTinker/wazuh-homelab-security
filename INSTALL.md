@@ -5,6 +5,10 @@ Wazuh 4.14.9 production baseline. Install one telemetry source at a time. Do
 not copy the repository over `/var/ossec/etc`, and do not restart the manager
 until its configuration tests pass.
 
+For the shortest safe sequence, begin with
+[`docs/QUICKSTART.md`](docs/QUICKSTART.md). This document remains the complete
+installation and rollback reference.
+
 The repository is still pre-release. Review the selected source files and pin
 the commit you tested instead of deploying repeatedly from a moving branch.
 

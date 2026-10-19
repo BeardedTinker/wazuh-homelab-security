@@ -8,6 +8,10 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 
 ## [Unreleased]
 
+### Added
+- a concise source-by-source quick start covering preflight, backup, validation,
+  restart verification, and rollback gates
+
 ### Changed
 - reorganized the oversized root README into a concise project landing page and
   versioned documentation for compatibility, detections, repository layout, and

@@ -27,7 +27,7 @@ Goal: a new user can install one source without risking an unbootable manager.
 Work:
 
 - reproduce or obtain confirmation for issue #1 and close it with exact version data
-- add a concise quick-start for one source at a time
+- maintain the concise quick-start for one source at a time
 - document backup, validation, restart, verification, and rollback
 - add a compatibility matrix for Wazuh and relevant operating-system packages
 - document duplicate rule-ID and decoder-name checks
