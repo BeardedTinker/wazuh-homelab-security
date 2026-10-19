@@ -1,27 +1,30 @@
-# Wazuh Homelab Security 0.2.0-rc.3
+# Wazuh Homelab Security 0.2.0-rc.4
 
-This third release candidate adds Minecraft Java Paper detection and presentation
-support and updates the audited baseline from Wazuh 4.14.8 to 4.14.9. It retains
-the two-response Home Assistant adapter design published in `0.2.0-rc.2`.
+This fourth release candidate makes the Wazuh 4.14.9 regression reproducible in
+GitHub Actions, fixes the SafeLine fresh-install load order, and adds sanitized
+Wazuh and Home Assistant dashboard examples. Rule IDs, detection logic, and the
+33-entity Home Assistant adapter contract remain unchanged from `0.2.0-rc.3`.
 
 Do not treat the `rc` suffix as a claim of broad production compatibility.
 Review the source-specific contracts and validate against your own Wazuh
 manager before restart.
 
-## Changes since 0.2.0-rc.2
+## Changes since 0.2.0-rc.3
 
-- added Minecraft Paper decoders and rules in the reserved `100700–100799` range
-- added seven sanitized production-derived Minecraft regression scenarios,
-  including a normal-logout negative assertion
-- documented host-side Paper log collection without Docker socket access
-- updated the audited Wazuh baseline to 4.14.9 after exact pre/post regression
-  comparison
-- added `sensor.wazuh_source_minecraft_24h` to the Home Assistant adapter
-- added bounded Minecraft security counters and a latest hit that requests only
-  timestamp, rule ID, and rule level
-- extended the summary-v1 schema compatibly with an optional Minecraft branch
-- extended sanitized fixtures, repository validation, Recorder exclusions, and
-  adapter documentation from 32 to 33 entities
+- added a GitHub Actions runtime job using the official Wazuh Manager 4.14.9-1
+  amd64 package with a pinned SHA-256
+- added a fail-closed helper that prepares an isolated Wazuh test tree without
+  installing or starting manager services
+- retained a machine-readable regression artifact reporting 25 PASS, 0 FAIL,
+  2 PENDING, and 0 XPASS
+- renamed `0400-safeline-rules.xml` to `0480-safeline-rules.xml` so the built-in
+  parent rule `86600` loads first on fresh split-file installations
+- added sanitized Wazuh panel recipes, including Minecraft security and
+  completed-login filters
+- added a portable Home Assistant YAML dashboard example using only built-in
+  cards and version 1 adapter entities
+- extended repository validation to reject unknown dashboard entities and
+  custom frontend cards
 
 ## Compatibility
 
@@ -53,10 +56,13 @@ shape, or Wazuh version is not implied.
 - optional Wazuh Indexer GeoIP pipeline
 - 25 passing production-derived regression scenarios
 - 2 explicitly pending scenarios
-- dependency-free static repository validation in GitHub Actions
+- dependency-free static validation and pinned Wazuh 4.14.9 runtime regression
+  in GitHub Actions
 - architecture, installation, source setup, dashboard, and regression guides
 - optional 33-entity Home Assistant YAML adapter, schema contract, and sanitized
   fixtures
+- sanitized Wazuh panel recipes and a standard-card Home Assistant dashboard
+  example
 
 ## Integrity verification
 
@@ -70,6 +76,9 @@ sha256sum -c SHA256SUMS
 The generated GitHub source archive is not listed inside `SHA256SUMS`; GitHub
 creates that archive after the tag exists. Pin the exact tag and verify the
 tracked files after extraction.
+
+The GitHub release also attaches the machine-readable runtime regression report
+generated from the exact release commit and its SHA-256 digest.
 
 ## Fresh installation
 
@@ -109,18 +118,21 @@ Wazuh remains the source of truth for incident history.
 
 Existing local Wazuh REST definitions must be removed or disabled during
 migration. Loading both versions creates duplicate unique IDs and preserves the
-old polling load. The package does not include a Home Assistant dashboard.
+old polling load. The optional standard-card dashboard is a portable example,
+not a supported saved-object export, and is not installed automatically.
 
-## Upgrade from 0.2.0-rc.2
+## Upgrade from 0.2.0-rc.3
 
-This release adds Wazuh manager content for Minecraft. Existing users who do not
-collect Minecraft logs may update the repository without deploying the
-Minecraft decoder, rule, or localfile snippet.
+SafeLine users with the split repository rule files must replace
+`0400-safeline-rules.xml` with `0480-safeline-rules.xml`. Never load both
+filenames: they contain the same rule IDs. The rename changes only load order;
+rule IDs and detection logic are unchanged.
 
-Adapter users can replace the complete YAML package after backing up their
-configuration and running a full Home Assistant configuration check. Existing
-entity IDs remain unchanged; the Minecraft source entity is additive. Do not
-copy example secrets over an existing Home Assistant secrets file.
+No deployed Home Assistant adapter change is required. The dashboard file is an
+optional example and does not modify a live dashboard. Users adopting it should
+follow `homeassistant/adapter/DASHBOARD.md`, keep private deployment data out of
+published screenshots, and run a full Home Assistant configuration check before
+registering a YAML-mode dashboard.
 
 ## Upgrade from the initial public configuration
 
@@ -187,15 +199,18 @@ The PENDING scenarios are:
 Static GitHub Actions validation checks XML fragments, custom identifier
 uniqueness and range, JSON/scenario structure, Python and shell syntax, local
 Markdown links, adapter resource and entity invariants, and release checksums.
-It does not execute Wazuh runtime regression or a live Home Assistant config
-check and does not replace manager-side daemon tests.
+The separate required runtime job executes the complete suite against an
+isolated tree from the SHA-256-pinned official Wazuh Manager 4.14.9-1 amd64
+package and retains a machine-readable report. CI does not run a live Home
+Assistant configuration check or replace manager-side daemon tests on the
+target deployment.
 
 ## Known limitations
 
 - Fresh-install issue #1 has a repository-side fix, but independent reporter
   confirmation is still pending.
-- Runtime regression is not yet executed in a pinned GitHub Actions Wazuh
-  environment.
+- Runtime CI validates an isolated package tree, not a complete running Wazuh
+  service stack or a distribution other than the documented amd64 baseline.
 - Several source contracts intentionally support only production-observed IPv4
   and English-language messages.
 - SafeLine collector scheduling is host-specific, and the collector does not
@@ -205,7 +220,8 @@ check and does not replace manager-side daemon tests.
 - The Home Assistant adapter has been validated on one deployment through a
   read-only HTTPS proxy. Independent Indexer-direct and different-source-subset
   validation is still required.
-- No supported Home Assistant dashboard export is included.
+- The Home Assistant dashboard is a sanitized standard-card example, not a
+  supported saved-object export; frontend rendering is not covered by CI.
 
 Report compatibility results with the exact Wazuh version, source product and
 firmware, transport format, validation output, and a minimal sanitized sample.

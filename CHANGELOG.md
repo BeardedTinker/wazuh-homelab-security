@@ -8,6 +8,8 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 
 ## [Unreleased]
 
+## [0.2.0-rc.4] - 2026-10-19
+
 ### Added
 - reproducible GitHub Actions runtime regression against a SHA-256-pinned Wazuh
   Manager 4.14.9 package, with a machine-readable result artifact

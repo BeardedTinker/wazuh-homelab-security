@@ -11,8 +11,10 @@ when its exit criteria are met.
 - The regression suite reports 25 PASS, 0 FAIL, 2 PENDING, and 0 XPASS.
 - UniFi, Synology, Home Assistant, SafeLine, UGREEN, and Minecraft Paper content
   is present.
-- Release candidates `v0.2.0-rc.1`, `v0.2.0-rc.2`, and `v0.2.0-rc.3` are
-  published; no stable `0.2.0` release exists.
+- Release candidates `v0.2.0-rc.1` through `v0.2.0-rc.4` are published; no
+  stable `0.2.0` release exists.
+- Protected pull requests require both dependency-free static validation and
+  reproducible runtime regression against the pinned Wazuh 4.14.9 package.
 - An optional Home Assistant YAML polling adapter is published with a versioned
   contract, one-deployment validation, and a sanitized standard-card dashboard
   example; no supported dashboard export or custom integration is published.
