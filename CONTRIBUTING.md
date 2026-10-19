@@ -51,6 +51,18 @@ Examples:
 
 ---
 
+# Before opening an issue
+
+Use the structured bug-report or detection-request form when it applies. Include
+the exact Wazuh version, repository tag or commit, source format, and sanitized
+validation output requested by the form.
+
+Never publish passwords, tokens, API keys, private identifiers, raw player data,
+or unsanitized logs. Preserve delimiters and field names when replacing sensitive
+values so maintainers can still reproduce parser behavior.
+
+---
+
 # Before opening a pull request
 
 Please do the following:

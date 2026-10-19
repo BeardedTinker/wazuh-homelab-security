@@ -1,0 +1,98 @@
+name: Detection request
+description: Propose a new source event or detection behavior
+title: "[Detection]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Detection requests need authentic, sanitized source evidence.
+
+        **Do not include passwords, tokens, API keys, private identifiers, raw player data, or unsanitized logs.** Do not create synthetic evidence solely to make a requested rule test pass.
+
+  - type: input
+    id: wazuh-version
+    attributes:
+      label: Wazuh version
+      description: Provide the exact Manager version used to capture or test the event.
+      placeholder: 4.14.9
+    validations:
+      required: true
+
+  - type: dropdown
+    id: source
+    attributes:
+      label: Source
+      options:
+        - UniFi
+        - Synology DSM
+        - Home Assistant
+        - SafeLine
+        - UGREEN NAS
+        - Minecraft Paper
+        - New homelab source
+        - Multiple sources
+    validations:
+      required: true
+
+  - type: input
+    id: source-version
+    attributes:
+      label: Source product and version
+      description: Identify the product, application, or firmware that produced the event.
+      placeholder: Product name and exact version
+    validations:
+      required: true
+
+  - type: textarea
+    id: security-value
+    attributes:
+      label: Security value
+      description: Explain what behavior should be detected and why it is useful in a homelab.
+    validations:
+      required: true
+
+  - type: textarea
+    id: source-event
+    attributes:
+      label: Authentic sanitized source event
+      description: Provide the smallest real event that preserves the original delimiters, field names, and value shapes.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-detection
+    attributes:
+      label: Expected detection behavior
+      description: Describe the fields to extract, conditions to match, suggested severity, and any correlation needed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: benign-events
+    attributes:
+      label: Benign or false-positive examples
+      description: Explain similar normal behavior that must not trigger. Provide sanitized examples when available.
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-validation
+    attributes:
+      label: Current sanitized logtest output
+      description: Include current decoder and rule results. Write "Not run" and explain why if the event cannot yet reach Wazuh.
+      render: shell
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: evidence
+    attributes:
+      label: Evidence confirmation
+      options:
+        - label: The event is authentic and was not synthesized solely for this request.
+          required: true
+        - label: I removed credentials, private identifiers, raw player data, and other sensitive values.
+          required: true
+        - label: I searched existing issues and detection documentation for equivalent behavior.
+          required: true
