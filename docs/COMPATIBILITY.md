@@ -19,9 +19,11 @@ shape, or topology is not implied.
 | Minecraft | Java Paper | Production-derived formats documented in the source guide |
 | Home Assistant adapter | Home Assistant 2026.10.2 | One deployment through a constrained read-only HTTPS proxy |
 
-The Home Assistant adapter has not yet been validated by multiple independent
-deployments. Direct Indexer access is a non-recommended exception for networks
-that already isolate the Indexer on a source-restricted management segment.
+The live Home Assistant adapter deployment is the supported project baseline.
+Additional community deployments can broaden the compatibility evidence, but a
+fixed number of external reports is not a release gate. Direct Indexer access is
+a non-recommended exception for networks that already isolate the Indexer on a
+source-restricted management segment.
 
 ## Wazuh assumptions
 

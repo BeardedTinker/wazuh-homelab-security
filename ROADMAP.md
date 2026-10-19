@@ -105,13 +105,18 @@ Exit criteria:
 - authentication and transport failures cannot be mistaken for valid zero counts
 - one setup guide works without exposing credentials or requiring local IP edits in several files
 
-## Phase 5: Validate the adapter with other users
+## Phase 5: Collect community adapter evidence
 
-Goal: prove that the adapter is not tied to one homelab topology.
+Goal: broaden compatibility evidence without imposing an enterprise-scale
+certification burden on a homelab project.
+
+Status: optional and ongoing. The live Home Assistant 2026.10.2 deployment,
+versioned contract, sanitized fixtures, and repository validation are sufficient
+for the published YAML example. Additional deployments are not a release gate.
 
 Work:
 
-- test multiple independent read-only-proxy deployments
+- welcome reports from other read-only-proxy deployments
 - accept direct-Indexer results only from deployments where an isolated,
   source-restricted management network already exists; do not make direct
   access a validation requirement
@@ -120,10 +125,10 @@ Work:
 - document migration from the YAML prototype
 - decide whether support demand justifies a Home Assistant custom integration
 
-Exit criteria:
+Evidence goals:
 
-- more than one independent deployment follows the documentation successfully
 - compatibility differences are represented by configuration, not source edits
+- reports include exact versions, topology, source subset, and sanitized output
 - the support and upgrade burden is understood
 
 ## Phase 6: Optional monitors and active response

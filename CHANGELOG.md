@@ -22,6 +22,9 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 - reorganized the oversized root README into a concise project landing page and
   versioned documentation for compatibility, detections, repository layout, and
   troubleshooting
+- treated the live Home Assistant 2026.10.2 adapter deployment, fixtures, and
+  contract checks as the proportionate v1 baseline while keeping community
+  compatibility reports optional
 
 ## [0.2.0-rc.4] - 2026-10-19
 

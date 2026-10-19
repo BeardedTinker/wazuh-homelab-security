@@ -2,7 +2,9 @@
 
 This directory provides the version 1 contract and a transparent YAML example
 for an optional Home Assistant presentation adapter. It is not a custom
-integration and has not yet been validated by multiple independent deployments.
+integration. The published baseline is validated on a live deployment;
+additional community compatibility reports are welcome but are not required for
+release.
 
 The Wazuh manager remains responsible for decoding and detection. Home Assistant
 reads already indexed alerts and presents counts and recent security events.
@@ -177,9 +179,13 @@ before publication:
 - `sensor.wazuh_security_last_5` retained five bounded recent hits
 - an optional source with no matching events returned valid zero and empty states
 - the number of configured REST resources decreased from five to two
+- a read-only runtime recheck on Home Assistant 2026.10.2 found all 33 contracted
+  entities present and available, with the successful-poll timestamp inside the
+  expected fast polling interval
 
-This verifies backward-compatible behavior on one deployment only. It does not
-replace the independent deployments required by Phase 5 of the roadmap.
+This live result, the frozen entity contract, sanitized fixtures, and repository
+validation form the proportionate version 1 project baseline. Results from other
+deployments remain useful for discovering compatibility differences.
 
 ## Fixtures
 
@@ -213,11 +219,9 @@ and entity were then validated on Home Assistant 2026.10.2 with a live
 read-only proxy response. The fixtures cover full, absent-source, empty,
 partial, and failed responses.
 
-This is one deployment validation, not a general compatibility claim.
-
-This remains an example until Phase 5 validates multiple independent proxy
-deployments with different source subsets. Report results with the Home
-Assistant version, Wazuh version, proxy design, index pattern, source subset,
-and sanitized validation output. An existing, intentionally segmented direct
-deployment may also report results, but direct access is not a validation
-requirement or the recommended architecture.
+This is a validated project deployment, not a claim that every topology or
+Indexer mapping is compatible. Report additional results with the Home Assistant
+version, Wazuh version, proxy design, index pattern, source subset, and sanitized
+validation output. An existing, intentionally segmented direct deployment may
+also report results, but direct access is not a validation requirement or the
+recommended architecture.

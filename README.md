@@ -100,8 +100,9 @@ or verification on the target manager.
 The repository includes an optional Wazuh Indexer GeoIP pipeline, sanitized
 dashboard recipes, and a Home Assistant YAML polling adapter. None is required
 for manager-side detection. The Home Assistant adapter is an example, not a
-supported custom integration, and has not yet been validated by multiple
-independent deployments.
+supported custom integration. Its version 1 contract is validated on a live Home
+Assistant 2026.10.2 deployment and by sanitized fixtures; additional community
+compatibility reports are welcome but are not a release gate.
 
 ## Security and privacy
 
