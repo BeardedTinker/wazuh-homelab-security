@@ -60,6 +60,19 @@ grep -n '<parent>kernel</parent>' wazuh/decoders/0100-unifi-decoders.xml
 The expected result is no output. Regardless of that check, the authoritative
 gate is `wazuh-analysisd -t` after installing the selected files.
 
+Before copying files, run the repository's read-only identifier check for the
+selected source. For example:
+
+```bash
+sudo python3 tools/check_wazuh_collisions.py --source unifi
+```
+
+Replace `unifi` with the selected source key. A nonzero result is a stop
+condition. Existing split-file upgrades require an explicit, reviewed
+same-filename allowance; follow
+[`docs/COLLISION_CHECKS.md`](docs/COLLISION_CHECKS.md) rather than suppressing a
+reported collision.
+
 ## 3. Create a backup
 
 Create a timestamped, root-only backup before the first change:

@@ -55,6 +55,7 @@ are fragments and must not replace a complete `ossec.conf`.
 | Source-by-source quick start | [`docs/QUICKSTART.md`](docs/QUICKSTART.md) |
 | Architecture and compatibility contract | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Installation, backup, validation, and rollback | [`INSTALL.md`](INSTALL.md) |
+| Rule-ID and decoder-name collision checks | [`docs/COLLISION_CHECKS.md`](docs/COLLISION_CHECKS.md) |
 | Validated versions and deployment assumptions | [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) |
 | Detection coverage, correlations, and rule IDs | [`docs/DETECTION_REFERENCE.md`](docs/DETECTION_REFERENCE.md) |
 | Repository structure and folder purpose | [`docs/REPOSITORY_LAYOUT.md`](docs/REPOSITORY_LAYOUT.md) |

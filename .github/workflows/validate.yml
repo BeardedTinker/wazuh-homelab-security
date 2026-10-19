@@ -31,6 +31,9 @@ jobs:
       - name: Validate repository
         run: python3 tools/validate_repository.py
 
+      - name: Test Wazuh collision checker
+        run: python3 -m unittest discover -s tools/tests -p 'test_*.py'
+
       - name: Verify repository checksums
         run: python3 tools/generate_checksums.py --check
 

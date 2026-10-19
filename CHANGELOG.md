@@ -11,6 +11,8 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 ### Added
 - a concise source-by-source quick start covering preflight, backup, validation,
   restart verification, and rollback gates
+- a dependency-free, read-only preflight tool for checking repository rule IDs
+  and decoder names against custom and built-in Wazuh XML trees
 
 ### Changed
 - reorganized the oversized root README into a concise project landing page and
