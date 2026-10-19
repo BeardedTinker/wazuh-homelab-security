@@ -1,6 +1,9 @@
 # Wazuh Homelab Security Dashboard
 
-This document describes the dashboard used together with the rules and decoders from this repository.
+This document provides sanitized panel recipes for dashboards used with the
+rules and decoders from this repository. It is not a saved-object export and
+contains no deployment IDs, credentials, addresses, player names, or event
+samples.
 
 The goal is to provide a **simple but effective SIEM-style overview for a homelab environment**.
 
@@ -36,7 +39,7 @@ Size: 10
 Recommended filter:
 
 ```
-rule.id:(100132 OR 100300 OR 100310 OR 100410 OR 100433)
+rule.id:(100132 OR 100300 OR 100310 OR 100410 OR 100433 OR 100710 OR 100711)
 ```
 
 This panel helps identify:
@@ -70,7 +73,7 @@ Interval: Auto
 Recommended filter:
 
 ```
-rule.id:(100132 OR 100300 OR 100310 OR 100410 OR 100433)
+rule.id:(100132 OR 100300 OR 100310 OR 100410 OR 100433 OR 100710 OR 100711)
 ```
 
 Useful for:
@@ -187,6 +190,37 @@ This highlights **current active threats**.
 
 ---
 
+## Minecraft security detections
+
+Shows Minecraft pre-login security signals without aggregating player names.
+
+Metric:
+
+```
+Count
+```
+
+Recommended filter:
+
+```
+rule.id:(100701 OR 100702 OR 100710 OR 100711)
+```
+
+Use a date histogram on `timestamp` for a timeline. A terms aggregation on
+`data.srcip` is appropriate only in a private investigation dashboard; sanitize
+screenshots before publication.
+
+For a separate completed-login count, use:
+
+```
+rule.id:100720
+```
+
+Do not publish a player-name terms panel. Normal post-login disconnects are
+intentionally not detections.
+
+---
+
 ## Top attackers (history)
 
 Shows historical attack sources.
@@ -247,6 +281,10 @@ Recommended workflow when investigating events:
 5. check origin using **Attack sources map**
 
 This provides a quick but effective investigation path.
+
+Field availability depends on the installed source and index mapping. Verify a
+matching indexed document before creating an aggregation. Empty panels should
+not be treated as proof that collection is healthy.
 
 ---
 

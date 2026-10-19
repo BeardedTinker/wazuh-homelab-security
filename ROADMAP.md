@@ -14,8 +14,8 @@ when its exit criteria are met.
 - Release candidates `v0.2.0-rc.1`, `v0.2.0-rc.2`, and `v0.2.0-rc.3` are
   published; no stable `0.2.0` release exists.
 - An optional Home Assistant YAML polling adapter is published with a versioned
-  contract and one-deployment validation; no dashboard or custom integration is
-  published.
+  contract, one-deployment validation, and a sanitized standard-card dashboard
+  example; no supported dashboard export or custom integration is published.
 - Fresh-install issue #1 is fixed in the repository but awaits user confirmation.
 
 ## Phase 1: Stabilize installation

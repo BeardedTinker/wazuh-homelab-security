@@ -1,0 +1,98 @@
+title: "Wazuh Security"
+views:
+  - title: "Security"
+    path: "security"
+    icon: "mdi:shield-home"
+    cards:
+      - type: "markdown"
+        content: >-
+          ## Wazuh security overview
+
+          Counts come from the optional read-only Wazuh adapter. Wazuh remains
+          the source of truth for alert history and investigation.
+
+      - type: "entities"
+        title: "Status"
+        show_header_toggle: false
+        entities:
+          - entity: sensor.siem_security_score
+            name: "Security score"
+          - entity: sensor.wazuh_indexer_last_successful_poll
+            name: "Last successful poll"
+          - entity: sensor.wazuh_security_last_5
+            name: "Recent high-severity alerts"
+          - entity: sensor.wazuh_top_rule_24h
+            name: "Top elevated rule"
+
+      - type: "entities"
+        title: "Severity — last 24 hours"
+        show_header_toggle: false
+        entities:
+          - entity: sensor.wazuh_critical_24h
+            name: "Critical"
+          - entity: sensor.wazuh_high_24h
+            name: "High"
+          - entity: sensor.wazuh_medium_24h
+            name: "Medium"
+          - entity: sensor.wazuh_low_24h
+            name: "Low"
+
+      - type: "entities"
+        title: "Sources — last 24 hours"
+        show_header_toggle: false
+        entities:
+          - entity: sensor.wazuh_source_unifi_24h
+            name: "UniFi"
+          - entity: sensor.wazuh_source_safeline_24h
+            name: "SafeLine"
+          - entity: sensor.wazuh_source_ugreen_24h
+            name: "UGREEN"
+          - entity: sensor.wazuh_source_home_assistant_24h
+            name: "Home Assistant"
+          - entity: sensor.wazuh_source_synology_24h
+            name: "Synology"
+          - entity: sensor.wazuh_source_minecraft_24h
+            name: "Minecraft"
+
+      - type: "entities"
+        title: "Network perimeter — last 24 hours"
+        show_header_toggle: false
+        entities:
+          - entity: sensor.wazuh_wan_local_drops_24h
+            name: "WAN local drops"
+          - entity: sensor.wazuh_top_wan_local_dpt_24h
+            name: "Top destination port"
+
+      - type: "entities"
+        title: "SafeLine — last 24 hours"
+        show_header_toggle: false
+        entities:
+          - entity: sensor.wazuh_safeline_alerts_24h
+            name: "Alerts"
+          - entity: sensor.wazuh_safeline_blocked_attacks_24h
+            name: "Blocked attacks"
+          - entity: sensor.wazuh_safeline_sqli_24h
+            name: "SQL injection"
+          - entity: sensor.wazuh_safeline_xss_24h
+            name: "Cross-site scripting"
+          - entity: sensor.wazuh_safeline_repeated_attacks_24h
+            name: "Repeated attacks"
+          - entity: sensor.wazuh_safeline_multi_vector_24h
+            name: "Multi-vector attacks"
+
+      - type: "entities"
+        title: "UGREEN — last 24 hours"
+        show_header_toggle: false
+        entities:
+          - entity: sensor.wazuh_ugreen_events_24h
+            name: "Events"
+          - entity: sensor.wazuh_ugreen_web_success_24h
+            name: "Web sign-ins"
+          - entity: sensor.wazuh_ugreen_web_failures_24h
+            name: "Web failures"
+          - entity: sensor.wazuh_ugreen_ssh_success_24h
+            name: "SSH sign-ins"
+          - entity: sensor.wazuh_ugreen_account_changes_24h
+            name: "Account changes"
+          - entity: sensor.wazuh_ugreen_storage_alerts_24h
+            name: "Storage alerts"

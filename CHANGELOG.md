@@ -13,6 +13,8 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
   Manager 4.14.9 package, with a machine-readable result artifact
 - a fail-closed helper that prepares an isolated Wazuh test tree without
   installing or starting manager services
+- sanitized Wazuh dashboard panel recipes and a standard-card Home Assistant
+  dashboard example for the version 1 adapter
 
 ### Fixed
 - renamed the SafeLine rule file from `0400` to `0480` so built-in parent rule

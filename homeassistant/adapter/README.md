@@ -64,8 +64,11 @@ requires a Core restart to load the new package and Recorder exclusions. After
 startup, verify that the freshness sensor has a recent timestamp and that a
 source without data shows zero rather than `unavailable`.
 
-The package does not install detection rules, configure the Wazuh Indexer, or
-ship a dashboard. Follow the repository's source-specific setup guides first.
+The package does not install detection rules or configure the Wazuh Indexer.
+After validating the entities, the optional sanitized dashboard example in
+[`DASHBOARD.md`](DASHBOARD.md) can be copied into a private deployment. It is an
+example, not a supported dashboard export. Follow the repository's
+source-specific setup guides first.
 
 ## Migration from local query files
 

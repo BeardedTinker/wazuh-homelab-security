@@ -563,6 +563,7 @@ Suggested dashboard panels:
 - Top attackers (last 24 hours)
 - Top attackers (historical)
 - Alert severity distribution
+- Minecraft security detections and completed-login counts
 
 Recommended index pattern:
 
@@ -575,6 +576,12 @@ Example filter:
 ```
 rule.id:(100132 OR 100300 OR 100310 OR 100410 OR 100433)
 ```
+
+See [`SECURITY-DASHBOARD.md`](SECURITY-DASHBOARD.md) for sanitized Wazuh panel
+recipes and
+[`homeassistant/adapter/DASHBOARD.md`](homeassistant/adapter/DASHBOARD.md) for a
+standard-card Home Assistant example. Neither example contains deployment data
+or a supported saved-object export.
 
 ---
 
