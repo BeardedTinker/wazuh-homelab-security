@@ -8,6 +8,8 @@ This project loosely follows the ideas from **Keep a Changelog** and **Semantic 
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-20
+
 ### Added
 - a concise source-by-source quick start covering preflight, backup, validation,
   restart verification, and rollback gates
