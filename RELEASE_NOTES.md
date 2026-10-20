@@ -1,30 +1,35 @@
-# Wazuh Homelab Security 0.2.0-rc.4
+# Wazuh Homelab Security 0.2.0
 
-This fourth release candidate makes the Wazuh 4.14.9 regression reproducible in
-GitHub Actions, fixes the SafeLine fresh-install load order, and adds sanitized
-Wazuh and Home Assistant dashboard examples. Rule IDs, detection logic, and the
-33-entity Home Assistant adapter contract remain unchanged from `0.2.0-rc.3`.
+This is the first stable versioned baseline for the expanded homelab detection
+set. It combines the production-audited Wazuh 4.14.9 content from the release
+candidates with reproducible runtime CI, source-by-source installation guidance,
+collision checks, structured support intake, and guarded draft-release
+automation.
 
-Do not treat the `rc` suffix as a claim of broad production compatibility.
-Review the source-specific contracts and validate against your own Wazuh
-manager before restart.
+Stable means the documented baseline, compatibility contracts, and upgrade path
+are ready to pin. It does not imply compatibility with every Wazuh version,
+product firmware, transport shape, language, or homelab topology. Validate the
+selected source against the target manager before restart.
 
-## Changes since 0.2.0-rc.3
+## Changes since 0.2.0-rc.4
 
-- added a GitHub Actions runtime job using the official Wazuh Manager 4.14.9-1
-  amd64 package with a pinned SHA-256
-- added a fail-closed helper that prepares an isolated Wazuh test tree without
-  installing or starting manager services
-- retained a machine-readable regression artifact reporting 25 PASS, 0 FAIL,
-  2 PENDING, and 0 XPASS
-- renamed `0400-safeline-rules.xml` to `0480-safeline-rules.xml` so the built-in
-  parent rule `86600` loads first on fresh split-file installations
-- added sanitized Wazuh panel recipes, including Minecraft security and
-  completed-login filters
-- added a portable Home Assistant YAML dashboard example using only built-in
-  cards and version 1 adapter entities
-- extended repository validation to reject unknown dashboard entities and
-  custom frontend cards
+- reorganized the root README into a concise landing page and focused,
+  versioned documentation
+- added a source-by-source quick start with backup, validation, verification,
+  and rollback gates
+- added a dependency-free, read-only rule-ID and decoder-name collision checker
+  with unit tests and CI coverage
+- added structured bug-report and detection-request forms that require exact
+  versions and sanitized evidence
+- added a manual, fail-closed workflow that reruns validation for an existing
+  annotated tag and creates only an unpublished draft release
+- confirmed the Home Assistant 2026.10.2 adapter baseline with all 33 contracted
+  entities present and available on the live read-only-proxy deployment
+- kept additional community adapter reports optional rather than treating an
+  enterprise-scale number of deployments as a release gate
+
+No Wazuh rule IDs, decoder names, detection logic, collector behavior, or Home
+Assistant adapter entity contracts changed after `v0.2.0-rc.4`.
 
 ## Compatibility
 
@@ -58,7 +63,9 @@ shape, or Wazuh version is not implied.
 - 2 explicitly pending scenarios
 - dependency-free static validation and pinned Wazuh 4.14.9 runtime regression
   in GitHub Actions
-- architecture, installation, source setup, dashboard, and regression guides
+- architecture, quick-start, installation, compatibility, collision-check,
+  troubleshooting, source setup, dashboard, and regression guides
+- structured issue forms and guarded draft-release preparation
 - optional 33-entity Home Assistant YAML adapter, schema contract, and sanitized
   fixtures
 - sanitized Wazuh panel recipes and a standard-card Home Assistant dashboard
@@ -121,9 +128,20 @@ migration. Loading both versions creates duplicate unique IDs and preserves the
 old polling load. The optional standard-card dashboard is a portable example,
 not a supported saved-object export, and is not installed automatically.
 
-## Upgrade from 0.2.0-rc.3
+## Upgrade from 0.2.0-rc.4
 
-SafeLine users with the split repository rule files must replace
+No deployed Wazuh or Home Assistant adapter file requires replacement solely to
+move from `v0.2.0-rc.4` to `v0.2.0`. The stable release adds documentation,
+preflight tooling, support forms, and release automation around the same runtime
+contracts.
+
+Users may adopt `tools/check_wazuh_collisions.py` before future source-file
+changes. Follow `docs/COLLISION_CHECKS.md`; a nonzero result is a stop condition.
+
+## Upgrade from earlier 0.2.0 release candidates
+
+Users upgrading from `v0.2.0-rc.3` or earlier must include the SafeLine load-order
+fix introduced in `v0.2.0-rc.4`. SafeLine users with split rule files must replace
 `0400-safeline-rules.xml` with `0480-safeline-rules.xml`. Never load both
 filenames: they contain the same rule IDs. The rename changes only load order;
 rule IDs and detection logic are unchanged.

@@ -22,8 +22,8 @@ The primary product is the Wazuh detection core: decoders, rules, collectors,
 sanitized samples, and regression tooling. Indexer enrichment, dashboards, and
 the Home Assistant YAML adapter are optional presentation layers.
 
-The current audited baseline is **Wazuh 4.14.9** and the latest prerelease is
-[`v0.2.0-rc.4`](https://github.com/BeardedTinker/wazuh-homelab-security/releases/tag/v0.2.0-rc.4).
+The current audited baseline is **Wazuh 4.14.9** and the stable project release
+is [`v0.2.0`](https://github.com/BeardedTinker/wazuh-homelab-security/releases/tag/v0.2.0).
 The repository remains an early project and does not claim broad compatibility
 outside the documented baseline.
 

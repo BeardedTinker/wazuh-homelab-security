@@ -11,8 +11,8 @@ when its exit criteria are met.
 - The regression suite reports 25 PASS, 0 FAIL, 2 PENDING, and 0 XPASS.
 - UniFi, Synology, Home Assistant, SafeLine, UGREEN, and Minecraft Paper content
   is present.
-- Release candidates `v0.2.0-rc.1` through `v0.2.0-rc.4` are published; no
-  stable `0.2.0` release exists.
+- Stable `v0.2.0` is the versioned project baseline after four public release
+  candidates.
 - Protected pull requests require both dependency-free static validation and
   reproducible runtime regression against the pinned Wazuh 4.14.9 package.
 - An optional Home Assistant YAML polling adapter is published with a versioned
@@ -62,6 +62,8 @@ Exit criteria:
 
 Goal: give users an immutable version instead of requiring a clone of `main`.
 
+Status: completed by stable release `v0.2.0`.
+
 Work:
 
 - resolve the current `Unreleased` changelog into a semantic version
@@ -69,8 +71,9 @@ Work:
 - attach checksums or a source archive generated from the release commit
 - identify every compatibility-sensitive identifier changed since `0.1.0`
 
-Suggested first target: `0.2.0`, because the source set and regression model have
-expanded materially while the project is still pre-1.0.
+The first stable target is `0.2.0`, reflecting the expanded source set,
+regression model, installation safeguards, and versioned documentation while the
+project remains pre-1.0.
 
 Exit criteria:
 
