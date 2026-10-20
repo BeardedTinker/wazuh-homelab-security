@@ -218,8 +218,8 @@ target deployment.
 - UGREEN UDP syslog is unencrypted and unauthenticated; deploy it only on a
   trusted, filtered network.
 - The Home Assistant adapter has been validated on one deployment through a
-  read-only HTTPS proxy. Independent Indexer-direct and different-source-subset
-  validation is still required.
+  read-only HTTPS proxy. Additional topology and source-subset reports can expand
+  the compatibility evidence but are not a release requirement.
 - The Home Assistant dashboard is a sanitized standard-card example, not a
   supported saved-object export; frontend rendering is not covered by CI.
 
